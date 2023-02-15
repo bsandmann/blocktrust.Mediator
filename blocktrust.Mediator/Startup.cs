@@ -5,6 +5,8 @@ using Microsoft.OpenApi.Models;
 
 namespace Blocktrust.Mediator;
 
+using MediatR;
+
 public class Startup
 {
     /// <summary>
@@ -39,7 +41,7 @@ public class Startup
         });
         services.AddControllers();
         // services.AddApplicationInsightsTelemetry();
-        // services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
+        services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
         // var appSettingsSection = Configuration.GetSection("AppSettings");
         // services.Configure<AppSettings>(appSettingsSection);
         services.AddHttpClient();
@@ -71,8 +73,8 @@ public class Startup
         if (env.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
-            // app.UseSwagger();
-            // app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Blocktrust.NodeServer v1"));
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Blocktrust.Mediator v1"));
         }
 
         app.UseHttpsRedirection();

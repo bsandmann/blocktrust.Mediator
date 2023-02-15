@@ -340,4 +340,5 @@ ASALocalRun/
 healthchecksdb
 
 # Sensitve entries
-**/*.Development.json
+appsettings.Development.json
+DataContextFactory.cs

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Blocktrust.Mediator.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230215174613_initial")]
-    partial class initial
+    [Migration("20230215183450_test")]
+    partial class test
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace Blocktrust.Mediator.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Blocktrust.Mediator.Entities.Oob", b =>
+            modelBuilder.Entity("Blocktrust.Mediator.Entities.OobEntity", b =>
                 {
                     b.Property<Guid>("OobId")
                         .ValueGeneratedOnAdd()

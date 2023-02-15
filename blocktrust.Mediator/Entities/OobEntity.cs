@@ -1,6 +1,6 @@
 ﻿namespace Blocktrust.Mediator.Entities;
 
-public class Oob
+public class OobEntity
 {
     public Guid OobId { get; set; }
 

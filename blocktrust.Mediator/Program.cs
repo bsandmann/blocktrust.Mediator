@@ -4,7 +4,6 @@ namespace Blocktrust.Mediator
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Hosting;
 
-    // using Microsoft.Extensions.Logging.ApplicationInsights;
 
     public class Program
     {
