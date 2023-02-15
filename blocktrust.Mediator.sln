@@ -4,6 +4,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blocktrust.Mediator", "Bloc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blocktrust.Mediator.Tests", "Blocktrust.Mediator.Tests\Blocktrust.Mediator.Tests.csproj", "{D9970E8D-D78C-448D-A17B-15361886EFB5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DIDComm", "..\blocktrust.DIDComm_v2_dotnet\DIDComm\DIDComm.csproj", "{31E0F07A-2BA7-4F04-B838-6BA915992223}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DIDComm.Tests", "..\blocktrust.DIDComm_v2_dotnet\DIDComm.Tests\DIDComm.Tests.csproj", "{8156CE31-A318-42DA-BA2F-C30B49A1F942}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +22,13 @@ Global
 		{D9970E8D-D78C-448D-A17B-15361886EFB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D9970E8D-D78C-448D-A17B-15361886EFB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D9970E8D-D78C-448D-A17B-15361886EFB5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31E0F07A-2BA7-4F04-B838-6BA915992223}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31E0F07A-2BA7-4F04-B838-6BA915992223}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31E0F07A-2BA7-4F04-B838-6BA915992223}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31E0F07A-2BA7-4F04-B838-6BA915992223}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8156CE31-A318-42DA-BA2F-C30B49A1F942}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8156CE31-A318-42DA-BA2F-C30B49A1F942}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8156CE31-A318-42DA-BA2F-C30B49A1F942}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8156CE31-A318-42DA-BA2F-C30B49A1F942}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

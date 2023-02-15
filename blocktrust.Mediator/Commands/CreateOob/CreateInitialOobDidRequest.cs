@@ -1,19 +1,19 @@
-﻿namespace Blocktrust.Node.Commands.CreateBlock;
+﻿namespace Blocktrust.Mediator.Commands.CreateOob;
 
+using Blocktrust.Mediator.Models;
 using FluentResults;
-using Mediator.Models;
 using MediatR;
 
 /// <summary>
 /// Request
 /// </summary>
-public class CreateOobRequest : IRequest<Result<OobModel>>
+public class CreateInitialOobDidRequest : IRequest<Result<OobModel>>
 {
     /// <summary>
     /// Request
     /// </summary>
     /// <param name="did"></param>
-    public CreateOobRequest(string did)
+    public CreateInitialOobDidRequest(string did)
     {
         Did = did;
     }

@@ -9,7 +9,7 @@ using MediatR;
 /// <summary>
 /// Handler to create new blocks inside the node-database to represent a block
 /// </summary>
-public class CreateOobHandler : IRequestHandler<CreateOobRequest, Result<OobModel>>
+public class CreateInitialOobDidHandler : IRequestHandler<CreateInitialOobDidRequest, Result<OobModel>>
 {
     private readonly DataContext _context;
 
@@ -17,7 +17,7 @@ public class CreateOobHandler : IRequestHandler<CreateOobRequest, Result<OobMode
     /// Constructor
     /// </summary>
     /// <param name="context"></param>
-    public CreateOobHandler(DataContext context)
+    public CreateInitialOobDidHandler(DataContext context)
     {
         this._context = context;
     }
@@ -25,18 +25,26 @@ public class CreateOobHandler : IRequestHandler<CreateOobRequest, Result<OobMode
     /// <summary>
     /// Handler
     /// </summary>
-    /// <param name="request"></param>
+    /// <param name="didRequest"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public async Task<Result<OobModel>> Handle(CreateOobRequest request, CancellationToken cancellationToken)
+    public async Task<Result<OobModel>> Handle(CreateInitialOobDidRequest didRequest, CancellationToken cancellationToken)
     {
+        // Create 1 key pairs for aggreement keys (X25519)
+        //  one public with crv, x, kty, kid
+        // one private with crv, x, kty, kid, d
+        
+        // Create 1 key pair for authentication (signing) ED25519
+        // one public with crv, x, kty, kid
+        // one private with crv, x, kty, kid, d
+        
         // _context.ChangeTracker.Clear();
         // _context.ChangeTracker.AutoDetectChangesEnabled = false;
         var now = DateTime.UtcNow;
 
         var oob = new OobEntity()
         {
-            Did = request.Did,
+            Did = didRequest.Did,
             CreatedUtc = now,
             Url = "https://www.google.com"
         };

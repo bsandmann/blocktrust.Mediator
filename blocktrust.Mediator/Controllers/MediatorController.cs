@@ -1,17 +1,21 @@
 ﻿namespace Blocktrust.Mediator.Controllers;
 
+using Commands.CreateOob;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
 public class MediatorController : ControllerBase
 {
     private readonly ILogger<MediatorController> _logger;
-    
-    public MediatorController(ILogger<MediatorController> logger)
+    private readonly IMediator _mediator;
+
+    public MediatorController(ILogger<MediatorController> logger, IMediator mediator)
     {
         _logger = logger;
+        _mediator = mediator;
     }
-    
+
     /// <summary>
     /// Ping pong sanity check
     /// </summary>
@@ -20,9 +24,11 @@ public class MediatorController : ControllerBase
     public async Task<ActionResult<string>> Ping(string arg = "")
     {
         await Task.Delay(10);
+        var r = await _mediator.Send(new CreateInitialOobDidRequest("mydid"));
+
         return Ok($"Pong {arg}");
     }
-    
+
     /// <summary>
     /// Mediator endpoint
     /// </summary>

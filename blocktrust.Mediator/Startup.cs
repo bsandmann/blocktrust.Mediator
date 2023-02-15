@@ -41,7 +41,9 @@ public class Startup
         });
         services.AddControllers();
         // services.AddApplicationInsightsTelemetry();
-        services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
+        services.AddMediatR(cfg => {
+            cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
+        });
         // var appSettingsSection = Configuration.GetSection("AppSettings");
         // services.Configure<AppSettings>(appSettingsSection);
         services.AddHttpClient();
