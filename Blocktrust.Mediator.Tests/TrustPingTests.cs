@@ -7,6 +7,7 @@ using DIDComm_v2.Message.Messages;
 using DIDComm_v2.Model.PackEncryptedParamsModels;
 using DIDComm_v2.Model.PackPlaintextParamsModels;
 using FluentAssertions;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -18,6 +19,7 @@ using TestData.Secrets;
 public class TrustPingTests
 {
     private readonly Mock<ILogger<MediatorController>> _iLogger;
+    private readonly Mock<IMediator> _mediatorMock;
     private const string ALICE_DID = "did:example:alice";
     private const string BOB_DID = "did:example:bob";
     private const string RootsMediatorLocal = "did:peer:2.Ez6LSk8oEwmAfG1JyV4oG9JrUuswJobRhx4RkVsc7uaAYirYK.Vz6Mkgm5gQ13JisT9HPh7oQUsTeAHMWZoQzzsYD5oP2Y9rqCs#6LSk8oEwmAfG1JyV4oG9JrUuswJobRhx4RkVsc7uaAYirYK";
@@ -26,13 +28,14 @@ public class TrustPingTests
     public TrustPingTests()
     {
         _iLogger = new Mock<ILogger<MediatorController>>();
+        _mediatorMock = new Mock<IMediator>();
     }
 
     [Fact]
     public async Task TrustPingWorksAsExpected()
     {
         // Arrange
-        var controller = new MediatorController(_iLogger.Object);
+        var controller = new MediatorController(_iLogger.Object, _mediatorMock.Object);
 
 
         var trustPingMessage = new TrustPingRequest(from: "abc", true);

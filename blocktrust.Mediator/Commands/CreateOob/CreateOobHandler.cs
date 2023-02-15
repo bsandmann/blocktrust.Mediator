@@ -1,9 +1,9 @@
-﻿namespace Blocktrust.Node.Commands.CreateBlock;
+﻿namespace Blocktrust.Mediator.Commands.CreateOob;
 
+using Blocktrust.Mediator;
+using Blocktrust.Mediator.Entities;
+using Blocktrust.Mediator.Models;
 using FluentResults;
-using Mediator;
-using Mediator.Entities;
-using Mediator.Models;
 using MediatR;
 
 /// <summary>
@@ -36,7 +36,6 @@ public class CreateOobHandler : IRequestHandler<CreateOobRequest, Result<OobMode
 
         var oob = new OobEntity()
         {
-            OobId = Guid.NewGuid(),
             Did = request.Did,
             CreatedUtc = now,
             Url = "https://www.google.com"
