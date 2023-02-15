@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blocktrust.Mediator", "Blocktrust.Mediator\Blocktrust.Mediator.csproj", "{04C41A82-DA0A-4943-A8BD-6123F6E97649}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blocktrust.Mediator.Tests", "Blocktrust.Mediator.Tests\Blocktrust.Mediator.Tests.csproj", "{D9970E8D-D78C-448D-A17B-15361886EFB5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{04C41A82-DA0A-4943-A8BD-6123F6E97649}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04C41A82-DA0A-4943-A8BD-6123F6E97649}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04C41A82-DA0A-4943-A8BD-6123F6E97649}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04C41A82-DA0A-4943-A8BD-6123F6E97649}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9970E8D-D78C-448D-A17B-15361886EFB5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9970E8D-D78C-448D-A17B-15361886EFB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9970E8D-D78C-448D-A17B-15361886EFB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9970E8D-D78C-448D-A17B-15361886EFB5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
