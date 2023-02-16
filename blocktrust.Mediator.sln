@@ -1,8 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blocktrust.Mediator", "Blocktrust.Mediator\Blocktrust.Mediator.csproj", "{04C41A82-DA0A-4943-A8BD-6123F6E97649}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blocktrust.Mediator.Server", "Blocktrust.Mediator.Server\Blocktrust.Mediator.Server.csproj", "{04C41A82-DA0A-4943-A8BD-6123F6E97649}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blocktrust.Mediator.Tests", "Blocktrust.Mediator.Tests\Blocktrust.Mediator.Tests.csproj", "{D9970E8D-D78C-448D-A17B-15361886EFB5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blocktrust.Mediator.Server.Tests", "Blocktrust.Mediator.Server.Tests\Blocktrust.Mediator.Server.Tests.csproj", "{D9970E8D-D78C-448D-A17B-15361886EFB5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DIDComm", "..\blocktrust.DIDComm_v2_dotnet\DIDComm\DIDComm.csproj", "{31E0F07A-2BA7-4F04-B838-6BA915992223}"
 EndProject
