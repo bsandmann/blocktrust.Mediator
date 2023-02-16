@@ -3,7 +3,7 @@
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Common.Converter;
+using Blocktrust.Common.Converter;
 using PeerDID.Types;
 
 /// <summary>
