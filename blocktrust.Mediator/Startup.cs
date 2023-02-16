@@ -88,6 +88,7 @@ public class Startup
         app.UseRouting();
         // app.UseAuthorization();
         // app.UseGrpcWeb();
+        app.UseHttpsRedirection();
         app.UseEndpoints(endpoints =>
         {
             // endpoints.MapGrpcService<GrpcReadService>().EnableGrpcWeb();

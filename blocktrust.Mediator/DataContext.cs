@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.ValueGeneration;
 
 public class DataContext : DbContext
 {
-    public DbSet<OobEntity> Oobs { get; set; }
+    public DbSet<OobInvitationEntity> OobInvitations { get; set; }
 
     public DataContext(DbContextOptions<DataContext> options)
         : base(options)
@@ -19,8 +19,8 @@ public class DataContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<OobEntity>()
+        modelBuilder.Entity<OobInvitationEntity>()
             .HasKey(b => b.OobId);
-        modelBuilder.Entity<OobEntity>().Property(b => b.OobId).HasValueGenerator(typeof(SequentialGuidValueGenerator));
+        modelBuilder.Entity<OobInvitationEntity>().Property(b => b.OobId).HasValueGenerator(typeof(SequentialGuidValueGenerator));
     }
 }

@@ -8,6 +8,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DIDComm", "..\blocktrust.DI
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DIDComm.Tests", "..\blocktrust.DIDComm_v2_dotnet\DIDComm.Tests\DIDComm.Tests.csproj", "{8156CE31-A318-42DA-BA2F-C30B49A1F942}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blocktrust.PeerDID", "..\blocktrust.PeerDID\Blocktrust.PeerDID\Blocktrust.PeerDID.csproj", "{92294E67-4DA4-41F8-9FE8-E319D48F25ED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blocktrust.PeerDID.Tests", "..\blocktrust.PeerDID\Blocktrust.PeerDID.Tests\Blocktrust.PeerDID.Tests.csproj", "{373512F1-126B-4267-81BD-8319BA5EB32F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +34,13 @@ Global
 		{8156CE31-A318-42DA-BA2F-C30B49A1F942}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8156CE31-A318-42DA-BA2F-C30B49A1F942}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8156CE31-A318-42DA-BA2F-C30B49A1F942}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92294E67-4DA4-41F8-9FE8-E319D48F25ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92294E67-4DA4-41F8-9FE8-E319D48F25ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92294E67-4DA4-41F8-9FE8-E319D48F25ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92294E67-4DA4-41F8-9FE8-E319D48F25ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{373512F1-126B-4267-81BD-8319BA5EB32F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{373512F1-126B-4267-81BD-8319BA5EB32F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{373512F1-126B-4267-81BD-8319BA5EB32F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{373512F1-126B-4267-81BD-8319BA5EB32F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
