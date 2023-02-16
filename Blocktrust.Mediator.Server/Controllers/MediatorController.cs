@@ -3,6 +3,7 @@
 using Commands.CreateOobInvitation;
 using Commands.CreatePeerDid;
 using Commands.GetOobInvitation;
+using Common.Commands.CreatePeerDid;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

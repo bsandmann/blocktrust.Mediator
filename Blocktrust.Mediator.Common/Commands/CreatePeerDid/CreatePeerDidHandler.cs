@@ -2,11 +2,10 @@
 
 using System.Text.Json;
 using Server;
-using Server.Entities;
-using Server.Models;
 using Blocktrust.PeerDID.DIDDoc;
 using Blocktrust.PeerDID.PeerDIDCreateResolve;
 using Blocktrust.PeerDID.Types;
+using Common.Commands.CreatePeerDid;
 using FluentResults;
 using MediatR;
 
@@ -15,16 +14,14 @@ using MediatR;
 /// </summary>
 public class CreatePeerDidHandler : IRequestHandler<CreatePeerDidRequest, Result<PeerDid>>
 {
-    private readonly DataContext _context;
 
 
     /// <summary>
     /// Constructor
     /// </summary>
     /// <param name="context"></param>
-    public CreatePeerDidHandler(DataContext context)
+    public CreatePeerDidHandler()
     {
-        this._context = context;
     }
 
     /// <summary>

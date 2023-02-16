@@ -1,6 +1,5 @@
-﻿namespace Blocktrust.Mediator.Server.Commands.CreatePeerDid;
+﻿namespace Blocktrust.Mediator.Common.Commands.CreatePeerDid;
 
-using Server.Models;
 using FluentResults;
 using MediatR;
 using PeerDID.Types;

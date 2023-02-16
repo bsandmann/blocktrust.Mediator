@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-      <DocumentationFile>bin\Debug\Blocktrust.Mediator.xml</DocumentationFile>
+      <DocumentationFile>bin\Debug\Blocktrust.Mediator.Server.xml</DocumentationFile>
     </PropertyGroup>
 
     <ItemGroup>
@@ -22,7 +22,7 @@
         <PackageReference Include="JetBrains.ExternalAnnotations" Version="10.2.125" />
         <PackageReference Include="MediatR" Version="12.0.0" />
         <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.1.0" />
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.2" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.3" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.3" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.3">
           <PrivateAssets>all</PrivateAssets>
@@ -30,7 +30,7 @@
         </PackageReference>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.3" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.3" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     </ItemGroup>
 
     <ItemGroup>
