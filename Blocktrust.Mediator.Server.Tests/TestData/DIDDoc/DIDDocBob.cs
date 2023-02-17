@@ -13,7 +13,7 @@ public class DIDDocBob
             type: VerificationMethodType.JSON_WEB_KEY_2020,
             verificationMaterial: new VerificationMaterial
             {
-                format = VerificationMaterialFormat.JWK,
+                format = VerificationMaterialFormat.Jwk,
                 value = """
             {
                 "kty": "OKP",
@@ -32,7 +32,7 @@ public class DIDDocBob
             type: VerificationMethodType.JSON_WEB_KEY_2020,
             verificationMaterial: new VerificationMaterial
             {
-                format = VerificationMaterialFormat.JWK,
+                format = VerificationMaterialFormat.Jwk,
                 value = """
             {
                 "kty": "OKP",
@@ -51,7 +51,7 @@ public class DIDDocBob
             type: VerificationMethodType.JSON_WEB_KEY_2020,
             verificationMaterial: new VerificationMaterial
             {
-                format = VerificationMaterialFormat.JWK,
+                format = VerificationMaterialFormat.Jwk,
                 value = """
             {
                 "kty": "OKP",
@@ -69,7 +69,7 @@ public class DIDDocBob
             type: VerificationMethodType.JSON_WEB_KEY_2020,
             verificationMaterial: new VerificationMaterial
             {
-                format = VerificationMaterialFormat.JWK,
+                format = VerificationMaterialFormat.Jwk,
                 value = """
             {
                 "kty": "OKP",
@@ -87,7 +87,7 @@ public class DIDDocBob
             type: VerificationMethodType.JSON_WEB_KEY_2020,
             verificationMaterial: new VerificationMaterial
             {
-                format = VerificationMaterialFormat.JWK,
+                format = VerificationMaterialFormat.Jwk,
                 value = """
             {
                 "kty": "EC",
@@ -106,7 +106,7 @@ public class DIDDocBob
             type: VerificationMethodType.JSON_WEB_KEY_2020,
             verificationMaterial: new VerificationMaterial
             {
-                format = VerificationMaterialFormat.JWK,
+                format = VerificationMaterialFormat.Jwk,
                 value = """
             {
                 "kty": "EC",
@@ -125,7 +125,7 @@ public class DIDDocBob
             type: VerificationMethodType.JSON_WEB_KEY_2020,
             verificationMaterial: new VerificationMaterial
             {
-                format = VerificationMaterialFormat.JWK,
+                format = VerificationMaterialFormat.Jwk,
                 value = """
             {
                 "kty": "EC",
@@ -144,7 +144,7 @@ public class DIDDocBob
             type: VerificationMethodType.JSON_WEB_KEY_2020,
             verificationMaterial: new VerificationMaterial
             {
-                format = VerificationMaterialFormat.JWK,
+                format = VerificationMaterialFormat.Jwk,
                 value = """
             {
                 "kty": "EC",
@@ -163,7 +163,7 @@ public class DIDDocBob
             type: VerificationMethodType.JSON_WEB_KEY_2020,
             verificationMaterial: new VerificationMaterial
             {
-                format = VerificationMaterialFormat.JWK,
+                format = VerificationMaterialFormat.Jwk,
                 value = """
             {
                 "kty": "EC",
@@ -182,7 +182,7 @@ public class DIDDocBob
             type: VerificationMethodType.JSON_WEB_KEY_2020,
             verificationMaterial: new VerificationMaterial
             {
-                format = VerificationMaterialFormat.JWK,
+                format = VerificationMaterialFormat.Jwk,
                 value = """
             {
                 "kty": "EC",
@@ -201,7 +201,7 @@ public class DIDDocBob
             type: VerificationMethodType.JSON_WEB_KEY_2020,
             verificationMaterial: new VerificationMaterial
             {
-                format = VerificationMaterialFormat.JWK,
+                format = VerificationMaterialFormat.Jwk,
                 value = """
             {
                 "kty": "EC",
@@ -220,7 +220,7 @@ public class DIDDocBob
             type: VerificationMethodType.JSON_WEB_KEY_2020,
             verificationMaterial: new VerificationMaterial
             {
-                format = VerificationMaterialFormat.JWK,
+                format = VerificationMaterialFormat.Jwk,
                 value = """
             {
                 "kty": "EC",
@@ -239,7 +239,7 @@ public class DIDDocBob
             type: VerificationMethodType.JSON_WEB_KEY_2020,
             verificationMaterial: new VerificationMaterial
             {
-                format = VerificationMaterialFormat.JWK,
+                format = VerificationMaterialFormat.Jwk,
                 value = """
         {
             "kty": "EC",
@@ -251,13 +251,13 @@ public class DIDDocBob
             }
         );
 
-    public static DIDDoc DID_DOC_BOB_SPEC_TEST_VECTORS = new DIDDoc
+    public static DidDoc DID_DOC_BOB_SPEC_TEST_VECTORS = new DidDoc
     {
-        did = "did:example:bob",
-        authentications = new List<string>
+        Did = "did:example:bob",
+        Authentications = new List<string>
         {
         },
-        keyAgreements = new List<string>
+        KeyAgreements = new List<string>
         {
             "did:example:bob#key-x25519-1",
             "did:example:bob#key-x25519-2",
@@ -269,11 +269,11 @@ public class DIDDocBob
             "did:example:bob#key-p521-1",
             "did:example:bob#key-p521-2",
         },
-        didCommServices = new List<DIDCommService>
+        DidCommServices = new List<DidCommService>
         {
             
         },
-        verificationMethods = new List<VerificationMethod>
+        VerificationMethods = new List<VerificationMethod>
         {
             BOB_VERIFICATION_METHOD_KEY_AGREEM_X25519_1,
             BOB_VERIFICATION_METHOD_KEY_AGREEM_X25519_2,
@@ -287,13 +287,13 @@ public class DIDDocBob
         },
     };
 
-    public static DIDDoc DID_DOC_BOB_WITH_NO_SECRETS = new DIDDoc
+    public static DidDoc DID_DOC_BOB_WITH_NO_SECRETS = new DidDoc
     {
-        did =  "did:example:bob",
-        authentications = new List<string>
+        Did =  "did:example:bob",
+        Authentications = new List<string>
         {
         },
-        keyAgreements = new List<string>
+        KeyAgreements = new List<string>
         {
             "did:example:bob#key-x25519-1",
             "did:example:bob#key-x25519-2",
@@ -309,9 +309,9 @@ public class DIDDocBob
             "did:example:bob#key-p521-2",
             "did:example:bob#key-p521-not-secrets-1",
         },
-        didCommServices = new List<DIDCommService>
+        DidCommServices = new List<DidCommService>
         {
-            new DIDCommService
+            new DidCommService
             (
                 id : "did:example:123456789abcdefghi#didcomm-1",
                 serviceEndpoint : "http://example.com/path",
@@ -326,7 +326,7 @@ public class DIDDocBob
                 }
             )
         },
-        verificationMethods = new List<VerificationMethod>
+        VerificationMethods = new List<VerificationMethod>
         {
             BOB_VERIFICATION_METHOD_KEY_AGREEM_X25519_1,
             BOB_VERIFICATION_METHOD_KEY_AGREEM_X25519_2,

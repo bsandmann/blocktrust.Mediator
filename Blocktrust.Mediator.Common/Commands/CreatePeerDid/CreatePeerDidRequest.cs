@@ -12,7 +12,7 @@ public class CreatePeerDidRequest : IRequest<Result<PeerDid>>
     /// <summary>
     /// Request
     /// </summary>
-    public CreatePeerDidRequest(List<string> serviceRoutingKeys, int numberOfAgreementKeys = 1, int numberOfAuthenticationKeys = 1, string? serviceEndpoint = null)
+    public CreatePeerDidRequest(List<string>? serviceRoutingKeys = default, int numberOfAgreementKeys = 1, int numberOfAuthenticationKeys = 1, string? serviceEndpoint = null)
     {
         ServiceEndpoint = serviceEndpoint;
         ServiceRoutingKeys = serviceRoutingKeys;
@@ -32,5 +32,5 @@ public class CreatePeerDidRequest : IRequest<Result<PeerDid>>
 
     public string? ServiceEndpoint { get; } 
 
-    public List<string> ServiceRoutingKeys { get; } = new();
+    public List<string>? ServiceRoutingKeys { get; } = new();
 }

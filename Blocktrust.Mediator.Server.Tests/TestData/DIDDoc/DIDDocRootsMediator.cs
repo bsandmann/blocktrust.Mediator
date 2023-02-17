@@ -13,7 +13,7 @@ public class DIDDocRootsMediator
             type: VerificationMethodType.JSON_WEB_KEY_2020,
             verificationMaterial: new VerificationMaterial
             {
-                format = VerificationMaterialFormat.JWK,
+                format = VerificationMaterialFormat.Jwk,
                 value = """
             {
                 "kty": "OKP",
@@ -24,19 +24,19 @@ public class DIDDocRootsMediator
             }
         );
  
-    public static DIDDoc DID_DOC_ROOTS_SPEC_TEST_VECTORS = new DIDDoc
+    public static DidDoc DID_DOC_ROOTS_SPEC_TEST_VECTORS = new DidDoc
     {
-        did = "did:peer:2.Ez6LSk8oEwmAfG1JyV4oG9JrUuswJobRhx4RkVsc7uaAYirYK.Vz6Mkgm5gQ13JisT9HPh7oQUsTeAHMWZoQzzsYD5oP2Y9rqCs#6LSk8oEwmAfG1JyV4oG9JrUuswJobRhx4RkVsc7uaAYirYK",
-        authentications = new List<string>
+        Did = "did:peer:2.Ez6LSk8oEwmAfG1JyV4oG9JrUuswJobRhx4RkVsc7uaAYirYK.Vz6Mkgm5gQ13JisT9HPh7oQUsTeAHMWZoQzzsYD5oP2Y9rqCs#6LSk8oEwmAfG1JyV4oG9JrUuswJobRhx4RkVsc7uaAYirYK",
+        Authentications = new List<string>
         {
             "did:peer:2.Ez6LSk8oEwmAfG1JyV4oG9JrUuswJobRhx4RkVsc7uaAYirYK.Vz6Mkgm5gQ13JisT9HPh7oQUsTeAHMWZoQzzsYD5oP2Y9rqCs#6LSk8oEwmAfG1JyV4oG9JrUuswJobRhx4RkVsc7uaAYirYK",
            
         },
-        keyAgreements = new List<string>
+        KeyAgreements = new List<string>
         {
             "did:peer:2.Ez6LSk8oEwmAfG1JyV4oG9JrUuswJobRhx4RkVsc7uaAYirYK.Vz6Mkgm5gQ13JisT9HPh7oQUsTeAHMWZoQzzsYD5oP2Y9rqCs#6LSk8oEwmAfG1JyV4oG9JrUuswJobRhx4RkVsc7uaAYirYK",
         },
-        didCommServices = new List<DIDCommService>
+        DidCommServices = new List<DidCommService>
         {
             // new DIDCommService
             // (
@@ -53,7 +53,7 @@ public class DIDDocRootsMediator
             //     }
             // ) 
         },
-        verificationMethods = new List<VerificationMethod>
+        VerificationMethods = new List<VerificationMethod>
         {
             RootsMediator_1,
         },

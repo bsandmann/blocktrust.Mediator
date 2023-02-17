@@ -13,7 +13,7 @@ public class RootsMediatorSecretResolverMock : SecretResolverInMemoryMock
             type: VerificationMethodType.JSON_WEB_KEY_2020,
             verificationMaterial: new VerificationMaterial()
             {
-                format = VerificationMaterialFormat.JWK,
+                format = VerificationMaterialFormat.Jwk,
                 value = """
                         {
                            "kty":"OKP",

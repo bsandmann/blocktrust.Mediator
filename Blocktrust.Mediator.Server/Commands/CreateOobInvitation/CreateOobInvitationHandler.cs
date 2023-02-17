@@ -38,7 +38,7 @@ public class CreateOobInvitationHandler : IRequestHandler<CreateOobInvitationReq
     {
 
 
-        var invitation = OobModel.CreateRequestMediateMessage(createOobInvitationRequest.PeerDid);
+        var invitation = OobModel.BuildRequestMediateMessage(createOobInvitationRequest.PeerDid);
         
         var oob = new OobInvitationEntity()
         {

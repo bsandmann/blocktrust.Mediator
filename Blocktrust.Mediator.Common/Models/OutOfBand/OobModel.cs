@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Blocktrust.Common.Converter;
+using Common.Protocols;
 using PeerDID.Types;
 
 /// <summary>
@@ -55,11 +56,11 @@ public class OobModel
     /// </summary>
     /// <param name="from"></param>
     /// <returns></returns>
-    public static string CreateRequestMediateMessage(PeerDid from)
+    public static string BuildRequestMediateMessage(PeerDid from)
     {
         var msg = new OobModel()
         {
-            Type = "https://didcomm.org/out-of-band/2.0/invitation",
+            Type = ProtocolConstants.OutOfBand2Invitation,
             Id = Guid.NewGuid().ToString(),
             From = from.Value,
             Body = new OobBodyModel()

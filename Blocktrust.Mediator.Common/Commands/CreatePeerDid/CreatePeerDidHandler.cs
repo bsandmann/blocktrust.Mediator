@@ -14,16 +14,6 @@ using MediatR;
 /// </summary>
 public class CreatePeerDidHandler : IRequestHandler<CreatePeerDidRequest, Result<PeerDid>>
 {
-
-
-    /// <summary>
-    /// Constructor
-    /// </summary>
-    /// <param name="context"></param>
-    public CreatePeerDidHandler()
-    {
-    }
-
     /// <summary>
     /// Handler
     /// </summary>

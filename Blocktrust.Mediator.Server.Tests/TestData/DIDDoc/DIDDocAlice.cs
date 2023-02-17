@@ -13,7 +13,7 @@ public class DIDDocAlice
             type: VerificationMethodType.JSON_WEB_KEY_2020,
             verificationMaterial: new VerificationMaterial
             {
-                format = VerificationMaterialFormat.JWK,
+                format = VerificationMaterialFormat.Jwk,
                 value = """
             {
                 "kty": "OKP",
@@ -31,7 +31,7 @@ public class DIDDocAlice
             type: VerificationMethodType.JSON_WEB_KEY_2020,
             verificationMaterial: new VerificationMaterial
             {
-                format = VerificationMaterialFormat.JWK,
+                format = VerificationMaterialFormat.Jwk,
                 value = """
             {
                 "kty": "OKP",
@@ -49,7 +49,7 @@ public class DIDDocAlice
             type: VerificationMethodType.JSON_WEB_KEY_2020,
             verificationMaterial: new VerificationMaterial
             {
-                format = VerificationMaterialFormat.JWK,
+                format = VerificationMaterialFormat.Jwk,
                 value = """
             {
                 "kty": "EC",
@@ -68,7 +68,7 @@ public class DIDDocAlice
             type: VerificationMethodType.JSON_WEB_KEY_2020,
             verificationMaterial: new VerificationMaterial
             {
-                format = VerificationMaterialFormat.JWK,
+                format = VerificationMaterialFormat.Jwk,
                 value = """
             {
                 "kty": "EC",
@@ -87,7 +87,7 @@ public class DIDDocAlice
             type: VerificationMethodType.JSON_WEB_KEY_2020,
             verificationMaterial: new VerificationMaterial
             {
-                format = VerificationMaterialFormat.JWK,
+                format = VerificationMaterialFormat.Jwk,
                 value = """
             {
                 "kty": "OKP",
@@ -105,7 +105,7 @@ public class DIDDocAlice
             type: VerificationMethodType.JSON_WEB_KEY_2020,
             verificationMaterial: new VerificationMaterial
             {
-                format = VerificationMaterialFormat.JWK,
+                format = VerificationMaterialFormat.Jwk,
                 value = """
             {
                 "kty": "OKP",
@@ -123,7 +123,7 @@ public class DIDDocAlice
             type: VerificationMethodType.JSON_WEB_KEY_2020,
             verificationMaterial: new VerificationMaterial
             {
-                format = VerificationMaterialFormat.JWK,
+                format = VerificationMaterialFormat.Jwk,
                 value = """
             {
                 "kty": "EC",
@@ -142,7 +142,7 @@ public class DIDDocAlice
             type: VerificationMethodType.JSON_WEB_KEY_2020,
             verificationMaterial: new VerificationMaterial
             {
-                format = VerificationMaterialFormat.JWK,
+                format = VerificationMaterialFormat.Jwk,
                 value = """
             {
                 "kty": "EC",
@@ -154,25 +154,25 @@ public class DIDDocAlice
             }
         );
 
-    public static DIDDoc DID_DOC_ALICE_SPEC_TEST_VECTORS = new DIDDoc
+    public static DidDoc DID_DOC_ALICE_SPEC_TEST_VECTORS = new DidDoc
     {
-        did = "did:example:alice",
-        authentications = new List<string>
+        Did = "did:example:alice",
+        Authentications = new List<string>
         {
             "did:example:alice#key-1",
             "did:example:alice#key-2",
             "did:example:alice#key-3",
         },
-        keyAgreements = new List<string>
+        KeyAgreements = new List<string>
         {
             "did:example:alice#key-x25519-not-in-secrets-1",
             "did:example:alice#key-x25519-1",
             "did:example:alice#key-p256-1",
             "did:example:alice#key-p521-1",
         },
-        didCommServices = new List<DIDCommService>
+        DidCommServices = new List<DidCommService>
         {
-            new DIDCommService
+            new DidCommService
             (
                 id : "did:example:123456789abcdefghi#didcomm-1",
                 serviceEndpoint : "did:example:mediator1",
@@ -187,7 +187,7 @@ public class DIDDocAlice
                 }
             )
         },
-        verificationMethods = new List<VerificationMethod>
+        VerificationMethods = new List<VerificationMethod>
         {
             ALICE_VERIFICATION_METHOD_KEY_AGREEM_X25519,
             ALICE_VERIFICATION_METHOD_KEY_AGREEM_P256,
@@ -199,28 +199,28 @@ public class DIDDocAlice
         },
     };
 
-    public static DIDDoc DID_DOC_ALICE_WITH_NO_SECRETS = new DIDDoc
+    public static DidDoc DID_DOC_ALICE_WITH_NO_SECRETS = new DidDoc
     {
-        did = "did:example:alice",
-        authentications = new List<string>
+        Did = "did:example:alice",
+        Authentications = new List<string>
         {
             "did:example:alice#key-not-in-secrets-1",
             "did:example:alice#key-1",
             "did:example:alice#key-2",
             "did:example:alice#key-3",
         },
-        keyAgreements = new List<string>
+        KeyAgreements = new List<string>
         {
             "did:example:alice#key-x25519-not-in-secrets-1",
             "did:example:alice#key-x25519-1",
             "did:example:alice#key-p256-1",
             "did:example:alice#key-p521-1",
         },
-        didCommServices = new List<DIDCommService>
+        DidCommServices = new List<DidCommService>
         {
          
         },
-        verificationMethods = new List<VerificationMethod>
+        VerificationMethods = new List<VerificationMethod>
         {
             ALICE_VERIFICATION_METHOD_KEY_AGREEM_X25519_NOT_IN_SECRET,
             ALICE_VERIFICATION_METHOD_KEY_AGREEM_X25519,

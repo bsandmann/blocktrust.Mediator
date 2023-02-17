@@ -8,7 +8,7 @@ public class DIDDocResolverMock : DIDDocResolver
 
     public DIDDocResolverMock()
     {
-        didDocResolver = new DIDDocResolverInMemory(new List<DIDDoc>()
+        didDocResolver = new DIDDocResolverInMemory(new List<DidDoc>()
         {
             DIDDocAlice.DID_DOC_ALICE_SPEC_TEST_VECTORS,
             DIDDocBob.DID_DOC_BOB_SPEC_TEST_VECTORS,
@@ -16,7 +16,7 @@ public class DIDDocResolverMock : DIDDocResolver
         });
     }
 
-    public DIDDoc? resolve(String did)
+    public DidDoc? resolve(String did)
     {
         return didDocResolver.resolve(did);
     }
