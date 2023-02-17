@@ -22,6 +22,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blocktrust.Mediator.Common.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{961A2656-2D20-440D-9C06-31C243BC312B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blocktrust.Common", "..\blocktrust.Core\Blocktrust.Common\Blocktrust.Common.csproj", "{D471311B-0650-4B6B-BE32-D74B1E6E329D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -68,6 +70,10 @@ Global
 		{C15E51DE-6202-4C6A-8C6E-143030990C5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C15E51DE-6202-4C6A-8C6E-143030990C5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C15E51DE-6202-4C6A-8C6E-143030990C5E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D471311B-0650-4B6B-BE32-D74B1E6E329D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D471311B-0650-4B6B-BE32-D74B1E6E329D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D471311B-0650-4B6B-BE32-D74B1E6E329D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D471311B-0650-4B6B-BE32-D74B1E6E329D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{7F3540E1-E5FF-4FAC-B26E-77DDBE068279} = {961A2656-2D20-440D-9C06-31C243BC312B}
