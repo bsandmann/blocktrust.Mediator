@@ -10,7 +10,7 @@ public class DIDDocBob
         new VerificationMethod(
             id:  "did:example:bob#key-x25519-1",
             controller: "did:example:bob#key-x25519-1",
-            type: VerificationMethodType.JSON_WEB_KEY_2020,
+            type: VerificationMethodType.JsonWebKey2020,
             verificationMaterial: new VerificationMaterial
             {
                 format = VerificationMaterialFormat.Jwk,
@@ -29,7 +29,7 @@ public class DIDDocBob
         new VerificationMethod(
             id:  "did:example:bob#key-x25519-2",
             controller: "did:example:bob#key-x25519-2",
-            type: VerificationMethodType.JSON_WEB_KEY_2020,
+            type: VerificationMethodType.JsonWebKey2020,
             verificationMaterial: new VerificationMaterial
             {
                 format = VerificationMaterialFormat.Jwk,
@@ -48,7 +48,7 @@ public class DIDDocBob
         new VerificationMethod(
             id:   "did:example:bob#key-x25519-3",
             controller: "did:example:bob#key-x25519-3",
-            type: VerificationMethodType.JSON_WEB_KEY_2020,
+            type: VerificationMethodType.JsonWebKey2020,
             verificationMaterial: new VerificationMaterial
             {
                 format = VerificationMaterialFormat.Jwk,
@@ -66,7 +66,7 @@ public class DIDDocBob
         new VerificationMethod(
             id:  "did:example:bob#key-x25519-not-secrets-1",
             controller: "did:example:bob#key-x25519-not-secrets-1",
-            type: VerificationMethodType.JSON_WEB_KEY_2020,
+            type: VerificationMethodType.JsonWebKey2020,
             verificationMaterial: new VerificationMaterial
             {
                 format = VerificationMaterialFormat.Jwk,
@@ -84,7 +84,7 @@ public class DIDDocBob
         new VerificationMethod(
             id: "did:example:bob#key-p256-1",
             controller:  "did:example:bob#key-p256-1",
-            type: VerificationMethodType.JSON_WEB_KEY_2020,
+            type: VerificationMethodType.JsonWebKey2020,
             verificationMaterial: new VerificationMaterial
             {
                 format = VerificationMaterialFormat.Jwk,
@@ -103,7 +103,7 @@ public class DIDDocBob
         new VerificationMethod(
             id:   "did:example:bob#key-p256-2",
             controller: "did:example:bob#key-p256-2",
-            type: VerificationMethodType.JSON_WEB_KEY_2020,
+            type: VerificationMethodType.JsonWebKey2020,
             verificationMaterial: new VerificationMaterial
             {
                 format = VerificationMaterialFormat.Jwk,
@@ -122,7 +122,7 @@ public class DIDDocBob
         new VerificationMethod(
             id:   "did:example:bob#key-p256-not-secrets-1",
             controller: "did:example:bob#key-p256-not-secrets-1",
-            type: VerificationMethodType.JSON_WEB_KEY_2020,
+            type: VerificationMethodType.JsonWebKey2020,
             verificationMaterial: new VerificationMaterial
             {
                 format = VerificationMaterialFormat.Jwk,
@@ -141,7 +141,7 @@ public class DIDDocBob
         new VerificationMethod(
             id:  "did:example:bob#key-p384-1",
             controller:  "did:example:bob#key-p384-1",
-            type: VerificationMethodType.JSON_WEB_KEY_2020,
+            type: VerificationMethodType.JsonWebKey2020,
             verificationMaterial: new VerificationMaterial
             {
                 format = VerificationMaterialFormat.Jwk,
@@ -160,7 +160,7 @@ public class DIDDocBob
         new VerificationMethod(
             id:  "did:example:bob#key-p384-2",
             controller: "did:example:bob#key-p384-2",
-            type: VerificationMethodType.JSON_WEB_KEY_2020,
+            type: VerificationMethodType.JsonWebKey2020,
             verificationMaterial: new VerificationMaterial
             {
                 format = VerificationMaterialFormat.Jwk,
@@ -179,7 +179,7 @@ public class DIDDocBob
         new VerificationMethod(
             id:   "did:example:bob#key-p384-not-secrets-1",
             controller:"did:example:bob#key-p384-not-secrets-1",
-            type: VerificationMethodType.JSON_WEB_KEY_2020,
+            type: VerificationMethodType.JsonWebKey2020,
             verificationMaterial: new VerificationMaterial
             {
                 format = VerificationMaterialFormat.Jwk,
@@ -198,7 +198,7 @@ public class DIDDocBob
         new VerificationMethod(
             id: "did:example:bob#key-p521-1",
             controller: "did:example:bob#key-p521-1",
-            type: VerificationMethodType.JSON_WEB_KEY_2020,
+            type: VerificationMethodType.JsonWebKey2020,
             verificationMaterial: new VerificationMaterial
             {
                 format = VerificationMaterialFormat.Jwk,
@@ -217,7 +217,7 @@ public class DIDDocBob
         new VerificationMethod(
             id:  "did:example:bob#key-p521-2",
             controller: "did:example:bob#key-p521-2",
-            type: VerificationMethodType.JSON_WEB_KEY_2020,
+            type: VerificationMethodType.JsonWebKey2020,
             verificationMaterial: new VerificationMaterial
             {
                 format = VerificationMaterialFormat.Jwk,
@@ -236,7 +236,7 @@ public class DIDDocBob
         new VerificationMethod(
             id: "did:example:bob#key-p521-not-secrets-1",
             controller: "did:example:bob#key-p521-not-secrets-1",
-            type: VerificationMethodType.JSON_WEB_KEY_2020,
+            type: VerificationMethodType.JsonWebKey2020,
             verificationMaterial: new VerificationMaterial
             {
                 format = VerificationMaterialFormat.Jwk,

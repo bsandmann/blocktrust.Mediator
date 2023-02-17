@@ -34,7 +34,7 @@ public class CreatePeerDidHandler : IRequestHandler<CreatePeerDidRequest, Result
                 new VerificationMaterialAgreement(
                     format: VerificationMaterialFormatPeerDid.Jwk,
                     type: VerificationMethodTypeAgreement.JsonWebKey2020,
-                    value: keypair.publicKey)
+                    value: keypair.PublicKey)
             );
         }
 
@@ -49,7 +49,7 @@ public class CreatePeerDidHandler : IRequestHandler<CreatePeerDidRequest, Result
                 new VerificationMaterialAuthentication(
                     format: VerificationMaterialFormatPeerDid.Jwk,
                     type: VerificationMethodTypeAuthentication.JsonWebKey2020,
-                    value: keypair.publicKey)
+                    value: keypair.PublicKey)
             );
         }
 

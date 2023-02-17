@@ -10,7 +10,7 @@ public class RootsMediatorSecretResolverMock : SecretResolverInMemoryMock
       
         new Secret(
             kid: "did:peer:2.Ez6LSk8oEwmAfG1JyV4oG9JrUuswJobRhx4RkVsc7uaAYirYK",
-            type: VerificationMethodType.JSON_WEB_KEY_2020,
+            type: VerificationMethodType.JsonWebKey2020,
             verificationMaterial: new VerificationMaterial()
             {
                 format = VerificationMaterialFormat.Jwk,
@@ -35,7 +35,7 @@ public class RootsMediatorSecretResolverMock : SecretResolverInMemoryMock
 
     public List<String> GetSecretKids()
     {
-        return secrets.Select(secret => secret.kid).ToList();
+        return secrets.Select(secret => secret.Kid).ToList();
     }
 
     public Secret? findKey(String kid)
@@ -43,8 +43,8 @@ public class RootsMediatorSecretResolverMock : SecretResolverInMemoryMock
         return _secretResolverInMemory.findKey(kid);
     }
 
-    public HashSet<String> findKeys(List<String> kids)
+    public HashSet<String> FindKeys(List<String> kids)
     {
-        return _secretResolverInMemory.findKeys(kids);
+        return _secretResolverInMemory.FindKeys(kids);
     }
 }

@@ -9,7 +9,7 @@ public class BobSecretResolverMock : SecretResolverInMemoryMock
     {
         new Secret(
             kid: "did:example:bob#key-x25519-1",
-            type: VerificationMethodType.JSON_WEB_KEY_2020,
+            type: VerificationMethodType.JsonWebKey2020,
             verificationMaterial: new VerificationMaterial()
             {
                 format = VerificationMaterialFormat.Jwk,
@@ -25,7 +25,7 @@ public class BobSecretResolverMock : SecretResolverInMemoryMock
         ),
         new Secret(
             kid:"did:example:bob#key-x25519-2",
-            type: VerificationMethodType.JSON_WEB_KEY_2020,
+            type: VerificationMethodType.JsonWebKey2020,
             verificationMaterial: new VerificationMaterial()
             {
                 format = VerificationMaterialFormat.Jwk,
@@ -41,7 +41,7 @@ public class BobSecretResolverMock : SecretResolverInMemoryMock
         ),
         new Secret(
             kid: "did:example:bob#key-x25519-3",
-            type: VerificationMethodType.JSON_WEB_KEY_2020,
+            type: VerificationMethodType.JsonWebKey2020,
             verificationMaterial: new VerificationMaterial()
             {
                 format = VerificationMaterialFormat.Jwk,
@@ -57,7 +57,7 @@ public class BobSecretResolverMock : SecretResolverInMemoryMock
         ),
         new Secret(
             kid: "did:example:bob#key-p256-1",
-            type: VerificationMethodType.JSON_WEB_KEY_2020,
+            type: VerificationMethodType.JsonWebKey2020,
             verificationMaterial: new VerificationMaterial()
             {
                 format = VerificationMaterialFormat.Jwk,
@@ -74,7 +74,7 @@ public class BobSecretResolverMock : SecretResolverInMemoryMock
         ),
         new Secret(
             kid: "did:example:bob#key-p256-2",
-            type: VerificationMethodType.JSON_WEB_KEY_2020,
+            type: VerificationMethodType.JsonWebKey2020,
             verificationMaterial: new VerificationMaterial()
             {
                 format = VerificationMaterialFormat.Jwk,
@@ -91,7 +91,7 @@ public class BobSecretResolverMock : SecretResolverInMemoryMock
         ),
         new Secret(
             kid: "did:example:bob#key-p384-1",
-            type: VerificationMethodType.JSON_WEB_KEY_2020,
+            type: VerificationMethodType.JsonWebKey2020,
             verificationMaterial: new VerificationMaterial()
             {
                 format = VerificationMaterialFormat.Jwk,
@@ -108,7 +108,7 @@ public class BobSecretResolverMock : SecretResolverInMemoryMock
         ),
         new Secret(
             kid:"did:example:bob#key-p384-2",
-            type: VerificationMethodType.JSON_WEB_KEY_2020,
+            type: VerificationMethodType.JsonWebKey2020,
             verificationMaterial: new VerificationMaterial()
             {
                 format = VerificationMaterialFormat.Jwk,
@@ -125,7 +125,7 @@ public class BobSecretResolverMock : SecretResolverInMemoryMock
         ),
         new Secret(
             kid: "did:example:bob#key-p521-1",
-            type: VerificationMethodType.JSON_WEB_KEY_2020,
+            type: VerificationMethodType.JsonWebKey2020,
             verificationMaterial: new VerificationMaterial()
             {
                 format = VerificationMaterialFormat.Jwk,
@@ -142,7 +142,7 @@ public class BobSecretResolverMock : SecretResolverInMemoryMock
         ),
         new Secret(
             kid: "did:example:bob#key-p521-2",
-            type: VerificationMethodType.JSON_WEB_KEY_2020,
+            type: VerificationMethodType.JsonWebKey2020,
             verificationMaterial: new VerificationMaterial()
             {
                 format = VerificationMaterialFormat.Jwk,
@@ -171,7 +171,7 @@ public class BobSecretResolverMock : SecretResolverInMemoryMock
 
     public List<String> GetSecretKids()
     {
-        return secrets.Select(secret => secret.kid).ToList();
+        return secrets.Select(secret => secret.Kid).ToList();
     }
 
     public Secret? findKey(String kid)
@@ -179,8 +179,8 @@ public class BobSecretResolverMock : SecretResolverInMemoryMock
         return _secretResolverInMemory.findKey(kid);
     }
 
-    public HashSet<String> findKeys(List<String> kids)
+    public HashSet<String> FindKeys(List<String> kids)
     {
-        return _secretResolverInMemory.findKeys(kids);
+        return _secretResolverInMemory.FindKeys(kids);
     }
 }

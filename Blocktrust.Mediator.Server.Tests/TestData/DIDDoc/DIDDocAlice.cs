@@ -10,7 +10,7 @@ public class DIDDocAlice
         new VerificationMethod(
             id: "did:example:alice#key-x25519-not-in-secrets-1",
             controller: "did:example:alice#key-x25519-not-in-secrets-1",
-            type: VerificationMethodType.JSON_WEB_KEY_2020,
+            type: VerificationMethodType.JsonWebKey2020,
             verificationMaterial: new VerificationMaterial
             {
                 format = VerificationMaterialFormat.Jwk,
@@ -28,7 +28,7 @@ public class DIDDocAlice
         new VerificationMethod(
             id: "did:example:alice#key-x25519-1",
             controller: "did:example:alice#key-x25519-1",
-            type: VerificationMethodType.JSON_WEB_KEY_2020,
+            type: VerificationMethodType.JsonWebKey2020,
             verificationMaterial: new VerificationMaterial
             {
                 format = VerificationMaterialFormat.Jwk,
@@ -46,7 +46,7 @@ public class DIDDocAlice
         new VerificationMethod(
             id: "did:example:alice#key-p256-1",
             controller:"did:example:alice#key-p256-1",
-            type: VerificationMethodType.JSON_WEB_KEY_2020,
+            type: VerificationMethodType.JsonWebKey2020,
             verificationMaterial: new VerificationMaterial
             {
                 format = VerificationMaterialFormat.Jwk,
@@ -65,7 +65,7 @@ public class DIDDocAlice
         new VerificationMethod(
             id:"did:example:alice#key-p521-1",
             controller:"did:example:alice#key-p521-1",
-            type: VerificationMethodType.JSON_WEB_KEY_2020,
+            type: VerificationMethodType.JsonWebKey2020,
             verificationMaterial: new VerificationMaterial
             {
                 format = VerificationMaterialFormat.Jwk,
@@ -84,7 +84,7 @@ public class DIDDocAlice
         new VerificationMethod(
             id:"did:example:alice#key-not-in-secrets-1",
             controller:"did:example:alice#key-not-in-secrets-1",
-            type: VerificationMethodType.JSON_WEB_KEY_2020,
+            type: VerificationMethodType.JsonWebKey2020,
             verificationMaterial: new VerificationMaterial
             {
                 format = VerificationMaterialFormat.Jwk,
@@ -102,7 +102,7 @@ public class DIDDocAlice
         new VerificationMethod(
             id:"did:example:alice#key-1",
             controller: "did:example:alice#key-1",
-            type: VerificationMethodType.JSON_WEB_KEY_2020,
+            type: VerificationMethodType.JsonWebKey2020,
             verificationMaterial: new VerificationMaterial
             {
                 format = VerificationMaterialFormat.Jwk,
@@ -120,7 +120,7 @@ public class DIDDocAlice
         new VerificationMethod(
             id:"did:example:alice#key-2",
             controller:"did:example:alice#key-2",
-            type: VerificationMethodType.JSON_WEB_KEY_2020,
+            type: VerificationMethodType.JsonWebKey2020,
             verificationMaterial: new VerificationMaterial
             {
                 format = VerificationMaterialFormat.Jwk,
@@ -139,7 +139,7 @@ public class DIDDocAlice
         new VerificationMethod(
             id:"did:example:alice#key-3",
             controller:"did:example:alice#key-3",
-            type: VerificationMethodType.JSON_WEB_KEY_2020,
+            type: VerificationMethodType.JsonWebKey2020,
             verificationMaterial: new VerificationMaterial
             {
                 format = VerificationMaterialFormat.Jwk,

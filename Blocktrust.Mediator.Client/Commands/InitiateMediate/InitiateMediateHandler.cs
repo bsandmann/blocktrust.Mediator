@@ -74,19 +74,19 @@ public class InitiateMediateHandler : IRequestHandler<InitiateMediateRequest, Re
         //TODO create the secret resolver
 
 
-        var didDocResolver = new DIDDocResolverInMemory(new Dictionary<string, DidDoc>() { { peerDid.Value.Value, didCommDidDoc } });
+        var didDocResolver = new DidDocResolverInMemory(new Dictionary<string, DidDoc>() { { peerDid.Value.Value, didCommDidDoc } });
         var secretResolver = new SecretResolverInMemory(new Dictionary<string, Secret>()
         {
             {
                 "abc", new Secret(
                     kid: "",
-                    type: VerificationMethodType.JSON_WEB_KEY_2020,
+                    type: VerificationMethodType.JsonWebKey2020,
                     verificationMaterial: new VerificationMaterial()
                 )
             }
         });
 
-        var didComm = new DIDComm(didDocResolver, secretResolver);
+        var didComm = new DidComm(didDocResolver, secretResolver);
 
         // We pack the message and encrypt it for the mediator
         var packResult = didComm.PackEncrypted(
