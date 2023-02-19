@@ -6,7 +6,9 @@ using System.Text.Json.Nodes;
 using Blocktrust.Common.Converter;
 using Blocktrust.Common.Models.DidDoc;
 using Blocktrust.Common.Models.Secrets;
+using Common;
 using Common.Commands.CreatePeerDid;
+using Common.Models.OutOfBand;
 using Common.Protocols;
 using DIDComm_v2;
 using DIDComm_v2.Common.Types;
@@ -21,7 +23,6 @@ using MediatR;
 using PeerDID.DIDDoc;
 using PeerDID.PeerDIDCreateResolve;
 using PeerDID.Types;
-using Server.Models;
 
 public class InitiateMediateHandler : IRequestHandler<InitiateMediateRequest, Result>
 {
@@ -71,7 +72,7 @@ public class InitiateMediateHandler : IRequestHandler<InitiateMediateRequest, Re
 
 
         // We need to fill the DIDDoc resolver with the peerDID of the mediator
-        var didDocResolver = new DidDocResolverInMemory(new Dictionary<string, DidDoc>());
+        var didDocResolver = new SimpleDidDocResolver(new Dictionary<string, DidDoc>());
         var invitationPeerDidString = PeerDidResolver.ResolvePeerDid(new PeerDid(remoteDid.From), VerificationMaterialFormatPeerDid.Jwk);
         var invitationPeerDidDoc = DidDocPeerDid.FromJson(invitationPeerDidString);
         var combinedVerificationMethodsOfInvitation = invitationPeerDidDoc.Authentications.Concat(invitationPeerDidDoc.KeyAgreements);

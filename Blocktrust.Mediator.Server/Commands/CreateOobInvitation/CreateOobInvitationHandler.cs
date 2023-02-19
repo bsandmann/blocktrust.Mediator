@@ -2,10 +2,10 @@
 
 using System.Text.Json;
 using Server;
-using Server.Commands.CreatePeerDid;
 using Blocktrust.PeerDID.DIDDoc;
 using Blocktrust.PeerDID.PeerDIDCreateResolve;
 using Blocktrust.PeerDID.Types;
+using Common.Models.OutOfBand;
 using Entities;
 using FluentResults;
 using MediatR;

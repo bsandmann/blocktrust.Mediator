@@ -1,15 +1,16 @@
 ﻿namespace Blocktrust.Mediator.Server.Tests.TestData.DIDDoc;
 
 using Blocktrust.Common.Models.DidDoc;
+using Blocktrust.Common.Resolver;
 using DIDComm_v2.DidDocs;
 
-public class DIDDocResolverMock : DIDDocResolver
+public class DidDocResolverMock : IDidDocResolver
 {
-    private DidDocResolverInMemory didDocResolver;
+    private DidDocResolverInMemory _didDocResolver;
 
-    public DIDDocResolverMock()
+    public DidDocResolverMock()
     {
-        didDocResolver = new DidDocResolverInMemory(new List<DidDoc>()
+        _didDocResolver = new DidDocResolverInMemory(new List<DidDoc>()
         {
             DIDDocAlice.DID_DOC_ALICE_SPEC_TEST_VECTORS,
             DIDDocBob.DID_DOC_BOB_SPEC_TEST_VECTORS,
@@ -19,6 +20,6 @@ public class DIDDocResolverMock : DIDDocResolver
 
     public DidDoc? Resolve(String did)
     {
-        return didDocResolver.Resolve(did);
+        return _didDocResolver.Resolve(did);
     }
 }

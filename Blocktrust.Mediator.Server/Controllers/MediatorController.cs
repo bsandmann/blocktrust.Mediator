@@ -1,7 +1,6 @@
 ﻿namespace Blocktrust.Mediator.Server.Controllers;
 
 using Commands.CreateOobInvitation;
-using Commands.CreatePeerDid;
 using Commands.GetOobInvitation;
 using Common.Commands.CreatePeerDid;
 using MediatR;

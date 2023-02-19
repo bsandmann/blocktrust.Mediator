@@ -1,13 +1,11 @@
-﻿namespace Blocktrust.Mediator.Server.Commands.CreatePeerDid;
+﻿namespace Blocktrust.Mediator.Common.Commands.CreatePeerDid;
 
 using System.Text.Json;
 using Blocktrust.Common.Models.DidDoc;
 using Blocktrust.Common.Models.Secrets;
-using Server;
 using Blocktrust.PeerDID.DIDDoc;
 using Blocktrust.PeerDID.PeerDIDCreateResolve;
 using Blocktrust.PeerDID.Types;
-using Common.Commands.CreatePeerDid;
 using DIDComm_v2.Secrets;
 using FluentResults;
 using MediatR;

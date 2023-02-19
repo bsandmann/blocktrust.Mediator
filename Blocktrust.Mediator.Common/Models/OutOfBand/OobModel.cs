@@ -1,11 +1,11 @@
-﻿namespace Blocktrust.Mediator.Server.Models;
+﻿namespace Blocktrust.Mediator.Common.Models.OutOfBand;
 
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Blocktrust.Common.Converter;
-using Common.Protocols;
-using PeerDID.Types;
+using Blocktrust.Mediator.Common.Protocols;
+using Blocktrust.PeerDID.Types;
 
 /// <summary>
 /// Model for Out of band invitation: See https://identity.foundation/didcomm-messaging/spec/#out-of-band-messages

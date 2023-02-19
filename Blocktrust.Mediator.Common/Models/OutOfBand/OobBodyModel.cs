@@ -1,4 +1,4 @@
-﻿namespace Blocktrust.Mediator.Server.Models;
+﻿namespace Blocktrust.Mediator.Common.Models.OutOfBand;
 
 using System.Text.Json.Serialization;
 

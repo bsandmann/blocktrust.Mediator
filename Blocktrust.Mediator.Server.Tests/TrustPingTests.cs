@@ -14,6 +14,7 @@ using Moq;
 using Protocols.TrustPing.Models;
 using TestData.DIDDoc;
 using TestData.Secrets;
+using DidDocResolverMock = DIDComm.Tests.TestData.Mock.DidDocResolverMock;
 
 // using FluentResults;
 
@@ -44,7 +45,7 @@ public class TrustPingTests
         var trustPingMessage = new TrustPingRequest(from: "abc", true);
         var json = trustPingMessage.Serialize();
 
-        var didComm = new DidComm(new DIDDocResolverMock(), new RootsMediatorSecretResolverMock());
+        var didComm = new DidComm(new DidDocResolverMock(), new RootsMediatorSecretResolverMock());
         var message = Message.Builder(
                 id: "1234567890",
                 body: new Dictionary<string, object> { { "response_requested", true } },
