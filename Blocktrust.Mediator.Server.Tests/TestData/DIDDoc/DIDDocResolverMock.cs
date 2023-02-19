@@ -1,5 +1,6 @@
 ﻿namespace Blocktrust.Mediator.Server.Tests.TestData.DIDDoc;
 
+using Blocktrust.Common.Models.DidDoc;
 using DIDComm_v2.DidDocs;
 
 public class DIDDocResolverMock : DIDDocResolver

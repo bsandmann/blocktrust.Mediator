@@ -1,7 +1,6 @@
 ﻿namespace Blocktrust.Mediator.Common;
 
-using DIDComm_v2.Common.Types;
-using DIDComm_v2.DidDocs;
+using Blocktrust.Common.Models.DidDoc;
 using PeerDID.DIDDoc;
 
 public class ConvertDidDocPeerToDidDoc

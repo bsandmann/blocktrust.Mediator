@@ -44,8 +44,8 @@ public class MediatorController : ControllerBase
         var invitation = string.Empty;
         if (existingInvitationResult.IsFailed)
         {
-            var peerDid = await _mediator.Send(new CreatePeerDidRequest(numberOfAgreementKeys: 1, numberOfAuthenticationKeys: 1, serviceEndpoint: hostUrl, serviceRoutingKeys: new List<string>()));
-            var result = await _mediator.Send(new CreateOobInvitationRequest(hostUrl, peerDid.Value));
+            var peerDidResponse = await _mediator.Send(new CreatePeerDidRequest(numberOfAgreementKeys: 1, numberOfAuthenticationKeys: 1, serviceEndpoint: hostUrl, serviceRoutingKeys: new List<string>()));
+            var result = await _mediator.Send(new CreateOobInvitationRequest(hostUrl, peerDidResponse.Value.PeerDid));
             invitation = result.Value.Invitation;
         }
         else

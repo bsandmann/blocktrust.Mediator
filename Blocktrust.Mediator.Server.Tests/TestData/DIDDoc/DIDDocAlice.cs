@@ -1,5 +1,6 @@
 ﻿namespace Blocktrust.Mediator.Server.Tests.TestData.DIDDoc;
 
+using Blocktrust.Common.Models.DidDoc;
 using DIDComm_v2.Common.Types;
 using DIDComm_v2.DidDocs;
 using DIDComm_v2.ProtocolsRouting.Routing;
@@ -170,9 +171,9 @@ public class DIDDocAlice
             "did:example:alice#key-p256-1",
             "did:example:alice#key-p521-1",
         },
-        DidCommServices = new List<DidCommService>
+        Services = new List<Service>
         {
-            new DidCommService
+            new Service
             (
                 id : "did:example:123456789abcdefghi#didcomm-1",
                 serviceEndpoint : "did:example:mediator1",
@@ -216,7 +217,7 @@ public class DIDDocAlice
             "did:example:alice#key-p256-1",
             "did:example:alice#key-p521-1",
         },
-        DidCommServices = new List<DidCommService>
+        Services = new List<Service>
         {
          
         },

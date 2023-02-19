@@ -7,7 +7,7 @@ using PeerDID.Types;
 /// <summary>
 /// Request
 /// </summary>
-public class CreatePeerDidRequest : IRequest<Result<PeerDid>>
+public class CreatePeerDidRequest : IRequest<Result<CreatePeerDidResponse>>
 {
     /// <summary>
     /// Request

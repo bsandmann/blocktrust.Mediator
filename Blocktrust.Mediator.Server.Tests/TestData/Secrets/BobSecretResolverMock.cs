@@ -1,5 +1,7 @@
 ﻿namespace Blocktrust.Mediator.Server.Tests.TestData.Secrets;
 
+using Blocktrust.Common.Models.DidDoc;
+using Blocktrust.Common.Models.Secrets;
 using DIDComm_v2.Common.Types;
 using DIDComm_v2.Secrets;
 
@@ -174,9 +176,9 @@ public class BobSecretResolverMock : SecretResolverInMemoryMock
         return secrets.Select(secret => secret.Kid).ToList();
     }
 
-    public Secret? findKey(String kid)
+    public Secret? FindKey(String kid)
     {
-        return _secretResolverInMemory.findKey(kid);
+        return _secretResolverInMemory.FindKey(kid);
     }
 
     public HashSet<String> FindKeys(List<String> kids)

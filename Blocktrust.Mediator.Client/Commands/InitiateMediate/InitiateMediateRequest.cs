@@ -3,7 +3,7 @@
 using FluentResults;
 using MediatR;
 
-public class InitiateMediateRequest : IRequest<Result<string>>
+public class InitiateMediateRequest : IRequest<Result>
 {
     public string OobInvitation { get; }
 
