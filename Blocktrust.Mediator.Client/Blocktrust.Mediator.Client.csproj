@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\blocktrust.DIDComm\Blocktrust.DIDComm\Blocktrust.DIDComm.csproj" />
       <ProjectReference Include="..\Blocktrust.Mediator.Common\Blocktrust.Mediator.Common.csproj" />
     </ItemGroup>
 

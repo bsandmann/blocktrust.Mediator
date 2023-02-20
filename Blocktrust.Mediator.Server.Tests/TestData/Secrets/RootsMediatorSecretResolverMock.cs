@@ -2,8 +2,7 @@
 
 using Blocktrust.Common.Models.DidDoc;
 using Blocktrust.Common.Models.Secrets;
-using DIDComm_v2.Common.Types;
-using DIDComm_v2.Secrets;
+using DIDComm.Secrets;
 
 public class RootsMediatorSecretResolverMock : SecretResolverInMemoryMock
 {

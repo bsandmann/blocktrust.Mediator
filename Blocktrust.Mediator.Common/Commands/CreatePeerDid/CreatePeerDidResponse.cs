@@ -1,7 +1,6 @@
 ﻿namespace Blocktrust.Mediator.Common.Commands.CreatePeerDid;
 
 using Blocktrust.Common.Models.Secrets;
-using DIDComm_v2.Secrets;
 using PeerDID.DIDDoc;
 using PeerDID.Types;
 

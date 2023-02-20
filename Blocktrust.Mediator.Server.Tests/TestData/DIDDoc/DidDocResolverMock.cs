@@ -2,7 +2,7 @@
 
 using Blocktrust.Common.Models.DidDoc;
 using Blocktrust.Common.Resolver;
-using DIDComm_v2.DidDocs;
+using DIDComm.DidDocs;
 
 public class DidDocResolverMock : IDidDocResolver
 {

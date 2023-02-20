@@ -4,10 +4,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blocktrust.Mediator.Server"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blocktrust.Mediator.Server.Tests", "Blocktrust.Mediator.Server.Tests\Blocktrust.Mediator.Server.Tests.csproj", "{D9970E8D-D78C-448D-A17B-15361886EFB5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DIDComm", "..\blocktrust.DIDComm_v2_dotnet\DIDComm\DIDComm.csproj", "{31E0F07A-2BA7-4F04-B838-6BA915992223}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DIDComm.Tests", "..\blocktrust.DIDComm_v2_dotnet\DIDComm.Tests\DIDComm.Tests.csproj", "{8156CE31-A318-42DA-BA2F-C30B49A1F942}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blocktrust.PeerDID", "..\blocktrust.PeerDID\Blocktrust.PeerDID\Blocktrust.PeerDID.csproj", "{92294E67-4DA4-41F8-9FE8-E319D48F25ED}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blocktrust.PeerDID.Tests", "..\blocktrust.PeerDID\Blocktrust.PeerDID.Tests\Blocktrust.PeerDID.Tests.csproj", "{373512F1-126B-4267-81BD-8319BA5EB32F}"
@@ -23,6 +19,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{961A2656-2D20-440D-9C06-31C243BC312B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blocktrust.Common", "..\blocktrust.Core\Blocktrust.Common\Blocktrust.Common.csproj", "{D471311B-0650-4B6B-BE32-D74B1E6E329D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blocktrust.DIDComm", "..\blocktrust.DIDComm\Blocktrust.DIDComm\Blocktrust.DIDComm.csproj", "{6F9BF0DC-A42A-447F-9580-C9E3C43F54FD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blocktrust.DIDComm.Tests", "..\blocktrust.DIDComm\Blocktrust.DIDComm.Tests\Blocktrust.DIDComm.Tests.csproj", "{26A37A1D-19C2-485C-8763-63932C2A73B2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -74,6 +74,14 @@ Global
 		{D471311B-0650-4B6B-BE32-D74B1E6E329D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D471311B-0650-4B6B-BE32-D74B1E6E329D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D471311B-0650-4B6B-BE32-D74B1E6E329D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F9BF0DC-A42A-447F-9580-C9E3C43F54FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F9BF0DC-A42A-447F-9580-C9E3C43F54FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F9BF0DC-A42A-447F-9580-C9E3C43F54FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F9BF0DC-A42A-447F-9580-C9E3C43F54FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26A37A1D-19C2-485C-8763-63932C2A73B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26A37A1D-19C2-485C-8763-63932C2A73B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26A37A1D-19C2-485C-8763-63932C2A73B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26A37A1D-19C2-485C-8763-63932C2A73B2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{7F3540E1-E5FF-4FAC-B26E-77DDBE068279} = {961A2656-2D20-440D-9C06-31C243BC312B}

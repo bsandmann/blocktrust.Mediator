@@ -23,6 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\blocktrust.DIDComm\Blocktrust.DIDComm\Blocktrust.DIDComm.csproj" />
       <ProjectReference Include="..\..\blocktrust.DIDComm_v2_dotnet\DIDComm\DIDComm.csproj" />
       <ProjectReference Include="..\..\blocktrust.PeerDID\Blocktrust.PeerDID\Blocktrust.PeerDID.csproj" />
     </ItemGroup>

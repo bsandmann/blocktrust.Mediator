@@ -1,9 +1,7 @@
 ﻿namespace Blocktrust.Mediator.Server.Tests.TestData.DIDDoc;
 
 using Blocktrust.Common.Models.DidDoc;
-using DIDComm_v2.Common.Types;
-using DIDComm_v2.DidDocs;
-using DIDComm_v2.ProtocolsRouting.Routing;
+using DIDComm.ProtocolsRouting.Routing;
 
 public class DIDDocBob
 {

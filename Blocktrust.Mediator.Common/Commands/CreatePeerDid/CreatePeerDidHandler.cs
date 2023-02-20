@@ -6,7 +6,7 @@ using Blocktrust.Common.Models.Secrets;
 using Blocktrust.PeerDID.DIDDoc;
 using Blocktrust.PeerDID.PeerDIDCreateResolve;
 using Blocktrust.PeerDID.Types;
-using DIDComm_v2.Secrets;
+using DIDComm.Secrets;
 using FluentResults;
 using MediatR;
 

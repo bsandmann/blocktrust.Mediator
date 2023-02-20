@@ -1,10 +1,9 @@
 ﻿namespace Blocktrust.Mediator.Server.Tests;
 
 using Controllers;
-using DIDComm_v2;
-using DIDComm_v2.Message.Messages;
-using DIDComm_v2.Model.PackEncryptedParamsModels;
-using DIDComm_v2.Model.PackPlaintextParamsModels;
+using DIDComm;
+using DIDComm.Message.Messages;
+using DIDComm.Model.PackEncryptedParamsModels;
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -14,7 +13,6 @@ using Moq;
 using Protocols.TrustPing.Models;
 using TestData.DIDDoc;
 using TestData.Secrets;
-using DidDocResolverMock = DIDComm.Tests.TestData.Mock.DidDocResolverMock;
 
 // using FluentResults;
 
