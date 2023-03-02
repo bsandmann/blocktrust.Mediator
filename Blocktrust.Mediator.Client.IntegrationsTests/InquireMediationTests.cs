@@ -19,11 +19,11 @@ public class InquireMediationTests
     public InquireMediationTests()
     {
         _mediatorMock = new Mock<IMediator>();
-        _createPeerDidHandler = new CreatePeerDidHandler();
+        // _createPeerDidHandler = new CreatePeerDidHandler();
         _httpMessageHandlerMock = new Mock<HttpMessageHandler>(MockBehavior.Strict);
 
-        _mediatorMock.Setup(p => p.Send(It.IsAny<CreatePeerDidRequest>(), It.IsAny<CancellationToken>()))
-            .Returns(async (CreatePeerDidRequest request, CancellationToken token) => await _createPeerDidHandler.Handle(request, token));
+        // _mediatorMock.Setup(p => p.Send(It.IsAny<CreatePeerDidRequest>(), It.IsAny<CancellationToken>()))
+        //     .Returns(async (CreatePeerDidRequest request, CancellationToken token) => await _createPeerDidHandler.Handle(request, token));
     }
 
     /// <summary>

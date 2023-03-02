@@ -45,8 +45,6 @@ public class CreateOobInvitationHandler : IRequestHandler<CreateOobInvitationReq
             };
 
 
-            // _context.ChangeTracker.Clear();
-            // _context.ChangeTracker.AutoDetectChangesEnabled = false;
             await _context.AddAsync(oob, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
 

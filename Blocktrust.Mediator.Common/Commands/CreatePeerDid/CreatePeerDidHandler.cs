@@ -16,6 +16,13 @@ using MediatR;
 /// </summary>
 public class CreatePeerDidHandler : IRequestHandler<CreatePeerDidRequest, Result<CreatePeerDidResponse>>
 {
+    private readonly ISecretResolver _secretResolver;
+
+    public CreatePeerDidHandler(ISecretResolver secretResolver)
+    {
+        this._secretResolver = secretResolver;
+    }
+
     /// <summary>
     /// Handler
     /// </summary>
@@ -28,7 +35,7 @@ public class CreatePeerDidHandler : IRequestHandler<CreatePeerDidRequest, Result
         var privateAgreementKeys = new List<Secret>();
         for (int i = 0; i < createdidRequest.NumberOfAgreementKeys; i++)
         {
-            // Create 1 key pairs for aggreement keys (X25519)
+            // Create 1 key pairs for agreement keys (X25519)
             // one public with crv, x, kty, kid
             // one private with crv, x, kty, kid, d
             var keypair = SecretUtils.GenerateX25519Keys();
@@ -74,7 +81,7 @@ public class CreatePeerDidHandler : IRequestHandler<CreatePeerDidRequest, Result
         }
 
         // Generate Peer Did
-        var peerDidString = string.Empty;
+        string peerDidString;
         if (publicAgreementKeys.Count == 1 && !publicAuthenticationKeys.Any() && serviceDictionary is null)
         {
             peerDidString = PeerDidCreator.CreatePeerDidNumalgo0((VerificationMaterialAuthentication)publicAgreementKeys.Single().Value);
@@ -95,14 +102,33 @@ public class CreatePeerDidHandler : IRequestHandler<CreatePeerDidRequest, Result
         {
             throw new Exception("A PeerDID just created should always be resolvable.");
         }
+        
+        // Register the secrets of the created Did in the secretResolver
+        
+        var zippedAgreementKeysAndSecrets = privateAgreementKeys
+            .Zip(peerDidDocResult.Value.KeyAgreements
+                .Select(p => p.Id), (secret, kid) => new { secret = secret, kid = kid });
+        foreach (var zip in zippedAgreementKeysAndSecrets)
+        {
+            zip.secret.Kid = zip.kid;
+            _secretResolver.AddKey(zip.kid, zip.secret);
+        }
+        
+        var zippedAuthenticationKeysAndSecrets = privateAuthenticationKeys
+            .Zip(peerDidDocResult.Value.Authentications
+                .Select(p => p.Id), (secret, kid) => new { secret = secret, kid = kid });
+        foreach (var zip in zippedAuthenticationKeysAndSecrets)
+        {
+            zip.secret.Kid = zip.kid;
+            _secretResolver.AddKey(zip.kid, zip.secret);
+        }
 
         var response = new CreatePeerDidResponse(
             peerDid: new PeerDid(peerDidString),
             didDoc: peerDidDocResult.Value,
             privateAgreementKeys: privateAgreementKeys,
             privateAuthenticationKeys: privateAuthenticationKeys);
-        {
-        }
+        
         return Result.Ok(response);
     }
 }

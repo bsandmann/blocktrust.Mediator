@@ -17,7 +17,7 @@ public class InquireMedidationTestsAgainstBlocktrustMediator
 {
     private readonly Mock<IMediator> _mediatorMock;
 
-    private readonly CreatePeerDidHandler _createPeerDidHandler;
+    private CreatePeerDidHandler _createPeerDidHandler;
     private readonly GetSecretsHandler _getSecretsHandler;
     private readonly string _blocktrustMediatorUri = "https://localhost:7037/";
     private InquireMediationHandler _inquireMediationHandler;
@@ -27,10 +27,6 @@ public class InquireMedidationTestsAgainstBlocktrustMediator
     {
         _mediatorMock = new Mock<IMediator>();
         _httpClient = new HttpClient();
-        _createPeerDidHandler = new CreatePeerDidHandler();
-
-        _mediatorMock.Setup(p => p.Send(It.IsAny<CreatePeerDidRequest>(), It.IsAny<CancellationToken>()))
-            .Returns(async (CreatePeerDidRequest request, CancellationToken token) => await _createPeerDidHandler.Handle(request, token));
     }
 
 
@@ -46,17 +42,30 @@ public class InquireMedidationTestsAgainstBlocktrustMediator
         var oob = resultContent.Split("=");
         var oobInvitation = oob[1];
 
+        var secretResolverInMemory = new SecretResolverInMemory();
+        _createPeerDidHandler = new CreatePeerDidHandler(secretResolverInMemory);
 
+        // For the communication with the mediator we need a new peerDID
+        var localDid =  await _createPeerDidHandler.Handle(new CreatePeerDidRequest(),cancellationToken: new CancellationToken());
         // Then send a request
-        var request = new InquireMediationRequest(oobInvitation);
+        var request = new InquireMediationRequest(oobInvitation, localDid.Value.PeerDid.Value);
 
         // Act
-        _inquireMediationHandler = new InquireMediationHandler(_mediatorMock.Object, _httpClient, new SimpleDidDocResolver(), new SecretResolverInMemory());
+        _inquireMediationHandler = new InquireMediationHandler(_mediatorMock.Object, _httpClient, new SimpleDidDocResolver(), secretResolverInMemory);
         var result = await _inquireMediationHandler.Handle(request, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
         result.Value.MediationGranted.Should().BeTrue();
         result.Value.RoutingDid.Should().NotBeNullOrEmpty();
+    }
+    
+    /// <summary>
+    /// This tests assumes that the Blocktrust Meditator is running on https://localhost:7145/
+    /// </summary>
+    [Fact]
+    public async Task InitiateMediateRequestsGetsDeniedTheSecondTimeBecauseOfExistingConnection()
+    {
+       
     }
 }

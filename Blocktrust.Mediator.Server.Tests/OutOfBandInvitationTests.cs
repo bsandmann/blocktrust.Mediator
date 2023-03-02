@@ -7,6 +7,7 @@ using Common;
 using Common.Commands.CreatePeerDid;
 using Common.Models.OutOfBand;
 using Controllers;
+using DIDComm.Secrets;
 using Entities;
 using FluentAssertions;
 using FluentResults;
@@ -32,13 +33,13 @@ public class OutOfBandInvitationTests
         _iLogger = new Mock<ILogger<MediatorController>>();
         _mediatorMock = new Mock<IMediator>();
         _httpContextAccessorMock = new Mock<IHttpContextAccessor>();
-        _createPeerDidHandler = new CreatePeerDidHandler();
+        _secretResolver = new SecretResolverInMemory();
+        _didDocResolver = new SimpleDidDocResolver();
+        _createPeerDidHandler = new CreatePeerDidHandler(_secretResolver);
         
         _httpContextAccessorMock.Setup(p => p.HttpContext.Request.Host).Returns(new HostString("dummydomain.com"));
         _httpContextAccessorMock.Setup(p => p.HttpContext.Request.Scheme).Returns("https");
         
-        _secretResolver = new MediatorSecretResolver(_mediatorMock.Object);
-        _didDocResolver = new SimpleDidDocResolver();
         
     }
 

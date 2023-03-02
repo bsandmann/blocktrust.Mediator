@@ -70,33 +70,6 @@ public class MediatorController : ControllerBase
                 return Problem(statusCode: 500, detail: peerDidResponse.Errors.First().Message);
             }
 
-            //TODO not so nice, but works for now
-            var zippedAuthenticationKeysAndSecrets = peerDidResponse.Value.PrivateAuthenticationKeys
-                .Zip(peerDidResponse.Value.DidDoc.Authentications
-                    .Select(p => p.Id), (secret, kid) => new { secret = secret, publicKid = kid });
-            foreach (var zipped in zippedAuthenticationKeysAndSecrets)
-            {
-                var kid = zipped.publicKid;
-                var saveSecretResult = await _mediator.Send(new SaveSecretRequest(kid, zipped.secret));
-                if (saveSecretResult.IsFailed)
-                {
-                    return Problem(statusCode: 500, detail: saveSecretResult.Errors.First().Message);
-                }
-            }
-
-            var zippedAgreementKeysAndSecrets = peerDidResponse.Value.PrivateAgreementKeys
-                .Zip(peerDidResponse.Value.DidDoc.KeyAgreements
-                    .Select(p => p.Id), (secret, kid) => new { secret = secret, publicKid = kid });
-            foreach (var zipped in zippedAgreementKeysAndSecrets)
-            {
-                var kid = zipped.publicKid;
-                var saveSecretResult = await _mediator.Send(new SaveSecretRequest(kid, zipped.secret));
-                if (saveSecretResult.IsFailed)
-                {
-                    return Problem(statusCode: 500, detail: saveSecretResult.Errors.First().Message);
-                }
-            }
-
             var result = await _mediator.Send(new CreateOobInvitationRequest(hostUrl, peerDidResponse.Value.PeerDid));
             if (result.IsFailed)
             {
@@ -167,27 +140,6 @@ public class MediatorController : ControllerBase
             {
                 //TODO
             }
-
-            //TODO move the adding of keys to the secret resolver inside the CreatePeerDidHandler
-            //This is a rather trashy implementation
-            var zippedAgreementKeysAndSecrets = mediatorDid.Value.PrivateAgreementKeys
-                .Zip(mediatorDid.Value.DidDoc.KeyAgreements
-                    .Select(p => p.Id), (secret, kid) => new { secret = secret, kid = kid });
-            foreach (var zip in zippedAgreementKeysAndSecrets)
-            {
-                zip.secret.Kid = zip.kid;
-                _secretResolver.AddKey(zip.kid, zip.secret);
-            }
-
-            var zippedAuthenticationKeysAndSecrets = mediatorDid.Value.PrivateAuthenticationKeys
-                .Zip(mediatorDid.Value.DidDoc.Authentications
-                    .Select(p => p.Id), (secret, kid) => new { secret = secret, kid = kid });
-            foreach (var zip in zippedAuthenticationKeysAndSecrets)
-            {
-                zip.secret.Kid = zip.kid;
-                _secretResolver.AddKey(zip.kid, zip.secret);
-            }
-
 
             var iss = unpacked.Value.Metadata.EncryptedTo.First().Split('#')[0]; // The current Did of the mediator the msg was send to
             var sub = mediatorDid.Value.PeerDid.Value; // The new Did of the mediator that will be used for future communication

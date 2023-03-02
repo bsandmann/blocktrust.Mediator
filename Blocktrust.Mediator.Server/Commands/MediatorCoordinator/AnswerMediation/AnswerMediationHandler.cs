@@ -54,27 +54,6 @@ public class AnswerMediationHandler : IRequestHandler<AnswerMediationRequest, Re
                 //TODO handle error
             }
             
-            //TODO move the adding of keys to the secret resolver inside the CreatePeerDidHandler
-            //This is a rather trashy implementation
-            var zippedAgreementKeysAndSecrets = routingDidResult.Value.PrivateAgreementKeys
-                .Zip(routingDidResult.Value.DidDoc.KeyAgreements
-                    .Select(p => p.Id), (secret, kid) => new { secret = secret, kid = kid });
-            foreach (var zip in zippedAgreementKeysAndSecrets)
-            {
-                zip.secret.Kid = zip.kid;
-                _secretResolver.AddKey(zip.kid, zip.secret);
-            }
-        
-            var zippedAuthenticationKeysAndSecrets = routingDidResult.Value.PrivateAuthenticationKeys
-                .Zip(routingDidResult.Value.DidDoc.Authentications
-                    .Select(p => p.Id), (secret, kid) => new { secret = secret, kid = kid });
-            foreach (var zip in zippedAuthenticationKeysAndSecrets)
-            {
-                zip.secret.Kid = zip.kid;
-                _secretResolver.AddKey(zip.kid, zip.secret);
-            }
-
-
             var updateConnetionResult = await _mediator.Send(new UpdateConnectionMediationRequest(
                 mediatorDid: request.MediatorDid,
                 remoteDid: request.SenderDid,

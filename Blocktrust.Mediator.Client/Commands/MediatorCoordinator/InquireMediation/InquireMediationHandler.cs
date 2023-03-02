@@ -37,12 +37,6 @@ public class InquireMediationHandler : IRequestHandler<InquireMediationRequest, 
 
     public async Task<Result<InquireMediationResponse>> Handle(InquireMediationRequest request, CancellationToken cancellationToken)
     {
-        // For the communication with the mediator we need a new peerDID
-        var localDid = await _mediator.Send(new CreatePeerDidRequest(), cancellationToken);
-        if (localDid.IsFailed)
-        {
-            return Result.Fail($"Invalid arguments for peerDID creation: {localDid.Errors.First().Message}");
-        }
 
         // We decode the peerDID of the mediator from the invitation
         OobModel? remoteDid;
@@ -85,32 +79,12 @@ public class InquireMediationHandler : IRequestHandler<InquireMediationRequest, 
             return Result.Fail("Unable to parse peerDID from invitation");
         }
 
-        //This is a rather trashy implementation
-        var zippedAgreementKeysAndSecrets = localDid.Value.PrivateAgreementKeys
-            .Zip(localDid.Value.DidDoc.KeyAgreements
-                .Select(p => p.Id), (secret, kid) => new { secret = secret, kid = kid });
-        foreach (var zip in zippedAgreementKeysAndSecrets)
-        {
-            zip.secret.Kid = zip.kid;
-            _secretResolver.AddKey(zip.kid, zip.secret);
-        }
-        
-        var zippedAuthenticationKeysAndSecrets = localDid.Value.PrivateAuthenticationKeys
-            .Zip(localDid.Value.DidDoc.Authentications
-                .Select(p => p.Id), (secret, kid) => new { secret = secret, kid = kid });
-        foreach (var zip in zippedAuthenticationKeysAndSecrets)
-        {
-            zip.secret.Kid = zip.kid;
-            _secretResolver.AddKey(zip.kid, zip.secret);
-        }
-
-
         var didComm = new DidComm(_didDocResolver, _secretResolver);
 
         // We pack the message and encrypt it for the mediator
         var packResult = didComm.PackEncrypted(
             new PackEncryptedParamsBuilder(mediateRequestMessage, to: remoteDid.From)
-                .From(localDid.Value.PeerDid.Value)
+                .From(request.LocalDid)
                 .ProtectSenderId(false)
                 .BuildPackEncryptedParams()
         );
