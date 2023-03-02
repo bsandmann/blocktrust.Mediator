@@ -1,10 +1,10 @@
-﻿namespace Blocktrust.Mediator.Server.Commands.GetOobInvitation;
+﻿namespace Blocktrust.Mediator.Server.Commands.OutOfBand.GetOobInvitation;
 
-using Server;
+using Blocktrust.Mediator.Server;
+using Blocktrust.Mediator.Server.Models;
 using FluentResults;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Models;
 
 /// <summary>
 /// Handler to create a new OOB invitation in the database

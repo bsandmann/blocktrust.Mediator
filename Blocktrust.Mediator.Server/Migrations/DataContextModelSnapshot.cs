@@ -22,7 +22,38 @@ namespace Blocktrust.Mediator.Server.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Blocktrust.Mediator.Entities.OobInvitationEntity", b =>
+            modelBuilder.Entity("Blocktrust.Mediator.Server.Entities.MediatorConnectionEntity", b =>
+                {
+                    b.Property<Guid>("MediatorConnectionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("MediationGranted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("MediatorDid")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MediatorEndpoint")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RemoteDid")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RoutingDid")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("MediatorConnectionId");
+
+                    b.ToTable("Connections");
+                });
+
+            modelBuilder.Entity("Blocktrust.Mediator.Server.Entities.OobInvitationEntity", b =>
                 {
                     b.Property<Guid>("OobId")
                         .ValueGeneratedOnAdd()
@@ -46,6 +77,34 @@ namespace Blocktrust.Mediator.Server.Migrations
                     b.HasKey("OobId");
 
                     b.ToTable("OobInvitations");
+                });
+
+            modelBuilder.Entity("Blocktrust.Mediator.Server.Entities.SecretEntity", b =>
+                {
+                    b.Property<Guid>("SecretId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Kid")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("VerificationMaterialFormat")
+                        .HasColumnType("int");
+
+                    b.Property<int>("VerificationMethodType")
+                        .HasColumnType("int");
+
+                    b.HasKey("SecretId");
+
+                    b.ToTable("Secrets");
                 });
 #pragma warning restore 612, 618
         }

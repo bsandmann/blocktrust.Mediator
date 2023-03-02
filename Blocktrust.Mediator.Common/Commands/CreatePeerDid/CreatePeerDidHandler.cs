@@ -3,6 +3,7 @@
 using System.Text.Json;
 using Blocktrust.Common.Models.DidDoc;
 using Blocktrust.Common.Models.Secrets;
+using Blocktrust.Common.Resolver;
 using Blocktrust.PeerDID.DIDDoc;
 using Blocktrust.PeerDID.PeerDIDCreateResolve;
 using Blocktrust.PeerDID.Types;
@@ -27,7 +28,6 @@ public class CreatePeerDidHandler : IRequestHandler<CreatePeerDidRequest, Result
         var privateAgreementKeys = new List<Secret>();
         for (int i = 0; i < createdidRequest.NumberOfAgreementKeys; i++)
         {
-            //TODO I should lose the private key??
             // Create 1 key pairs for aggreement keys (X25519)
             // one public with crv, x, kty, kid
             // one private with crv, x, kty, kid, d
@@ -73,7 +73,6 @@ public class CreatePeerDidHandler : IRequestHandler<CreatePeerDidRequest, Result
             service = JsonSerializer.Serialize(serviceDictionary);
         }
 
-
         // Generate Peer Did
         var peerDidString = string.Empty;
         if (publicAgreementKeys.Count == 1 && !publicAuthenticationKeys.Any() && serviceDictionary is null)
@@ -85,9 +84,21 @@ public class CreatePeerDidHandler : IRequestHandler<CreatePeerDidRequest, Result
             peerDidString = PeerDidCreator.CreatePeerDidNumalgo2(publicAgreementKeys, publicAuthenticationKeys, service);
         }
 
+        var peerDidResult = PeerDidResolver.ResolvePeerDid(new PeerDid(peerDidString), VerificationMaterialFormatPeerDid.Jwk);
+        if (peerDidResult.IsFailed)
+        {
+            throw new Exception("A PeerDID just created should always be resolvable.");
+        }
+
+        var peerDidDocResult = DidDocPeerDid.FromJson(peerDidResult.Value);
+        if (peerDidDocResult.IsFailed)
+        {
+            throw new Exception("A PeerDID just created should always be resolvable.");
+        }
+
         var response = new CreatePeerDidResponse(
             peerDid: new PeerDid(peerDidString),
-            didDoc: DidDocPeerDid.FromJson(PeerDidResolver.ResolvePeerDid(new PeerDid(peerDidString), VerificationMaterialFormatPeerDid.Jwk)),
+            didDoc: peerDidDocResult.Value,
             privateAgreementKeys: privateAgreementKeys,
             privateAuthenticationKeys: privateAuthenticationKeys);
         {

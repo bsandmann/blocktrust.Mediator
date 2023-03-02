@@ -1,8 +1,8 @@
-﻿namespace Blocktrust.Mediator.Server.Commands.GetOobInvitation;
+﻿namespace Blocktrust.Mediator.Server.Commands.OutOfBand.GetOobInvitation;
 
+using Blocktrust.Mediator.Server.Models;
 using FluentResults;
 using MediatR;
-using Models;
 
 /// <summary>
 /// Request to retrieve a OOB invitation from the database

@@ -122,7 +122,7 @@ public class AliceSecretResolverMock : SecretResolverInMemoryMock
         return secrets.Select(secret => secret.Kid).ToList();
     }
 
-    public Secret? FindKey(String kid)
+    public Secret? FindKey(string kid)
     {
         return _secretResolverInMemory.FindKey(kid);
     }
@@ -130,5 +130,10 @@ public class AliceSecretResolverMock : SecretResolverInMemoryMock
     public HashSet<String> FindKeys(List<String> kids)
     {
         return _secretResolverInMemory.FindKeys(kids);
+    }
+
+    public void AddKey(string kid, Secret secret)
+    {
+        throw new NotImplementedException();
     }
 }

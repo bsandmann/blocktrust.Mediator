@@ -24,6 +24,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blocktrust.DIDComm", "..\bl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blocktrust.DIDComm.Tests", "..\blocktrust.DIDComm\Blocktrust.DIDComm.Tests\Blocktrust.DIDComm.Tests.csproj", "{26A37A1D-19C2-485C-8763-63932C2A73B2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blocktrust.Mediator.Client.RootsIntegrationTests", "Blocktrust.Mediator.Client.RootsIntegrationTests\Blocktrust.Mediator.Client.RootsIntegrationTests.csproj", "{5ABCF8FF-5BF1-4712-9998-0431280AE3DF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blocktrust.Mediator.Client.IntegrationsTests", "Blocktrust.Mediator.Client.IntegrationsTests\Blocktrust.Mediator.Client.IntegrationsTests.csproj", "{3CBCADFB-CBA6-4FC1-BBF9-A4162202CFA1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blocktrust.Mediator.Client.BlocktrustIntegrationTests", "Blocktrust.Mediator.Client.BlocktrustIntegrationTests\Blocktrust.Mediator.Client.BlocktrustIntegrationTests.csproj", "{4AA3DBE1-4161-4738-A8F7-436BB75B426F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -82,10 +88,25 @@ Global
 		{26A37A1D-19C2-485C-8763-63932C2A73B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{26A37A1D-19C2-485C-8763-63932C2A73B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{26A37A1D-19C2-485C-8763-63932C2A73B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5ABCF8FF-5BF1-4712-9998-0431280AE3DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5ABCF8FF-5BF1-4712-9998-0431280AE3DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5ABCF8FF-5BF1-4712-9998-0431280AE3DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5ABCF8FF-5BF1-4712-9998-0431280AE3DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3CBCADFB-CBA6-4FC1-BBF9-A4162202CFA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3CBCADFB-CBA6-4FC1-BBF9-A4162202CFA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3CBCADFB-CBA6-4FC1-BBF9-A4162202CFA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3CBCADFB-CBA6-4FC1-BBF9-A4162202CFA1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4AA3DBE1-4161-4738-A8F7-436BB75B426F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4AA3DBE1-4161-4738-A8F7-436BB75B426F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4AA3DBE1-4161-4738-A8F7-436BB75B426F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4AA3DBE1-4161-4738-A8F7-436BB75B426F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{7F3540E1-E5FF-4FAC-B26E-77DDBE068279} = {961A2656-2D20-440D-9C06-31C243BC312B}
 		{C15E51DE-6202-4C6A-8C6E-143030990C5E} = {961A2656-2D20-440D-9C06-31C243BC312B}
 		{D9970E8D-D78C-448D-A17B-15361886EFB5} = {961A2656-2D20-440D-9C06-31C243BC312B}
+		{5ABCF8FF-5BF1-4712-9998-0431280AE3DF} = {961A2656-2D20-440D-9C06-31C243BC312B}
+		{3CBCADFB-CBA6-4FC1-BBF9-A4162202CFA1} = {961A2656-2D20-440D-9C06-31C243BC312B}
+		{4AA3DBE1-4161-4738-A8F7-436BB75B426F} = {961A2656-2D20-440D-9C06-31C243BC312B}
 	EndGlobalSection
 EndGlobal

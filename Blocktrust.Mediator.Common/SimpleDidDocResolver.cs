@@ -16,6 +16,11 @@ public class SimpleDidDocResolver : IDidDocResolver
         this._docs = docs;
     }
 
+    public SimpleDidDocResolver()
+    {
+        this._docs = new Dictionary<string, DidDoc>();
+    }
+
     public SimpleDidDocResolver(List<DidDoc> docs) : this(docs.ToDictionary(x => x.Did, x => x))
     {
     }
@@ -29,16 +34,24 @@ public class SimpleDidDocResolver : IDidDocResolver
         else if (PeerDidCreator.IsPeerDid(did))
         {
             //TODO could be any kind
-            var didDocJson = PeerDidResolver.ResolvePeerDid(new PeerDid(did), VerificationMaterialFormatPeerDid.Jwk);
-            var didDoc = DidDocPeerDid.FromJson(didDocJson);
-            var combinedVerificationMethodsOfInvitation = didDoc.Authentications.Concat(didDoc.KeyAgreements);
+            var didDocJsonResult = PeerDidResolver.ResolvePeerDid(new PeerDid(did), VerificationMaterialFormatPeerDid.Jwk);
+            if (didDocJsonResult.IsFailed)
+            {
+                return null;
+            }
+            var didDocResult = DidDocPeerDid.FromJson(didDocJsonResult.Value);
+            if (didDocResult.IsFailed)
+            {
+                return null;
+            }
+            var combinedVerificationMethodsOfInvitation = didDocResult.Value.Authentications.Concat(didDocResult.Value.KeyAgreements);
 
             //TODO this should be done in here
             this.AddDoc(new DidDoc()
             {
-                Did = didDoc.Did,
-                KeyAgreements = didDoc.KeyAgreements.Select(p => p.Id).ToList(),
-                Authentications = didDoc.Authentications.Select(p => p.Id).ToList(),
+                Did = didDocResult.Value.Did,
+                KeyAgreements = didDocResult.Value.KeyAgreements.Select(p => p.Id).ToList(),
+                Authentications = didDocResult.Value.Authentications.Select(p => p.Id).ToList(),
                 VerificationMethods = combinedVerificationMethodsOfInvitation.Select(p => new VerificationMethod(
                     id: p.Id,
                     type: VerificationMethodType.JsonWebKey2020,
@@ -49,7 +62,7 @@ public class SimpleDidDocResolver : IDidDocResolver
                 )).ToList(),
                 Services = new List<Service>()
             });
-            return _docs[did]; 
+            return _docs[did];
         }
         else
         {

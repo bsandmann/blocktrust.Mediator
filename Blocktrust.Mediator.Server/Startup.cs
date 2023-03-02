@@ -5,7 +5,10 @@ using Microsoft.OpenApi.Models;
 
 namespace Blocktrust.Mediator.Server;
 
+using Blocktrust.Common.Resolver;
+using Common;
 using MediatR;
+using Resolver;
 
 public class Startup
 {
@@ -42,14 +45,17 @@ public class Startup
         services.AddControllers();
         // services.AddApplicationInsightsTelemetry();
         services.AddMediatR(cfg => {
-            cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
+            cfg.RegisterServicesFromAssembly(typeof(SimpleDidDocResolver).Assembly);
         });
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
         // var appSettingsSection = Configuration.GetSection("AppSettings");
         // services.Configure<AppSettings>(appSettingsSection);
         services.AddHttpClient();
         // services.AddHostedService<BackgroundService.BackgroundService>();
         // services.AddSingleton<BackgroundWorkerQueue>();
-        // services.AddSingleton<IEcService, EcServiceBouncyCastle>();
+        //TODO unclear if the secreat resolver has to be scoped or singleton. Crashing when singleton currently
+        services.AddScoped<ISecretResolver, MediatorSecretResolver>();
+        services.AddSingleton<IDidDocResolver, SimpleDidDocResolver>();
         // services.AddSingleton<ISha256Service, Sha256ServiceBouncyCastle>();
         services.AddSwaggerGen(c =>
         {
