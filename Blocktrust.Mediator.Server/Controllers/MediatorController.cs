@@ -124,8 +124,8 @@ public class MediatorController : ControllerBase
         }
 
         // Check for existing connection
-        Result<CreatePeerDidResponse> mediatorDid = null;
         FromPrior? fromPrior = null;
+        string mediatorDid;
         var existingConnection = await _mediator.Send(new GetConnectionRequest(senderOldDid));
         if (existingConnection.IsFailed)
         {
@@ -135,27 +135,33 @@ public class MediatorController : ControllerBase
         if (existingConnection.Value is null)
         {
             // Create new connection
-            mediatorDid = await _mediator.Send(new CreatePeerDidRequest(serviceEndpoint: hostUrl));
-            if (mediatorDid.IsFailed)
+            var mediatorDidResult = await _mediator.Send(new CreatePeerDidRequest(serviceEndpoint: hostUrl));
+            if (mediatorDidResult.IsFailed)
             {
                 //TODO
             }
 
             var iss = unpacked.Value.Metadata.EncryptedTo.First().Split('#')[0]; // The current Did of the mediator the msg was send to
-            var sub = mediatorDid.Value.PeerDid.Value; // The new Did of the mediator that will be used for future communication
+            var sub = mediatorDidResult.Value.PeerDid.Value; // The new Did of the mediator that will be used for future communication
             fromPrior = FromPrior.Builder(iss, sub).Build();
 
-            var createConnectionResult = await _mediator.Send(new CreateConnectionRequest(mediatorDid.Value.PeerDid.Value, senderDid));
+            var createConnectionResult = await _mediator.Send(new CreateConnectionRequest(mediatorDidResult.Value.PeerDid.Value, senderDid));
             if (createConnectionResult.IsFailed)
             {
                 //TODO
             }
+
+            mediatorDid = mediatorDidResult.Value.PeerDid.Value;
+        }
+        else
+        {
+            mediatorDid = existingConnection.Value.MediatorDid;
         }
 
         Result<Message> result = Result.Fail(string.Empty);
         if (unpacked.Value.Message.Type == ProtocolConstants.CoordinateMediation2Request)
         {
-            result = await _mediator.Send(new AnswerMediationRequest(unpacked.Value.Message, senderDid, mediatorDid.Value.PeerDid.Value, hostUrl, fromPrior));
+            result = await _mediator.Send(new AnswerMediationRequest(unpacked.Value.Message, senderDid, mediatorDid, hostUrl, fromPrior));
         }
 
         if (result.IsFailed)
@@ -165,7 +171,7 @@ public class MediatorController : ControllerBase
 
         var packResult = didComm.PackEncrypted(
             new PackEncryptedParamsBuilder(result.Value, to: senderDid)
-                .From(mediatorDid.Value.PeerDid.Value)
+                .From(mediatorDid)
                 .ProtectSenderId(false)
                 .BuildPackEncryptedParams()
         );

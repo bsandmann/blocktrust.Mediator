@@ -45,9 +45,7 @@ public class InquireMedidationTestsAgainstBlocktrustMediator
         var secretResolverInMemory = new SecretResolverInMemory();
         _createPeerDidHandler = new CreatePeerDidHandler(secretResolverInMemory);
 
-        // For the communication with the mediator we need a new peerDID
         var localDid =  await _createPeerDidHandler.Handle(new CreatePeerDidRequest(),cancellationToken: new CancellationToken());
-        // Then send a request
         var request = new InquireMediationRequest(oobInvitation, localDid.Value.PeerDid.Value);
 
         // Act
@@ -60,12 +58,33 @@ public class InquireMedidationTestsAgainstBlocktrustMediator
         result.Value.RoutingDid.Should().NotBeNullOrEmpty();
     }
     
-    /// <summary>
-    /// This tests assumes that the Blocktrust Meditator is running on https://localhost:7145/
-    /// </summary>
     [Fact]
     public async Task InitiateMediateRequestsGetsDeniedTheSecondTimeBecauseOfExistingConnection()
     {
-       
+        // First get the OOB from the running mediator
+        var response = await _httpClient.GetAsync(_blocktrustMediatorUri + "oob_url");
+        var resultContent = await response.Content.ReadAsStringAsync();
+        var oob = resultContent.Split("=");
+        var oobInvitation = oob[1]; 
+        
+        var secretResolverInMemory = new SecretResolverInMemory();
+        _createPeerDidHandler = new CreatePeerDidHandler(secretResolverInMemory);
+
+        var localDid = await _createPeerDidHandler.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
+        var firstRequest = new InquireMediationRequest(oobInvitation, localDid.Value.PeerDid.Value);
+
+        _inquireMediationHandler = new InquireMediationHandler(_mediatorMock.Object, _httpClient, new SimpleDidDocResolver(), secretResolverInMemory);
+        var firstResult = await _inquireMediationHandler.Handle(firstRequest, CancellationToken.None);
+        firstResult.IsSuccess.Should().BeTrue();
+        firstResult.Value.MediationGranted.Should().BeTrue();
+        firstResult.Value.RoutingDid.Should().NotBeNullOrEmpty();
+
+        // Act
+        var secondRequest = new InquireMediationRequest(oobInvitation, localDid.Value.PeerDid.Value);
+        var secondResult = await _inquireMediationHandler.Handle(secondRequest, CancellationToken.None);
+
+        // Assert
+        secondResult.IsSuccess.Should().BeTrue();
+        secondResult.Value.MediationGranted.Should().BeFalse();
     }
 }

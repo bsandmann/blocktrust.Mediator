@@ -43,8 +43,15 @@ public class AnswerMediationHandler : IRequestHandler<AnswerMediationRequest, Re
 
         if (existingConnection.Value is not null && existingConnection.Value.MediationGranted)
         {
-            // we already have a mediation
-            // creat the deny message
+            // we already have a mediation. deny the request
+            var mediateDenyMessage = new MessageBuilder(
+                    id: Guid.NewGuid().ToString(),
+                    type: ProtocolConstants.CoordinateMediation2Deny,
+                    body: new Dictionary<string, object>()
+                )
+                .fromPrior(request.FromPrior)
+                .build();
+            return Result.Ok(mediateDenyMessage);
         }
         else
         {
