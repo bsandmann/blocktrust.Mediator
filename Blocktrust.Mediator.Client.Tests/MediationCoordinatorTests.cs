@@ -1,19 +1,19 @@
 ﻿namespace Blocktrust.Mediator.Client.Tests;
 
-using Blocktrust.Mediator.Client.Commands.MediatorCoordinator.InquireMediation;
 using Blocktrust.Mediator.Common.Commands.CreatePeerDid;
+using Commands.MediatorCoordinator.RequestMediation;
 using MediatR;
 using Moq;
 using Xunit;
 
-public class InquireMediationTests
+public class MediationCoordinatorTests
 {
     private readonly Mock<IMediator> _mediatorMock;
     private readonly Mock<HttpMessageHandler> _httpMessageHandlerMock;
-    private InquireMediationHandler _inquireMediationHandler;
+    private RequestMediationHandler _requestMediationHandler;
     private readonly CreatePeerDidHandler _createPeerDidHandler;
 
-    public InquireMediationTests()
+    public MediationCoordinatorTests()
     {
         _mediatorMock = new Mock<IMediator>();
         _httpMessageHandlerMock = new Mock<HttpMessageHandler>(MockBehavior.Strict);

@@ -5,7 +5,7 @@ using DIDComm.Message.Messages;
 using FluentResults;
 using MediatR;
 
-public class AnswerMediationRequest  : IRequest<Result<Message>>
+public class ProcessMediationRequestRequest  : IRequest<Result<Message>>
 {
     public Message UnpackedMessage { get; set; }
     public string SenderDid { get; set; }
@@ -13,7 +13,7 @@ public class AnswerMediationRequest  : IRequest<Result<Message>>
     public string HostUrl { get; set; }
     public FromPrior? FromPrior { get; set; }
     
-    public AnswerMediationRequest(Message unpackedMessage, string senderDid, string mediatorDid, string hostUrl, FromPrior? fromPrior)
+    public ProcessMediationRequestRequest(Message unpackedMessage, string senderDid, string mediatorDid, string hostUrl, FromPrior? fromPrior)
     {
         UnpackedMessage = unpackedMessage;
         SenderDid = senderDid;

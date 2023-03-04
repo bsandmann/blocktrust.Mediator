@@ -13,7 +13,7 @@ using FluentResults;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-public class AnswerMediationHandler : IRequestHandler<AnswerMediationRequest, Result<Message>>
+public class ProcessMediationRequestHandler : IRequestHandler<ProcessMediationRequestRequest, Result<Message>>
 {
     private readonly DataContext _context;
     private readonly IMediator _mediator;
@@ -23,19 +23,19 @@ public class AnswerMediationHandler : IRequestHandler<AnswerMediationRequest, Re
     /// Constructor
     /// </summary>
     /// <param name="context"></param>
-    public AnswerMediationHandler(DataContext context, IMediator mediator, ISecretResolver secretResolver)
+    public ProcessMediationRequestHandler(DataContext context, IMediator mediator, ISecretResolver secretResolver)
     {
         this._context = context;
         this._mediator = mediator;
         this._secretResolver = secretResolver;
     }
 
-    public async Task<Result<Message>> Handle(AnswerMediationRequest request, CancellationToken cancellationToken)
+    public async Task<Result<Message>> Handle(ProcessMediationRequestRequest requestRequest, CancellationToken cancellationToken)
     {
         //TODO handle the different cases: keylist update, keylist query
 
         // If we already have a mediation, we deny the request
-        var existingConnection = await _mediator.Send(new GetConnectionRequest(request.SenderDid));
+        var existingConnection = await _mediator.Send(new GetConnectionRequest(requestRequest.SenderDid));
         if (existingConnection.IsFailed)
         {
             // database error
@@ -49,23 +49,23 @@ public class AnswerMediationHandler : IRequestHandler<AnswerMediationRequest, Re
                     type: ProtocolConstants.CoordinateMediation2Deny,
                     body: new Dictionary<string, object>()
                 )
-                .fromPrior(request.FromPrior)
+                .fromPrior(requestRequest.FromPrior)
                 .build();
             return Result.Ok(mediateDenyMessage);
         }
         else
         {
-            var routingDidResult = await _mediator.Send(new CreatePeerDidRequest(serviceEndpoint: request.HostUrl), cancellationToken);
+            var routingDidResult = await _mediator.Send(new CreatePeerDidRequest(serviceEndpoint: requestRequest.HostUrl), cancellationToken);
             if (routingDidResult.IsFailed)
             {
                 //TODO handle error
             }
             
             var updateConnetionResult = await _mediator.Send(new UpdateConnectionMediationRequest(
-                mediatorDid: request.MediatorDid,
-                remoteDid: request.SenderDid,
+                mediatorDid: requestRequest.MediatorDid,
+                remoteDid: requestRequest.SenderDid,
                 routingDid: routingDidResult.Value.PeerDid.Value,
-                mediatorEndpoint: request.HostUrl,
+                mediatorEndpoint: requestRequest.HostUrl,
                 mediationGranted: true
             ), cancellationToken);
 
@@ -83,7 +83,7 @@ public class AnswerMediationHandler : IRequestHandler<AnswerMediationRequest, Re
                         { "routing_did", routingDidResult.Value.PeerDid.Value }
                     }
                 )
-                .fromPrior(request.FromPrior)
+                .fromPrior(requestRequest.FromPrior)
                 .build();
             return Result.Ok(mediateGrantMessage);
         }

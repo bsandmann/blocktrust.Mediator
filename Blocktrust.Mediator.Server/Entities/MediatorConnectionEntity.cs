@@ -9,8 +9,6 @@ public class MediatorConnectionEntity
     public string? MediatorEndpoint { get; set; }
     public bool MediationGranted { get; set; }
     public DateTime CreatedUtc { get; set; }
-
-    // there are other entries like
-    // routing_did
-    // update time k
+    
+    public List<MediatorConnectionKeyEntity> KeyList { get; set; }
 }

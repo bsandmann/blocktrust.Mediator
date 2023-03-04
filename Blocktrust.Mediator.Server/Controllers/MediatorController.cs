@@ -6,6 +6,8 @@ using Blocktrust.Common.Resolver;
 using Commands.Connections.CreateConnection;
 using Commands.Connections.GetConnection;
 using Commands.MediatorCoordinator.AnswerMediation;
+using Commands.MediatorCoordinator.ProcessQueryMediatorKeys;
+using Commands.MediatorCoordinator.ProcessUpdateMediatorKeys;
 using Commands.OutOfBand.CreateOobInvitation;
 using Commands.OutOfBand.GetOobInvitation;
 using Commands.Secrets.SaveSecrets;
@@ -161,7 +163,19 @@ public class MediatorController : ControllerBase
         Result<Message> result = Result.Fail(string.Empty);
         if (unpacked.Value.Message.Type == ProtocolConstants.CoordinateMediation2Request)
         {
-            result = await _mediator.Send(new AnswerMediationRequest(unpacked.Value.Message, senderDid, mediatorDid, hostUrl, fromPrior));
+            result = await _mediator.Send(new ProcessMediationRequestRequest(unpacked.Value.Message, senderDid, mediatorDid, hostUrl, fromPrior));
+        }
+        else if (unpacked.Value.Message.Type == ProtocolConstants.CoordinateMediation2KeylistUpdate)
+        {
+            result = await _mediator.Send(new ProcessUpdateMediatorKeysRequest(unpacked.Value.Message, senderDid, mediatorDid, hostUrl, fromPrior));
+        }
+        else if (unpacked.Value.Message.Type == ProtocolConstants.CoordinateMediation2KeylistQuery)
+        {
+            result = await _mediator.Send(new ProcessQueryMediatorKeysRequest(unpacked.Value.Message, senderDid, mediatorDid, hostUrl, fromPrior));
+        }
+        else
+        {
+            return BadRequest("Not implemented message type");
         }
 
         if (result.IsFailed)

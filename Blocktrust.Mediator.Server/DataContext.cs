@@ -31,5 +31,15 @@ public class DataContext : DbContext
         modelBuilder.Entity<MediatorConnectionEntity>()
             .HasKey(b => b.MediatorConnectionId);
         modelBuilder.Entity<MediatorConnectionEntity>().Property(b => b.MediatorConnectionId).HasValueGenerator(typeof(SequentialGuidValueGenerator));
+
+        modelBuilder.Entity<MediatorConnectionKeyEntity>()
+            .HasKey(b => b.MediatorConnectionKeyId);
+        modelBuilder.Entity<MediatorConnectionKeyEntity>().Property(b => b.MediatorConnectionKeyId).HasValueGenerator(typeof(SequentialGuidValueGenerator));
+
+        modelBuilder.Entity<MediatorConnectionKeyEntity>()
+            .HasOne(p => p.MediatorConnectionEntity)
+            .WithMany(b => b.KeyList)
+            .HasForeignKey(p => p.MediatorConnectionKeyId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

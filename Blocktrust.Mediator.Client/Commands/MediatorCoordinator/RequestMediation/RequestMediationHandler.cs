@@ -1,4 +1,4 @@
-﻿namespace Blocktrust.Mediator.Client.Commands.MediatorCoordinator.InquireMediation;
+﻿namespace Blocktrust.Mediator.Client.Commands.MediatorCoordinator.RequestMediation;
 
 using System.Net;
 using System.Text;
@@ -11,7 +11,6 @@ using Blocktrust.DIDComm.Common.Types;
 using Blocktrust.DIDComm.Message.Messages;
 using Blocktrust.DIDComm.Model.PackEncryptedParamsModels;
 using Blocktrust.DIDComm.Model.UnpackParamsModels;
-using Blocktrust.Mediator.Common.Commands.CreatePeerDid;
 using Blocktrust.Mediator.Common.Models.OutOfBand;
 using Blocktrust.Mediator.Common.Protocols;
 using Blocktrust.PeerDID.DIDDoc;
@@ -20,14 +19,14 @@ using Blocktrust.PeerDID.Types;
 using FluentResults;
 using MediatR;
 
-public class InquireMediationHandler : IRequestHandler<InquireMediationRequest, Result<InquireMediationResponse>>
+public class RequestMediationHandler : IRequestHandler<RequestMediationRequest, Result<RequestMediationResponse>>
 {
     private readonly IMediator _mediator;
     private readonly HttpClient _httpClient;
     private readonly IDidDocResolver _didDocResolver;
     private readonly ISecretResolver _secretResolver;
 
-    public InquireMediationHandler(IMediator mediator, HttpClient httpClient, IDidDocResolver didDocResolver, ISecretResolver secretResolver)
+    public RequestMediationHandler(IMediator mediator, HttpClient httpClient, IDidDocResolver didDocResolver, ISecretResolver secretResolver)
     {
         _mediator = mediator;
         _httpClient = httpClient;
@@ -35,7 +34,7 @@ public class InquireMediationHandler : IRequestHandler<InquireMediationRequest, 
         _secretResolver = secretResolver;
     }
 
-    public async Task<Result<InquireMediationResponse>> Handle(InquireMediationRequest request, CancellationToken cancellationToken)
+    public async Task<Result<RequestMediationResponse>> Handle(RequestMediationRequest request, CancellationToken cancellationToken)
     {
 
         // We decode the peerDID of the mediator from the invitation
@@ -117,7 +116,7 @@ public class InquireMediationHandler : IRequestHandler<InquireMediationRequest, 
 
         if (unpackResult.Value.Message.Type == ProtocolConstants.CoordinateMediation2Deny)
         {
-            return Result.Ok(new InquireMediationResponse());
+            return Result.Ok(new RequestMediationResponse());
         }
         else if (unpackResult.Value.Message.Type == ProtocolConstants.CoordinateMediation2Grant)
         {
@@ -127,9 +126,24 @@ public class InquireMediationHandler : IRequestHandler<InquireMediationRequest, 
                 return Result.Fail("No routing_did present in grant message");
             }
 
-            return Result.Ok(new InquireMediationResponse(unpackResult.Value.Message.Body["routing_did"].ToString()));
+            var from = unpackResult.Value.Message.From;
+            if (from is null && unpackResult.Value.Message.FromPrior is not null)
+            {
+                // We have a new DID from the mediator, caused by a DID rotation. This is expected.
+                from = unpackResult.Value.Message.FromPrior.Sub;
+                var fromOld = unpackResult.Value.Message.FromPrior.Iss;
+                if (!fromOld.Equals(remoteDid.From))
+                {
+                    // The old DID of the mediator does not match the one we have in the invitation. This is unexpected.
+                    return Result.Fail("Unexpected DID rotation");
+                }
+            }
+            
+            return Result.Ok(new RequestMediationResponse(from!, endpointUri, unpackResult.Value.Message.Body["routing_did"].ToString()));
         }
-
-        return Result.Fail("Unknown error: ${content} ");
+        else
+        {
+        return Result.Fail("Error: Unexpected message response type");
+        }
     }
 }

@@ -1,9 +1,9 @@
-﻿namespace Blocktrust.Mediator.Client.Commands.MediatorCoordinator.InquireMediation;
+﻿namespace Blocktrust.Mediator.Client.Commands.MediatorCoordinator.RequestMediation;
 
 using FluentResults;
 using MediatR;
 
-public class InquireMediationRequest : IRequest<Result<InquireMediationResponse>>
+public class RequestMediationRequest : IRequest<Result<RequestMediationResponse>>
 {
     /// <summary>
     /// The invitation from the mediator
@@ -15,7 +15,7 @@ public class InquireMediationRequest : IRequest<Result<InquireMediationResponse>
     /// </summary>
     public string LocalDid { get; }
 
-    public InquireMediationRequest(string oobInvitation, string localDid)
+    public RequestMediationRequest(string oobInvitation, string localDid)
     {
         this.OobInvitation = oobInvitation;
         this.LocalDid = localDid;
