@@ -68,11 +68,11 @@ public class CreatePeerDidHandler : IRequestHandler<CreatePeerDidRequest, Result
         Dictionary<string, object>? serviceDictionary = null;
         string? service = null;
 
-        if (!string.IsNullOrWhiteSpace(createdidRequest.ServiceEndpoint))
+        if (createdidRequest.ServiceEndpoint is not null)
         {
             serviceDictionary = new Service(
                 id: "new-id",
-                serviceEndpoint: createdidRequest.ServiceEndpoint,
+                serviceEndpoint: createdidRequest.ServiceEndpoint.AbsoluteUri,
                 routingKeys: createdidRequest.ServiceRoutingKeys,
                 accept: new List<string>() { "didcomm/v2" },
                 type: ServiceConstants.ServiceDidcommMessaging).ToDict();

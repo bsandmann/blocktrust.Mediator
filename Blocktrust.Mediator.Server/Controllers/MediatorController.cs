@@ -66,7 +66,7 @@ public class MediatorController : ControllerBase
         var invitation = string.Empty;
         if (existingInvitationResult.IsFailed)
         {
-            var peerDidResponse = await _mediator.Send(new CreatePeerDidRequest(numberOfAgreementKeys: 1, numberOfAuthenticationKeys: 1, serviceEndpoint: hostUrl, serviceRoutingKeys: new List<string>()));
+            var peerDidResponse = await _mediator.Send(new CreatePeerDidRequest(numberOfAgreementKeys: 1, numberOfAuthenticationKeys: 1, serviceEndpoint: new Uri(hostUrl), serviceRoutingKeys: new List<string>()));
             if (peerDidResponse.IsFailed)
             {
                 return Problem(statusCode: 500, detail: peerDidResponse.Errors.First().Message);
@@ -99,8 +99,6 @@ public class MediatorController : ControllerBase
         var hostUrl = string.Concat(_httpContextAccessor!.HttpContext.Request.Scheme, "://", _httpContextAccessor.HttpContext.Request.Host);
         var request = _httpContextAccessor.HttpContext.Request;
         var body = await new StreamReader(request.Body).ReadToEndAsync();
-
-        var f = _secretResolver.FindKey("asdf");
 
         var didComm = new DidComm(_didDocResolver, _secretResolver);
         var unpacked = didComm.Unpack(
@@ -137,7 +135,7 @@ public class MediatorController : ControllerBase
         if (existingConnection.Value is null)
         {
             // Create new connection
-            var mediatorDidResult = await _mediator.Send(new CreatePeerDidRequest(serviceEndpoint: hostUrl));
+            var mediatorDidResult = await _mediator.Send(new CreatePeerDidRequest(serviceEndpoint: new Uri(hostUrl)));
             if (mediatorDidResult.IsFailed)
             {
                 //TODO

@@ -28,7 +28,7 @@ public class MediationCoordinatorTests
     }
 
     /// <summary>
-    /// This tests assumes that the Roots Mediator is running on http:/localhost:7037
+    /// This tests assumes that the Roots Mediator is running on http://127.0.0.1:8000
     /// </summary>
     [Fact]
     public async Task InitiateMediateRequestsGetsGranted()
@@ -55,7 +55,7 @@ public class MediationCoordinatorTests
 
 
     /// <summary>
-    /// This tests assumes that the Roots Mediator is running on http:/localhost:7037
+    /// This tests assumes that the Roots Mediator is running on http://127.0.0.1:8000
     /// </summary>
     [Fact]
     public async Task InitiateMediateRequestsGetsDeniedTheSecondTimeBecauseOfExistingConnection()
@@ -86,7 +86,7 @@ public class MediationCoordinatorTests
     }
 
     /// <summary>
-    /// This tests assumes that the Roots Mediator is running on http:/localhost:7037
+    /// This tests assumes that the Roots Mediator is running on http://127.0.0.1:8000
     /// </summary>
     [Fact]
     public async Task AddKeyToExistingConnection()
@@ -119,7 +119,7 @@ public class MediationCoordinatorTests
     }
 
     /// <summary>
-    /// This tests assumes that the Roots Mediator is running on http:/localhost:7037
+    /// This tests assumes that the Roots Mediator is running on http://127.0.0.1:8000
     /// </summary>
     [Fact]
     public async Task AddKeyAndThenRemoveKeyToExistingConnection()
@@ -158,7 +158,7 @@ public class MediationCoordinatorTests
     }
 
     /// <summary>
-    /// This tests assumes that the Roots Mediator is running on http:/localhost:7037
+    /// This tests assumes that the Roots Mediator is running on http://127.0.0.1:8000
     /// </summary>
     [Fact]
     public async Task AddKeyToExistingConnectionAndQuery()

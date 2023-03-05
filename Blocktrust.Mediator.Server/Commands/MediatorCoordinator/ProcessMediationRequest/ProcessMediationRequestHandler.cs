@@ -55,7 +55,7 @@ public class ProcessMediationRequestHandler : IRequestHandler<ProcessMediationRe
         }
         else
         {
-            var routingDidResult = await _mediator.Send(new CreatePeerDidRequest(serviceEndpoint: requestRequest.HostUrl), cancellationToken);
+            var routingDidResult = await _mediator.Send(new CreatePeerDidRequest(serviceEndpoint: new Uri(requestRequest.HostUrl)), cancellationToken);
             if (routingDidResult.IsFailed)
             {
                 //TODO handle error
