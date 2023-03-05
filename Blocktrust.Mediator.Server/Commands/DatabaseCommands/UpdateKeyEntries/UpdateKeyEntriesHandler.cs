@@ -30,11 +30,11 @@ public class UpdateKeyEntriesHandler : IRequestHandler<UpdateKeyEntriesRequest, 
                 {
                     foreach (var keyToAdd in request.KeysToAdd)
                     {
-                        if (!connection.KeyList.Select(p => p.Key).Contains(keyToAdd))
+                        if (!connection.KeyList.Select(p => p.RecipientKey).Contains(keyToAdd))
                         {
-                            connection.KeyList.Add(new MediatorConnectionKeyEntity()
+                            connection.KeyList.Add(new ConnectionKeyEntity()
                             {
-                                Key = keyToAdd,
+                                RecipientKey = keyToAdd,
                             });
                         }
                     }
@@ -47,7 +47,7 @@ public class UpdateKeyEntriesHandler : IRequestHandler<UpdateKeyEntriesRequest, 
                 {
                     foreach (var keyToRemove in request.KeysToRemove)
                     {
-                        var keyEntityToRemove = connection.KeyList.FirstOrDefault(p => p.Key.Equals(keyToRemove));
+                        var keyEntityToRemove = connection.KeyList.FirstOrDefault(p => p.RecipientKey.Equals(keyToRemove));
                         if (keyEntityToRemove is not null)
                         {
                             _context.Remove(keyEntityToRemove);

@@ -29,7 +29,7 @@ public class GetKeyEntriesHandler : IRequestHandler<GetKeyEntriesRequest, Result
             {
                 return Result.Ok(connection.KeyList.Select(p => new KeyEntryModel()
                 {
-                    KeyEntry = p.Key,
+                    KeyEntry = p.RecipientKey,
                     RemoteDid = connection.RemoteDid
                 }).ToList());
             }

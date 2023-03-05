@@ -4,6 +4,7 @@ using Blocktrust.Mediator.Server;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Blocktrust.Mediator.Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230305184957_SimplifyNames1")]
+    partial class SimplifyNames1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,7 +27,7 @@ namespace Blocktrust.Mediator.Server.Migrations
 
             modelBuilder.Entity("Blocktrust.Mediator.Server.Entities.ConnectionEntity", b =>
                 {
-                    b.Property<Guid>("ConnectionEntityId")
+                    b.Property<Guid>("MediatorConnectionId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -48,21 +51,21 @@ namespace Blocktrust.Mediator.Server.Migrations
                     b.Property<string>("RoutingDid")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ConnectionEntityId");
+                    b.HasKey("MediatorConnectionId");
 
                     b.ToTable("Connections");
                 });
 
-            modelBuilder.Entity("Blocktrust.Mediator.Server.Entities.ConnectionKeyEntity", b =>
+            modelBuilder.Entity("Blocktrust.Mediator.Server.Entities.MediatorConnectionKeyEntity", b =>
                 {
-                    b.Property<Guid>("ConnectionKeyEntityId")
+                    b.Property<Guid>("MediatorConnectionKeyId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("RecipientKey")
+                    b.Property<string>("Key")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ConnectionKeyEntityId");
+                    b.HasKey("MediatorConnectionKeyId");
 
                     b.ToTable("RecipientKeys");
                 });
@@ -141,11 +144,11 @@ namespace Blocktrust.Mediator.Server.Migrations
                     b.ToTable("StoredMessages");
                 });
 
-            modelBuilder.Entity("Blocktrust.Mediator.Server.Entities.ConnectionKeyEntity", b =>
+            modelBuilder.Entity("Blocktrust.Mediator.Server.Entities.MediatorConnectionKeyEntity", b =>
                 {
                     b.HasOne("Blocktrust.Mediator.Server.Entities.ConnectionEntity", "ConnectionEntity")
                         .WithMany("KeyList")
-                        .HasForeignKey("ConnectionKeyEntityId")
+                        .HasForeignKey("MediatorConnectionKeyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -154,13 +157,13 @@ namespace Blocktrust.Mediator.Server.Migrations
 
             modelBuilder.Entity("Blocktrust.Mediator.Server.Entities.StoredMessageEntity", b =>
                 {
-                    b.HasOne("Blocktrust.Mediator.Server.Entities.ConnectionKeyEntity", "ConnectionKeyEntity")
+                    b.HasOne("Blocktrust.Mediator.Server.Entities.MediatorConnectionKeyEntity", "MediatorConnectionKeyEntity")
                         .WithMany("StoredMessage")
                         .HasForeignKey("StoredMessageEntityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ConnectionKeyEntity");
+                    b.Navigation("MediatorConnectionKeyEntity");
                 });
 
             modelBuilder.Entity("Blocktrust.Mediator.Server.Entities.ConnectionEntity", b =>
@@ -168,7 +171,7 @@ namespace Blocktrust.Mediator.Server.Migrations
                     b.Navigation("KeyList");
                 });
 
-            modelBuilder.Entity("Blocktrust.Mediator.Server.Entities.ConnectionKeyEntity", b =>
+            modelBuilder.Entity("Blocktrust.Mediator.Server.Entities.MediatorConnectionKeyEntity", b =>
                 {
                     b.Navigation("StoredMessage");
                 });

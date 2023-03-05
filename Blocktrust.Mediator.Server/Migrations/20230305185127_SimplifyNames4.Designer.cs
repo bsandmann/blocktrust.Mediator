@@ -4,6 +4,7 @@ using Blocktrust.Mediator.Server;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Blocktrust.Mediator.Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230305185127_SimplifyNames4")]
+    partial class SimplifyNames4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -58,7 +61,7 @@ namespace Blocktrust.Mediator.Server.Migrations
                     b.Property<Guid>("ConnectionKeyEntityId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("RecipientKey")
+                    b.Property<string>("Key")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
