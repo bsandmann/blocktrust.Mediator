@@ -1,22 +1,25 @@
-﻿namespace Blocktrust.Mediator.Client.RootsIntegrationTests;
+﻿namespace Blocktrust.Mediator.Client.LocalIntegrationTests;
 
-using Blocktrust.Mediator.Common.Commands.CreatePeerDid;
 using Commands.ForwardMessage;
 using Commands.MediatorCoordinator.RequestMediation;
 using Commands.MediatorCoordinator.UpdateKeys;
 using Common;
+using Common.Commands.CreatePeerDid;
 using Common.Protocols;
 using DIDComm.Secrets;
 using FluentAssertions;
 using MediatR;
 using Moq;
-using Xunit;
+using Server.Commands.Secrets.GetSecrets;
 
 public class RoutingTests
 {
     private readonly Mock<IMediator> _mediatorMock;
-    private readonly HttpClient _httpClient;
+
+    private readonly string _blocktrustMediatorUri = "https://localhost:7037/";
+    
     private RequestMediationHandler _requestMediationHandler;
+    private readonly HttpClient _httpClient;
     private CreatePeerDidHandler _createPeerDidHandlerAlice;
     private CreatePeerDidHandler _createPeerDidHandlerBob;
     private SendForwardMessageHandler _sendForwardMessageHandler;
@@ -28,21 +31,23 @@ public class RoutingTests
     }
 
     /// <summary>
-    /// This tests assumes that the Roots Mediator is running on http://127.0.0.1:8000
+    /// This tests assumes that the Blocktrust Mediator is running on http:/localhost:7037
     /// </summary>
     [Fact]
     public async Task BobSendsBasicMessageToAlice()
     {
-        // Setup a Did and a mediator for Alice
-        var oobInvitationRootsLocal =
-            "eyJ0eXBlIjoiaHR0cHM6Ly9kaWRjb21tLm9yZy9vdXQtb2YtYmFuZC8yLjAvaW52aXRhdGlvbiIsImlkIjoiNGZjN2Q3NDYtMzk2Ny00NjFjLTg5MTAtMWM5YTBmMjdkYjQ0IiwiZnJvbSI6ImRpZDpwZWVyOjIuRXo2TFNkRWNzVnZ6ZTNjWkpxaTFLRFdyU2N5MmFINW9IOFlkUVJRaTZmNVpIN1lGMi5WejZNa284aXllUDRITTFpS3ZuY2o3TkVRQ3JjeXpQN1Y1VW1ad2N1QXN6NWhZRkJlLlNleUpwWkNJNkltNWxkeTFwWkNJc0luUWlPaUprYlNJc0luTWlPaUpvZEhSd09pOHZNVEkzTGpBdU1DNHhPamd3TURBaUxDSmhJanBiSW1ScFpHTnZiVzB2ZGpJaVhYMCIsImJvZHkiOnsiZ29hbF9jb2RlIjoicmVxdWVzdC1tZWRpYXRlIiwiZ29hbCI6IlJlcXVlc3RNZWRpYXRlIiwibGFiZWwiOiJNZWRpYXRvciIsImFjY2VwdCI6WyJkaWRjb21tL3YyIl19fQ";
+        // First get the OOB from the running mediator
+        var response = await _httpClient.GetAsync(_blocktrustMediatorUri + "oob_url");
+        var resultContent = await response.Content.ReadAsStringAsync();
+        var oob = resultContent.Split("=");
+        var oobInvitation = oob[1];
 
-        var secretResolverInMemoryForAlice = new SecretResolverInMemory();
+         var secretResolverInMemoryForAlice = new SecretResolverInMemory();
         var simpleDidDocResolverForAlice = new SimpleDidDocResolver();
         _createPeerDidHandlerAlice = new CreatePeerDidHandler(secretResolverInMemoryForAlice);
 
         var localDidOfAliceToUseWithTheMediator = await _createPeerDidHandlerAlice.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
-        var request = new RequestMediationRequest(oobInvitationRootsLocal, localDidOfAliceToUseWithTheMediator.Value.PeerDid.Value);
+        var request = new RequestMediationRequest(oobInvitation, localDidOfAliceToUseWithTheMediator.Value.PeerDid.Value);
 
         _requestMediationHandler = new RequestMediationHandler(_httpClient, simpleDidDocResolverForAlice, secretResolverInMemoryForAlice);
         var requestMediationResult = await _requestMediationHandler.Handle(request, CancellationToken.None);
@@ -82,4 +87,6 @@ public class RoutingTests
         // Assert, that the message was accepted and we get a 202
         result.IsSuccess.Should().BeTrue();
     }
+
+  
 }

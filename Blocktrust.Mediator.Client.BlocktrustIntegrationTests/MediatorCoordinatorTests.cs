@@ -5,14 +5,10 @@ using Commands.MediatorCoordinator.RequestMediation;
 using Commands.MediatorCoordinator.UpdateKeys;
 using Common;
 using Common.Commands.CreatePeerDid;
-using Common.Models.OutOfBand;
 using DIDComm.Secrets;
 using FluentAssertions;
-using FluentResults;
 using MediatR;
-using Microsoft.Extensions.Logging;
 using Moq;
-using Server;
 using Server.Commands.Secrets.GetSecrets;
 
 public class MediatorCoordinatorTests
