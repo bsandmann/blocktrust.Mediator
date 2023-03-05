@@ -1,17 +1,13 @@
 ﻿namespace Blocktrust.Mediator.Server.Controllers;
 
-using System.Reflection.Metadata;
-using Blocktrust.Common.Models.Secrets;
 using Blocktrust.Common.Resolver;
-using Commands.Connections.CreateConnection;
-using Commands.Connections.GetConnection;
-using Commands.MediatorCoordinator.AnswerMediation;
+using Commands.DatabaseCommands.CreateConnection;
+using Commands.DatabaseCommands.GetConnection;
+using Commands.MediatorCoordinator.ProcessMediationRequest;
 using Commands.MediatorCoordinator.ProcessQueryMediatorKeys;
 using Commands.MediatorCoordinator.ProcessUpdateMediatorKeys;
 using Commands.OutOfBand.CreateOobInvitation;
 using Commands.OutOfBand.GetOobInvitation;
-using Commands.Secrets.SaveSecrets;
-using Common;
 using Common.Commands.CreatePeerDid;
 using Common.Protocols;
 using DIDComm;
@@ -19,11 +15,9 @@ using DIDComm.Message.FromPriors;
 using DIDComm.Message.Messages;
 using DIDComm.Model.PackEncryptedParamsModels;
 using DIDComm.Model.UnpackParamsModels;
-using DIDComm.Secrets;
 using FluentResults;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Resolver;
 
 [ApiController]
 public class MediatorController : ControllerBase

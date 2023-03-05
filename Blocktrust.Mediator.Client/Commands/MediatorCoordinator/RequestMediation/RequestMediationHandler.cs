@@ -21,14 +21,12 @@ using MediatR;
 
 public class RequestMediationHandler : IRequestHandler<RequestMediationRequest, Result<RequestMediationResponse>>
 {
-    private readonly IMediator _mediator;
     private readonly HttpClient _httpClient;
     private readonly IDidDocResolver _didDocResolver;
     private readonly ISecretResolver _secretResolver;
 
-    public RequestMediationHandler(IMediator mediator, HttpClient httpClient, IDidDocResolver didDocResolver, ISecretResolver secretResolver)
+    public RequestMediationHandler(HttpClient httpClient, IDidDocResolver didDocResolver, ISecretResolver secretResolver)
     {
-        _mediator = mediator;
         _httpClient = httpClient;
         _didDocResolver = didDocResolver;
         _secretResolver = secretResolver;
@@ -36,7 +34,6 @@ public class RequestMediationHandler : IRequestHandler<RequestMediationRequest, 
 
     public async Task<Result<RequestMediationResponse>> Handle(RequestMediationRequest request, CancellationToken cancellationToken)
     {
-
         // We decode the peerDID of the mediator from the invitation
         OobModel? remoteDid;
         try
@@ -103,7 +100,7 @@ public class RequestMediationHandler : IRequestHandler<RequestMediationRequest, 
         }
 
         var content = await response.Content.ReadAsStringAsync(cancellationToken);
-        
+
         var unpackResult = didComm.Unpack(
             new UnpackParamsBuilder(content)
                 .SecretResolver(_secretResolver)
@@ -138,12 +135,12 @@ public class RequestMediationHandler : IRequestHandler<RequestMediationRequest, 
                     return Result.Fail("Unexpected DID rotation");
                 }
             }
-            
+
             return Result.Ok(new RequestMediationResponse(from!, endpointUri, unpackResult.Value.Message.Body["routing_did"].ToString()));
         }
         else
         {
-        return Result.Fail("Error: Unexpected message response type");
+            return Result.Fail("Error: Unexpected message response type");
         }
     }
 }

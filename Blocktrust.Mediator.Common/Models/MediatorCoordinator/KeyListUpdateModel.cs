@@ -4,8 +4,8 @@ using System.Text.Json.Serialization;
 
 public class KeyListUpdateModel
 {
-    [JsonPropertyName("recipient_did")] public string KeyToUpdate { get; set; }
-    [JsonPropertyName("action")] public string UpdateType { get; set; }
+    [JsonPropertyName("recipient_did")] public string KeyToUpdate { get; }
+    [JsonPropertyName("action")] public string UpdateType { get; }
 
     /// <summary>
     /// For serialization / deserialization

@@ -1,10 +1,10 @@
-﻿namespace Blocktrust.Mediator.Client.Commands.Pickup.StatusRequest;
+﻿namespace Blocktrust.Mediator.Client.Commands.Pickup.MessageReceived;
 
 using Common.Models.Pickup;
 using FluentResults;
 using MediatR;
 
-public class StatusRequestRequest : IRequest<Result<StatusRequestResponse>>
+public class MessageReceivedRequest: IRequest<Result<StatusRequestResponse>>
 {
     /// <summary>
     /// The local did which is used to communicate with the mediator 
@@ -19,16 +19,16 @@ public class StatusRequestRequest : IRequest<Result<StatusRequestResponse>>
     public Uri MediatorEndpoint { get; }
 
     /// <summary>
-    /// Optional: a Did to query specifically. When not provides the status returns the messages for all DIDs
+    /// List of messages which have been received be the client and could now be deleted from the mediator 
     /// </summary>
-    public string? RecipientDid { get; }
+    public List<string> MessageIds { get; }
 
 
-    public StatusRequestRequest(string localDid, string mediatorDid, Uri mediatorEndpoint, string? recipientDid = null)
+    public MessageReceivedRequest(string localDid, string mediatorDid, Uri mediatorEndpoint, List<string> messageIds)
     {
         LocalDid = localDid;
         MediatorDid = mediatorDid;
         MediatorEndpoint = mediatorEndpoint;
-        RecipientDid = recipientDid;
+        MessageIds = messageIds;
     }
 }

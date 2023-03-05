@@ -1,10 +1,9 @@
-﻿namespace Blocktrust.Mediator.Server.Commands.Connections.GetKeyEntries;
+﻿namespace Blocktrust.Mediator.Server.Commands.DatabaseCommands.GetKeyEntries;
 
+using Blocktrust.Mediator.Server.Models;
 using FluentResults;
-using GetConnection;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Models;
 
 public class GetKeyEntriesHandler : IRequestHandler<GetKeyEntriesRequest, Result<List<KeyEntryModel>>>
 {

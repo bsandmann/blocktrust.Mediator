@@ -6,7 +6,7 @@ using MediatR;
 
 public class GetSecretsRequest : IRequest<Result<List<Secret>>>
 {
-    public List<string> Kids { get; set; }
+    public List<string> Kids { get; }
 
     public GetSecretsRequest(List<string> kids)
     {

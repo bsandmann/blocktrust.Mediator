@@ -18,14 +18,14 @@ public class SendForwardMessageRequest : IRequest<Result>
     /// <summary>
     /// The DID of the mediator this message goes to
     /// </summary>
-    public string MediatorDid { get; set; }
+    public string MediatorDid { get; }
     
     /// <summary>
     /// THe final recipient, that is the person who registered the mediator this message is send to
     /// </summary>
-    public string RecipientDid { get; set; }
+    public string RecipientDid { get; }
     
-    public Uri MediatorEndpoint { get; set; }
+    public Uri MediatorEndpoint { get; }
 
 
     public SendForwardMessageRequest(string message, string localDid, string mediatorDid, string recipientDid, Uri mediatorEndpoint)

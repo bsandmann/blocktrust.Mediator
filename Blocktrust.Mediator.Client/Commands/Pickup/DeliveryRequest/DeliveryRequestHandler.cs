@@ -1,33 +1,29 @@
-﻿namespace Blocktrust.Mediator.Client.Commands.Pickup.StatusRequest;
+﻿namespace Blocktrust.Mediator.Client.Commands.Pickup.DeliveryRequest;
 
 using System.Net;
 using System.Text;
 using System.Text.Json;
 using Blocktrust.Common.Resolver;
-using Common.Models.Pickup;
-using Common.Protocols;
-using DelieveryRequest;
-using DIDComm;
-using DIDComm.Common.Types;
-using DIDComm.Message.Attachments;
-using DIDComm.Message.Messages;
-using DIDComm.Model.PackEncryptedParamsModels;
-using DIDComm.Model.UnpackParamsModels;
-using DIDComm.Utils;
+using Blocktrust.DIDComm;
+using Blocktrust.DIDComm.Common.Types;
+using Blocktrust.DIDComm.Message.Attachments;
+using Blocktrust.DIDComm.Message.Messages;
+using Blocktrust.DIDComm.Model.PackEncryptedParamsModels;
+using Blocktrust.DIDComm.Model.UnpackParamsModels;
+using Blocktrust.DIDComm.Utils;
+using Blocktrust.Mediator.Common.Models.Pickup;
+using Blocktrust.Mediator.Common.Protocols;
 using FluentResults;
-using ForwardMessage;
 using MediatR;
 
 public class DeliveryRequestHandler : IRequestHandler<DeliveryRequestRequest, Result<DeliveryRequestResponse>>
 {
-    private readonly IMediator _mediator;
     private readonly HttpClient _httpClient;
     private readonly IDidDocResolver _didDocResolver;
     private readonly ISecretResolver _secretResolver;
 
-    public DeliveryRequestHandler(IMediator mediator, HttpClient httpClient, IDidDocResolver didDocResolver, ISecretResolver secretResolver)
+    public DeliveryRequestHandler(HttpClient httpClient, IDidDocResolver didDocResolver, ISecretResolver secretResolver)
     {
-        _mediator = mediator;
         _httpClient = httpClient;
         _didDocResolver = didDocResolver;
         _secretResolver = secretResolver;
@@ -96,9 +92,13 @@ public class DeliveryRequestHandler : IRequestHandler<DeliveryRequestRequest, Re
         {
             //if we don't have any attachments, we should have a status message in the body
             var bodyContent = unpackResult.Value.Message.Body;
-            //TOOD parse that
-            var statusMessage = new StatusRequestResponse();
-            return Result.Ok(new DeliveryRequestResponse(statusMessage));
+            var statusRequestResponseResult = StatusRequestResponse.Parse(bodyContent);
+            if (statusRequestResponseResult.IsFailed)
+            {
+                return statusRequestResponseResult.ToResult();
+            }
+
+            return new DeliveryRequestResponse(statusRequestResponseResult.Value);
         }
 
 
@@ -107,7 +107,7 @@ public class DeliveryRequestHandler : IRequestHandler<DeliveryRequestRequest, Re
         {
             var data = attachment.Data;
             var id = attachment.Id;
-            var innerMessage = string.Empty;
+            string innerMessage;
             if (data is Json)
             {
                 Json? jsonAttachmentData = (Json)data;
@@ -127,7 +127,7 @@ public class DeliveryRequestHandler : IRequestHandler<DeliveryRequestRequest, Re
 
             if (unpackResult.IsFailed)
             {
-                messages.Add(new DeliveryResponseModel(unpackResult.Errors.FirstOrDefault()?.Message));
+                messages.Add(new DeliveryResponseModel(unpackResult.Errors!.FirstOrDefault()?.Message));
             }
             else
             {

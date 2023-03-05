@@ -1,8 +1,8 @@
-﻿namespace Blocktrust.Mediator.Server.Commands.Connections.GetConnection;
+﻿namespace Blocktrust.Mediator.Server.Commands.DatabaseCommands.GetConnection;
 
+using Blocktrust.Mediator.Server.Models;
 using FluentResults;
 using MediatR;
-using Models;
 
 public class GetConnectionRequest  : IRequest<Result<MediatorConnectionModel>>
 {

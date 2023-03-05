@@ -1,6 +1,6 @@
-﻿namespace Blocktrust.Mediator.Server.Commands.Connections.CreateConnection;
+﻿namespace Blocktrust.Mediator.Server.Commands.DatabaseCommands.CreateConnection;
 
-using Entities;
+using Blocktrust.Mediator.Server.Entities;
 using FluentResults;
 using MediatR;
 

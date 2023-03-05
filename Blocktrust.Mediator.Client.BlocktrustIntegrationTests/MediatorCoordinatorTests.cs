@@ -50,7 +50,7 @@ public class MediatorCoordinatorTests
         var request = new RequestMediationRequest(oobInvitation, localDid.Value.PeerDid.Value);
 
         // Act
-        _requestMediationHandler = new RequestMediationHandler(_mediatorMock.Object, _httpClient, new SimpleDidDocResolver(), secretResolverInMemory);
+        _requestMediationHandler = new RequestMediationHandler(_httpClient, new SimpleDidDocResolver(), secretResolverInMemory);
         var result = await _requestMediationHandler.Handle(request, CancellationToken.None);
 
         // Assert
@@ -77,7 +77,7 @@ public class MediatorCoordinatorTests
         var localDid = await _createPeerDidHandler.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
         var firstRequest = new RequestMediationRequest(oobInvitation, localDid.Value.PeerDid.Value);
 
-        _requestMediationHandler = new RequestMediationHandler(_mediatorMock.Object, _httpClient, new SimpleDidDocResolver(), secretResolverInMemory);
+        _requestMediationHandler = new RequestMediationHandler(_httpClient, new SimpleDidDocResolver(), secretResolverInMemory);
         var firstResult = await _requestMediationHandler.Handle(firstRequest, CancellationToken.None);
         firstResult.IsSuccess.Should().BeTrue();
         firstResult.Value.MediationGranted.Should().BeTrue();
@@ -112,7 +112,7 @@ public class MediatorCoordinatorTests
         var localDid = await _createPeerDidHandler.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
         var request = new RequestMediationRequest(oobInvitation, localDid.Value.PeerDid.Value);
 
-        _requestMediationHandler = new RequestMediationHandler(_mediatorMock.Object, _httpClient, simpleDidDocResolver, secretResolverInMemory);
+        _requestMediationHandler = new RequestMediationHandler(_httpClient, simpleDidDocResolver, secretResolverInMemory);
         var mediationResult = await _requestMediationHandler.Handle(request, CancellationToken.None);
 
         mediationResult.IsSuccess.Should().BeTrue();
@@ -121,7 +121,7 @@ public class MediatorCoordinatorTests
         // Act
         var someTestKeysToAdd = await _createPeerDidHandler.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
         var addKeyRequest = new UpdateMediatorKeysRequest(mediationResult.Value.MediatorEndpoint, mediationResult.Value.MediatorDid, localDid.Value.PeerDid.Value, new List<string>() { someTestKeysToAdd.Value.PeerDid.Value }, new List<string>());
-        var addMediatorKeysHandler = new UpdateMediatorKeysHandler(_mediatorMock.Object, _httpClient, simpleDidDocResolver, secretResolverInMemory);
+        var addMediatorKeysHandler = new UpdateMediatorKeysHandler(_httpClient, simpleDidDocResolver, secretResolverInMemory);
         var addKeyResult = await addMediatorKeysHandler.Handle(addKeyRequest, CancellationToken.None);
 
         // Assert
@@ -147,7 +147,7 @@ public class MediatorCoordinatorTests
         var localDid = await _createPeerDidHandler.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
         var request = new RequestMediationRequest(oobInvitation, localDid.Value.PeerDid.Value);
 
-        _requestMediationHandler = new RequestMediationHandler(_mediatorMock.Object, _httpClient, simpleDidDocResolver, secretResolverInMemory);
+        _requestMediationHandler = new RequestMediationHandler(_httpClient, simpleDidDocResolver, secretResolverInMemory);
         var mediationResult = await _requestMediationHandler.Handle(request, CancellationToken.None);
 
         mediationResult.IsSuccess.Should().BeTrue();
@@ -155,7 +155,7 @@ public class MediatorCoordinatorTests
 
         var someTestKeysToAdd = await _createPeerDidHandler.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
         var addKeyRequest = new UpdateMediatorKeysRequest(mediationResult.Value.MediatorEndpoint, mediationResult.Value.MediatorDid, localDid.Value.PeerDid.Value, new List<string>() { someTestKeysToAdd.Value.PeerDid.Value }, new List<string>());
-        var updateMediatorKeysHandler = new UpdateMediatorKeysHandler(_mediatorMock.Object, _httpClient, simpleDidDocResolver, secretResolverInMemory);
+        var updateMediatorKeysHandler = new UpdateMediatorKeysHandler(_httpClient, simpleDidDocResolver, secretResolverInMemory);
         var addKeyResult = await updateMediatorKeysHandler.Handle(addKeyRequest, CancellationToken.None);
 
         addKeyResult.IsSuccess.Should().BeTrue();
@@ -188,7 +188,7 @@ public class MediatorCoordinatorTests
         var localDid = await _createPeerDidHandler.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
         var request = new RequestMediationRequest(oobInvitation, localDid.Value.PeerDid.Value);
 
-        _requestMediationHandler = new RequestMediationHandler(_mediatorMock.Object, _httpClient, simpleDidDocResolver, secretResolverInMemory);
+        _requestMediationHandler = new RequestMediationHandler(_httpClient, simpleDidDocResolver, secretResolverInMemory);
         var mediationResult = await _requestMediationHandler.Handle(request, CancellationToken.None);
 
         mediationResult.IsSuccess.Should().BeTrue();
@@ -196,14 +196,14 @@ public class MediatorCoordinatorTests
 
         var someTestKeysToAdd = await _createPeerDidHandler.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
         var addKeyRequest = new UpdateMediatorKeysRequest(mediationResult.Value.MediatorEndpoint, mediationResult.Value.MediatorDid, localDid.Value.PeerDid.Value, new List<string>() { someTestKeysToAdd.Value.PeerDid.Value }, new List<string>());
-        var addMediatorKeysHandler = new UpdateMediatorKeysHandler(_mediatorMock.Object, _httpClient, simpleDidDocResolver, secretResolverInMemory);
+        var addMediatorKeysHandler = new UpdateMediatorKeysHandler(_httpClient, simpleDidDocResolver, secretResolverInMemory);
         var addKeyResult = await addMediatorKeysHandler.Handle(addKeyRequest, CancellationToken.None);
 
         addKeyResult.IsSuccess.Should().BeTrue();
 
         // Act
         var queryKeysRequest = new QueryMediatorKeysRequest(mediationResult.Value.MediatorEndpoint, mediationResult.Value.MediatorDid, localDid.Value.PeerDid.Value);
-        var queryMediatorKeysHandler = new QueryMediatorKeysHandler(_mediatorMock.Object, _httpClient, simpleDidDocResolver, secretResolverInMemory);
+        var queryMediatorKeysHandler = new QueryMediatorKeysHandler(_httpClient, simpleDidDocResolver, secretResolverInMemory);
         var queryKeyResult = await queryMediatorKeysHandler.Handle(queryKeysRequest, CancellationToken.None);
 
         // Assert

@@ -1,17 +1,17 @@
-namespace Blocktrust.Mediator.Server.Commands.MediatorCoordinator.AnswerMediation;
+namespace Blocktrust.Mediator.Server.Commands.MediatorCoordinator.ProcessMediationRequest;
 
-using DIDComm.Message.FromPriors;
-using DIDComm.Message.Messages;
+using Blocktrust.DIDComm.Message.FromPriors;
+using Blocktrust.DIDComm.Message.Messages;
 using FluentResults;
 using MediatR;
 
 public class ProcessMediationRequestRequest  : IRequest<Result<Message>>
 {
-    public Message UnpackedMessage { get; set; }
-    public string SenderDid { get; set; }
-    public string MediatorDid { get; set; }
-    public string HostUrl { get; set; }
-    public FromPrior? FromPrior { get; set; }
+    public Message UnpackedMessage { get; }
+    public string SenderDid { get; }
+    public string MediatorDid { get; }
+    public string HostUrl { get; }
+    public FromPrior? FromPrior { get; }
     
     public ProcessMediationRequestRequest(Message unpackedMessage, string senderDid, string mediatorDid, string hostUrl, FromPrior? fromPrior)
     {

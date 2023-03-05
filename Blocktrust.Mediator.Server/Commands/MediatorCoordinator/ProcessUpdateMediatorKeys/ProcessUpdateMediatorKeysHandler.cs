@@ -1,37 +1,24 @@
-﻿namespace Blocktrust.Mediator.Server.Commands.MediatorCoordinator.AnswerMediation;
+﻿namespace Blocktrust.Mediator.Server.Commands.MediatorCoordinator.ProcessUpdateMediatorKeys;
 
 using System.Text.Json;
-using System.Text.Json.Nodes;
-using Blocktrust.Common.Resolver;
-using Common.Commands.CreatePeerDid;
-using Common.Models.MediatorCoordinator;
-using Common.Protocols;
-using Connections.CreateConnection;
-using Connections.GetConnection;
-using Connections.UpdateConnection;
-using Connections.UpdateKeyEntries;
-using DIDComm.Message.Messages;
-using Entities;
+using Blocktrust.DIDComm.Message.Messages;
+using Blocktrust.Mediator.Common.Models.MediatorCoordinator;
+using Blocktrust.Mediator.Common.Protocols;
+using DatabaseCommands.GetConnection;
+using DatabaseCommands.UpdateKeyEntries;
 using FluentResults;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
-using ProcessUpdateMediatorKeys;
 
 public class ProcessUpdateMediatorKeysHandler : IRequestHandler<ProcessUpdateMediatorKeysRequest, Result<Message>>
 {
-    private readonly DataContext _context;
     private readonly IMediator _mediator;
-    private readonly ISecretResolver _secretResolver;
 
     /// <summary>
     /// Constructor
     /// </summary>
-    /// <param name="context"></param>
-    public ProcessUpdateMediatorKeysHandler(DataContext context, IMediator mediator, ISecretResolver secretResolver)
+    public ProcessUpdateMediatorKeysHandler(IMediator mediator)
     {
-        this._context = context;
         this._mediator = mediator;
-        this._secretResolver = secretResolver;
     }
 
     public async Task<Result<Message>> Handle(ProcessUpdateMediatorKeysRequest request, CancellationToken cancellationToken)

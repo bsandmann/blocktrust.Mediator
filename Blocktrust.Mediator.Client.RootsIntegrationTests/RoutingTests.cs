@@ -1,19 +1,15 @@
 ﻿namespace Blocktrust.Mediator.Client.RootsIntegrationTests;
 
-using Blocktrust.Common.Resolver;
 using Blocktrust.Mediator.Common.Commands.CreatePeerDid;
 using Commands.ForwardMessage;
-using Commands.MediatorCoordinator.QueryKeys;
 using Commands.MediatorCoordinator.RequestMediation;
 using Commands.MediatorCoordinator.UpdateKeys;
 using Common;
 using Common.Protocols;
 using DIDComm.Secrets;
 using FluentAssertions;
-using FluentResults;
 using MediatR;
 using Moq;
-using PeerDID.PeerDIDCreateResolve;
 using Xunit;
 
 public class RoutingTests
@@ -48,7 +44,7 @@ public class RoutingTests
         var localDidOfAliceToUseWithTheMediator = await _createPeerDidHandlerAlice.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
         var request = new RequestMediationRequest(oobInvitationRootsLocal, localDidOfAliceToUseWithTheMediator.Value.PeerDid.Value);
 
-        _requestMediationHandler = new RequestMediationHandler(_mediatorMock.Object, _httpClient, simpleDidDocResolverForAlice, secretResolverInMemoryForAlice);
+        _requestMediationHandler = new RequestMediationHandler(_httpClient, simpleDidDocResolverForAlice, secretResolverInMemoryForAlice);
         var requestMediationResult = await _requestMediationHandler.Handle(request, CancellationToken.None);
 
         // Alice create now an additional DID to be used with Bob. Important: The service endpoint of the DID must be set to the mediator endpoint
@@ -56,7 +52,7 @@ public class RoutingTests
 
         // Alice registers the new DID with the mediator, so the mediator can now accept messages from Bob to Alice
         var addKeyRequest = new UpdateMediatorKeysRequest(requestMediationResult.Value.MediatorEndpoint, requestMediationResult.Value.MediatorDid, localDidOfAliceToUseWithTheMediator.Value.PeerDid.Value, new List<string>() { localDidOfAliceToUseWithBob.Value.PeerDid.Value }, new List<string>());
-        var addMediatorKeysHandler = new UpdateMediatorKeysHandler(_mediatorMock.Object, _httpClient, simpleDidDocResolverForAlice, secretResolverInMemoryForAlice);
+        var addMediatorKeysHandler = new UpdateMediatorKeysHandler(_httpClient, simpleDidDocResolverForAlice, secretResolverInMemoryForAlice);
         var addKeyResult = await addMediatorKeysHandler.Handle(addKeyRequest, CancellationToken.None);
         addKeyResult.IsSuccess.Should().BeTrue();
 

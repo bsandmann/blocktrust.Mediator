@@ -1,10 +1,9 @@
-﻿namespace Blocktrust.Mediator.Server.Commands.Connections.UpdateConnection;
+﻿namespace Blocktrust.Mediator.Server.Commands.DatabaseCommands.UpdateConnection;
 
-using Entities;
+using Blocktrust.Mediator.Server.Models;
 using FluentResults;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Models;
 
 public class UpdateConnectionMediationHandler : IRequestHandler<UpdateConnectionMediationRequest, Result<MediatorConnectionModel>>
 {

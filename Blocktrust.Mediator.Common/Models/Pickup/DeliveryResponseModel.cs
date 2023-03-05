@@ -4,10 +4,10 @@ using DIDComm.Message.Messages;
 
 public class DeliveryResponseModel
 {
-    public string? MessageId { get; set; }
-    public Message? Message { get; set; }
-    public bool IsSuccess { get; set; }
-    public string? Error { get; set; }
+    public string? MessageId { get; }
+    public Message? Message { get; }
+    public bool IsSuccess { get; }
+    public string? Error { get; }
 
     public DeliveryResponseModel(string error)
     {

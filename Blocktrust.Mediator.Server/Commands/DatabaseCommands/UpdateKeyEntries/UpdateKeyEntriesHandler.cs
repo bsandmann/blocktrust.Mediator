@@ -1,4 +1,4 @@
-﻿namespace Blocktrust.Mediator.Server.Commands.Connections.UpdateKeyEntries;
+﻿namespace Blocktrust.Mediator.Server.Commands.DatabaseCommands.UpdateKeyEntries;
 
 using Blocktrust.Mediator.Server.Entities;
 using FluentResults;

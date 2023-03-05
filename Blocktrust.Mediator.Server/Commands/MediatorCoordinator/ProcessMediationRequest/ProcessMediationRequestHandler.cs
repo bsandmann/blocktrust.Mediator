@@ -1,33 +1,23 @@
-namespace Blocktrust.Mediator.Server.Commands.MediatorCoordinator.AnswerMediation;
+namespace Blocktrust.Mediator.Server.Commands.MediatorCoordinator.ProcessMediationRequest;
 
-using System.Text.Json.Nodes;
-using Blocktrust.Common.Resolver;
-using Common.Commands.CreatePeerDid;
-using Common.Protocols;
-using Connections.CreateConnection;
-using Connections.GetConnection;
-using Connections.UpdateConnection;
-using DIDComm.Message.Messages;
-using Entities;
+using Blocktrust.DIDComm.Message.Messages;
+using Blocktrust.Mediator.Common.Commands.CreatePeerDid;
+using Blocktrust.Mediator.Common.Protocols;
+using DatabaseCommands.GetConnection;
+using DatabaseCommands.UpdateConnection;
 using FluentResults;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 public class ProcessMediationRequestHandler : IRequestHandler<ProcessMediationRequestRequest, Result<Message>>
 {
-    private readonly DataContext _context;
     private readonly IMediator _mediator;
-    private readonly ISecretResolver _secretResolver;
 
     /// <summary>
     /// Constructor
     /// </summary>
-    /// <param name="context"></param>
-    public ProcessMediationRequestHandler(DataContext context, IMediator mediator, ISecretResolver secretResolver)
+    public ProcessMediationRequestHandler(IMediator mediator)
     {
-        this._context = context;
         this._mediator = mediator;
-        this._secretResolver = secretResolver;
     }
 
     public async Task<Result<Message>> Handle(ProcessMediationRequestRequest requestRequest, CancellationToken cancellationToken)

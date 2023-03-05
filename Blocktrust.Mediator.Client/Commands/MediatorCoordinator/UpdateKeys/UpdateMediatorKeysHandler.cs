@@ -17,14 +17,12 @@ using MediatR;
 
 public class UpdateMediatorKeysHandler : IRequestHandler<UpdateMediatorKeysRequest, Result>
 {
-    private readonly IMediator _mediator;
     private readonly HttpClient _httpClient;
     private readonly IDidDocResolver _didDocResolver;
     private readonly ISecretResolver _secretResolver;
 
-    public UpdateMediatorKeysHandler(IMediator mediator, HttpClient httpClient, IDidDocResolver didDocResolver, ISecretResolver secretResolver)
+    public UpdateMediatorKeysHandler(HttpClient httpClient, IDidDocResolver didDocResolver, ISecretResolver secretResolver)
     {
-        _mediator = mediator;
         _httpClient = httpClient;
         _didDocResolver = didDocResolver;
         _secretResolver = secretResolver;

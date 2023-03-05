@@ -1,4 +1,4 @@
-﻿namespace Blocktrust.Mediator.Client.Commands.MediatorCoordinator.UpdateKeys;
+﻿namespace Blocktrust.Mediator.Client.Commands.MediatorCoordinator.QueryKeys;
 
 using System.Net;
 using System.Text;
@@ -11,21 +11,17 @@ using Blocktrust.DIDComm.Message.Messages;
 using Blocktrust.DIDComm.Model.PackEncryptedParamsModels;
 using Blocktrust.DIDComm.Model.UnpackParamsModels;
 using Blocktrust.Mediator.Common.Protocols;
-using Common.Models.MediatorCoordinator;
 using FluentResults;
 using MediatR;
-using QueryKeys;
 
 public class QueryMediatorKeysHandler : IRequestHandler<QueryMediatorKeysRequest, Result<List<string>>>
 {
-    private readonly IMediator _mediator;
     private readonly HttpClient _httpClient;
     private readonly IDidDocResolver _didDocResolver;
     private readonly ISecretResolver _secretResolver;
 
-    public QueryMediatorKeysHandler(IMediator mediator, HttpClient httpClient, IDidDocResolver didDocResolver, ISecretResolver secretResolver)
+    public QueryMediatorKeysHandler(HttpClient httpClient, IDidDocResolver didDocResolver, ISecretResolver secretResolver)
     {
-        _mediator = mediator;
         _httpClient = httpClient;
         _didDocResolver = didDocResolver;
         _secretResolver = secretResolver;
