@@ -14,21 +14,21 @@ using Moq;
 using PeerDID.PeerDIDCreateResolve;
 using Xunit;
 
-public class MediationCoordinatorTestsAgainstBlocktrustMediator
+public class MediationCoordinatorTests
 {
     private readonly Mock<IMediator> _mediatorMock;
     private readonly HttpClient _httpClient;
     private RequestMediationHandler _requestMediationHandler;
     private CreatePeerDidHandler _createPeerDidHandler;
 
-    public MediationCoordinatorTestsAgainstBlocktrustMediator()
+    public MediationCoordinatorTests()
     {
         _mediatorMock = new Mock<IMediator>();
         _httpClient = new HttpClient();
     }
 
     /// <summary>
-    /// This tests assumes that the Blocktrust Mediator is running on http:/localhost:7037
+    /// This tests assumes that the Roots Mediator is running on http:/localhost:7037
     /// </summary>
     [Fact]
     public async Task InitiateMediateRequestsGetsGranted()
@@ -54,6 +54,9 @@ public class MediationCoordinatorTestsAgainstBlocktrustMediator
     }
 
 
+    /// <summary>
+    /// This tests assumes that the Roots Mediator is running on http:/localhost:7037
+    /// </summary>
     [Fact]
     public async Task InitiateMediateRequestsGetsDeniedTheSecondTimeBecauseOfExistingConnection()
     {
@@ -82,6 +85,9 @@ public class MediationCoordinatorTestsAgainstBlocktrustMediator
         secondResult.Value.MediationGranted.Should().BeFalse();
     }
 
+    /// <summary>
+    /// This tests assumes that the Roots Mediator is running on http:/localhost:7037
+    /// </summary>
     [Fact]
     public async Task AddKeyToExistingConnection()
     {
@@ -112,6 +118,9 @@ public class MediationCoordinatorTestsAgainstBlocktrustMediator
         addKeyResult.IsSuccess.Should().BeTrue();
     }
 
+    /// <summary>
+    /// This tests assumes that the Roots Mediator is running on http:/localhost:7037
+    /// </summary>
     [Fact]
     public async Task AddKeyAndThenRemoveKeyToExistingConnection()
     {
@@ -148,6 +157,9 @@ public class MediationCoordinatorTestsAgainstBlocktrustMediator
         removeKeyResult.IsSuccess.Should().BeTrue();
     }
 
+    /// <summary>
+    /// This tests assumes that the Roots Mediator is running on http:/localhost:7037
+    /// </summary>
     [Fact]
     public async Task AddKeyToExistingConnectionAndQuery()
     {
@@ -179,7 +191,7 @@ public class MediationCoordinatorTestsAgainstBlocktrustMediator
         var queryKeysRequest = new QueryMediatorKeysRequest(mediationResult.Value.MediatorEndpoint, mediationResult.Value.MediatorDid, localDid.Value.PeerDid.Value);
         var queryMediatorKeysHandler = new QueryMediatorKeysHandler(_mediatorMock.Object, _httpClient, simpleDidDocResolver, secretResolverInMemory);
         var queryKeyResult = await queryMediatorKeysHandler.Handle(queryKeysRequest, CancellationToken.None);
-        
+
         // Assert
         queryKeyResult.IsSuccess.Should().BeTrue();
         queryKeyResult.Value.Count.Should().Be(1);

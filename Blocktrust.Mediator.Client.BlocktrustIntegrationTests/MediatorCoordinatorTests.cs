@@ -15,7 +15,7 @@ using Moq;
 using Server;
 using Server.Commands.Secrets.GetSecrets;
 
-public class MedidationCoordinatorTestsAgainstBlocktrustMediator
+public class MediatorCoordinatorTests
 {
     private readonly Mock<IMediator> _mediatorMock;
 
@@ -25,12 +25,15 @@ public class MedidationCoordinatorTestsAgainstBlocktrustMediator
     private RequestMediationHandler _requestMediationHandler;
     private readonly HttpClient _httpClient;
 
-    public MedidationCoordinatorTestsAgainstBlocktrustMediator()
+    public MediatorCoordinatorTests()
     {
         _mediatorMock = new Mock<IMediator>();
         _httpClient = new HttpClient();
     }
 
+    /// <summary>
+    /// This tests assumes that the Blocktrust Mediator is running on http:/localhost:7037
+    /// </summary>
     [Fact]
     public async Task InitiateMediateRequestsGetsGranted()
     {
@@ -43,7 +46,7 @@ public class MedidationCoordinatorTestsAgainstBlocktrustMediator
         var secretResolverInMemory = new SecretResolverInMemory();
         _createPeerDidHandler = new CreatePeerDidHandler(secretResolverInMemory);
 
-        var localDid =  await _createPeerDidHandler.Handle(new CreatePeerDidRequest(),cancellationToken: new CancellationToken());
+        var localDid = await _createPeerDidHandler.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
         var request = new RequestMediationRequest(oobInvitation, localDid.Value.PeerDid.Value);
 
         // Act
@@ -55,7 +58,10 @@ public class MedidationCoordinatorTestsAgainstBlocktrustMediator
         result.Value.MediationGranted.Should().BeTrue();
         result.Value.RoutingDid.Should().NotBeNullOrEmpty();
     }
-    
+
+    /// <summary>
+    /// This tests assumes that the Blocktrust Mediator is running on http:/localhost:7037
+    /// </summary>
     [Fact]
     public async Task InitiateMediateRequestsGetsDeniedTheSecondTimeBecauseOfExistingConnection()
     {
@@ -63,8 +69,8 @@ public class MedidationCoordinatorTestsAgainstBlocktrustMediator
         var response = await _httpClient.GetAsync(_blocktrustMediatorUri + "oob_url");
         var resultContent = await response.Content.ReadAsStringAsync();
         var oob = resultContent.Split("=");
-        var oobInvitation = oob[1]; 
-        
+        var oobInvitation = oob[1];
+
         var secretResolverInMemory = new SecretResolverInMemory();
         _createPeerDidHandler = new CreatePeerDidHandler(secretResolverInMemory);
 
@@ -85,17 +91,20 @@ public class MedidationCoordinatorTestsAgainstBlocktrustMediator
         secondResult.IsSuccess.Should().BeTrue();
         secondResult.Value.MediationGranted.Should().BeFalse();
     }
-    
-     [Fact]
+
+    /// <summary>
+    /// This tests assumes that the Blocktrust Mediator is running on http:/localhost:7037
+    /// </summary>
+    [Fact]
     public async Task AddKeyToExistingConnection()
     {
         // Arrange
         var response = await _httpClient.GetAsync(_blocktrustMediatorUri + "oob_url");
         var resultContent = await response.Content.ReadAsStringAsync();
         var oob = resultContent.Split("=");
-        var oobInvitation = oob[1]; 
-        
-        
+        var oobInvitation = oob[1];
+
+
         var secretResolverInMemory = new SecretResolverInMemory();
         var simpleDidDocResolver = new SimpleDidDocResolver();
         _createPeerDidHandler = new CreatePeerDidHandler(secretResolverInMemory);
@@ -118,16 +127,19 @@ public class MedidationCoordinatorTestsAgainstBlocktrustMediator
         // Assert
         addKeyResult.IsSuccess.Should().BeTrue();
     }
-    
-      [Fact]
+
+    /// <summary>
+    /// This tests assumes that the Blocktrust Mediator is running on http:/localhost:7037
+    /// </summary>
+    [Fact]
     public async Task AddKeyAndThenRemoveKeyToExistingConnection()
     {
         // Arrange
         var response = await _httpClient.GetAsync(_blocktrustMediatorUri + "oob_url");
         var resultContent = await response.Content.ReadAsStringAsync();
         var oob = resultContent.Split("=");
-        var oobInvitation = oob[1]; 
-        
+        var oobInvitation = oob[1];
+
         var secretResolverInMemory = new SecretResolverInMemory();
         var simpleDidDocResolver = new SimpleDidDocResolver();
         _createPeerDidHandler = new CreatePeerDidHandler(secretResolverInMemory);
@@ -156,16 +168,19 @@ public class MedidationCoordinatorTestsAgainstBlocktrustMediator
         // Assert
         removeKeyResult.IsSuccess.Should().BeTrue();
     }
-    
-     [Fact]
+
+    /// <summary>
+    /// This tests assumes that the Blocktrust Mediator is running on http:/localhost:7037
+    /// </summary>
+    [Fact]
     public async Task AddKeyToExistingConnectionAndQuery()
     {
         // Arrange
         var response = await _httpClient.GetAsync(_blocktrustMediatorUri + "oob_url");
         var resultContent = await response.Content.ReadAsStringAsync();
         var oob = resultContent.Split("=");
-        var oobInvitation = oob[1]; 
-        
+        var oobInvitation = oob[1];
+
         var secretResolverInMemory = new SecretResolverInMemory();
         var simpleDidDocResolver = new SimpleDidDocResolver();
         _createPeerDidHandler = new CreatePeerDidHandler(secretResolverInMemory);
@@ -190,7 +205,7 @@ public class MedidationCoordinatorTestsAgainstBlocktrustMediator
         var queryKeysRequest = new QueryMediatorKeysRequest(mediationResult.Value.MediatorEndpoint, mediationResult.Value.MediatorDid, localDid.Value.PeerDid.Value);
         var queryMediatorKeysHandler = new QueryMediatorKeysHandler(_mediatorMock.Object, _httpClient, simpleDidDocResolver, secretResolverInMemory);
         var queryKeyResult = await queryMediatorKeysHandler.Handle(queryKeysRequest, CancellationToken.None);
-        
+
         // Assert
         queryKeyResult.IsSuccess.Should().BeTrue();
         queryKeyResult.Value.Count.Should().Be(1);
