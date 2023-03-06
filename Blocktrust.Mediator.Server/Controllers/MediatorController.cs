@@ -9,6 +9,7 @@ using Commands.MediatorCoordinator.ProcessQueryMediatorKeys;
 using Commands.MediatorCoordinator.ProcessUpdateMediatorKeys;
 using Commands.OutOfBand.CreateOobInvitation;
 using Commands.OutOfBand.GetOobInvitation;
+using Commands.Pickup.ProcessStatusRequest;
 using Common.Commands.CreatePeerDid;
 using Common.Protocols;
 using DIDComm;
@@ -165,6 +166,10 @@ public class MediatorController : ControllerBase
         else if (unpacked.Value.Message.Type == ProtocolConstants.CoordinateMediation2KeylistQuery)
         {
             result = await _mediator.Send(new ProcessQueryMediatorKeysRequest(unpacked.Value.Message, senderDid, mediatorDid, hostUrl, fromPrior));
+        }
+        else if (unpacked.Value.Message.Type == ProtocolConstants.MessagePickup3StatusRequest)
+        {
+            result = await _mediator.Send(new ProcessPickupStatusRequestRequest(unpacked.Value.Message, senderDid, mediatorDid, hostUrl, fromPrior));
         }
         else if (unpacked.Value.Message.Type == ProtocolConstants.ForwardMessage)
         {

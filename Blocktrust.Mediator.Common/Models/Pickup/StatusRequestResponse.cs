@@ -6,6 +6,8 @@ using FluentResults;
 
 public class StatusRequestResponse
 {
+    //TODO Is this really used? the Jsonproperty is not used in the server or in the client i belive
+    
     /// <summary>
     /// Required: Number of messages in the mediator ready to be picked up
     /// </summary>

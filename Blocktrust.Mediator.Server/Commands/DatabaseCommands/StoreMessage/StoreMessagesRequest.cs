@@ -1,6 +1,5 @@
 ﻿namespace Blocktrust.Mediator.Server.Commands.DatabaseCommands.StoreMessage;
 
-using DIDComm.Message.Messages;
 using FluentResults;
 using MediatR;
 using Models;

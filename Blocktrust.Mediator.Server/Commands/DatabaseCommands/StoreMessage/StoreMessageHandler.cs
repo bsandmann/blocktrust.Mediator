@@ -4,7 +4,6 @@ using Entities;
 using FluentResults;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Models;
 
 public class StoreMessageHandler : IRequestHandler<StoreMessagesRequest, Result>
 {
@@ -40,7 +39,8 @@ public class StoreMessageHandler : IRequestHandler<StoreMessagesRequest, Result>
                     Created = DateTime.Now,
                     MessageId = message.MessageId,
                     MessageHash = "123",
-                    Message = message.Message
+                    Message = message.Message,
+                    MessageSize =  System.Text.Encoding.UTF8.GetByteCount(message.Message)
                 });
                 _context.Update(recipientKey);
             }

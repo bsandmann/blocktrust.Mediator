@@ -13,12 +13,12 @@ public class StoredMessageEntity
     public DateTime Created { get; set; }
 
     /// <summary>
-    /// The attachment of the message. Should be encrypted
+    /// The Id of the message as a selector for deletion
     /// </summary>
     public string MessageId { get; set; }
 
     /// <summary>
-    /// The attachment of the message. Should be encrypted
+    /// The hash of the message. For finding duplicates
     /// </summary>
     public string MessageHash { get; set; }
 
@@ -26,6 +26,11 @@ public class StoredMessageEntity
     /// The attachment of the message. Should be encrypted
     /// </summary>
     public string Message { get; set; }
+    
+    /// <summary>
+    /// Size of the Message in bytes
+    /// </summary>
+    public long MessageSize { get; set; }
 
     /// <summary>
     /// FK
