@@ -56,10 +56,10 @@ public class RoutingTests
         var localDidOfAliceToUseWithBob = await _createPeerDidHandlerAlice.Handle(new CreatePeerDidRequest(serviceEndpoint: requestMediationResult.Value.MediatorEndpoint), cancellationToken: new CancellationToken());
 
         // Alice registers the new DID with the mediator, so the mediator can now accept messages from Bob to Alice
-        var addKeyRequest = new UpdateMediatorKeysRequest(requestMediationResult.Value.MediatorEndpoint, requestMediationResult.Value.MediatorDid, localDidOfAliceToUseWithTheMediator.Value.PeerDid.Value, new List<string>() { localDidOfAliceToUseWithBob.Value.PeerDid.Value }, new List<string>());
-        var addMediatorKeysHandler = new UpdateMediatorKeysHandler(_httpClient, simpleDidDocResolverForAlice, secretResolverInMemoryForAlice);
-        var addKeyResult = await addMediatorKeysHandler.Handle(addKeyRequest, CancellationToken.None);
-        addKeyResult.IsSuccess.Should().BeTrue();
+        var updateKeyRequest = new UpdateMediatorKeysRequest(requestMediationResult.Value.MediatorEndpoint, requestMediationResult.Value.MediatorDid, localDidOfAliceToUseWithTheMediator.Value.PeerDid.Value, new List<string>() { localDidOfAliceToUseWithBob.Value.PeerDid.Value }, new List<string>());
+        var updateMediatorKeysHandler = new UpdateMediatorKeysHandler(_httpClient, simpleDidDocResolverForAlice, secretResolverInMemoryForAlice);
+        var updateKeyResult = await updateMediatorKeysHandler.Handle(updateKeyRequest, CancellationToken.None);
+        updateKeyResult.IsSuccess.Should().BeTrue();
 
         // Bob creates its own DID
         var secretResolverInMemoryForBob = new SecretResolverInMemory();

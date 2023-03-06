@@ -40,7 +40,7 @@ public class DataContext : DbContext
 
         modelBuilder.Entity<StoredMessageEntity>()
             .HasKey(b => b.StoredMessageEntityId);
-        modelBuilder.Entity<StoredMessageEntity>().Property(b => b.MediatorConnectionKeyId).HasValueGenerator(typeof(SequentialGuidValueGenerator));
+        modelBuilder.Entity<StoredMessageEntity>().Property(b => b.StoredMessageEntityId).HasValueGenerator(typeof(SequentialGuidValueGenerator));
 
         modelBuilder.Entity<ConnectionKeyEntity>()
             .HasOne(p => p.ConnectionEntity)

@@ -22,8 +22,6 @@ public class ProcessMediationRequestHandler : IRequestHandler<ProcessMediationRe
 
     public async Task<Result<Message>> Handle(ProcessMediationRequestRequest requestRequest, CancellationToken cancellationToken)
     {
-        //TODO handle the different cases: keylist update, keylist query
-
         // If we already have a mediation, we deny the request
         var existingConnection = await _mediator.Send(new GetConnectionRequest(requestRequest.SenderDid));
         if (existingConnection.IsFailed)

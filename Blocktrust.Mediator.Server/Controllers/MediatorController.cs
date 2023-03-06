@@ -3,6 +3,7 @@
 using Blocktrust.Common.Resolver;
 using Commands.DatabaseCommands.CreateConnection;
 using Commands.DatabaseCommands.GetConnection;
+using Commands.ForwardMessage;
 using Commands.MediatorCoordinator.ProcessMediationRequest;
 using Commands.MediatorCoordinator.ProcessQueryMediatorKeys;
 using Commands.MediatorCoordinator.ProcessUpdateMediatorKeys;
@@ -164,6 +165,16 @@ public class MediatorController : ControllerBase
         else if (unpacked.Value.Message.Type == ProtocolConstants.CoordinateMediation2KeylistQuery)
         {
             result = await _mediator.Send(new ProcessQueryMediatorKeysRequest(unpacked.Value.Message, senderDid, mediatorDid, hostUrl, fromPrior));
+        }
+        else if (unpacked.Value.Message.Type == ProtocolConstants.ForwardMessage)
+        {
+            result = await _mediator.Send(new ProcessForwardMessageRequest(unpacked.Value.Message, senderDid, mediatorDid, hostUrl, fromPrior));
+            if (result.IsFailed)
+            {
+                return BadRequest(result.Errors.FirstOrDefault().Message);
+            }
+
+            return Accepted();
         }
         else
         {
