@@ -27,7 +27,7 @@ public class ProcessMediationRequestHandler : IRequestHandler<ProcessMediationRe
         var existingConnection = await _mediator.Send(new GetConnectionRequest(requestRequest.SenderDid, requestRequest.MediatorDid));
         if (existingConnection.IsFailed)
         {
-            // database error
+            
         }
 
         if (existingConnection.Value is not null && existingConnection.Value.MediationGranted)

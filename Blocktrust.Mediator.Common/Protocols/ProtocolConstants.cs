@@ -20,4 +20,6 @@ public class ProtocolConstants
     public const string MessagePickup3DeliveryRequest = "https://didcomm.org/messagepickup/3.0/delivery-request";
     public const string MessagePickup3DeliveryResponse = "https://didcomm.org/messagepickup/3.0/delivery";
     public const string MessagePickup3MessagesReceived = "https://didcomm.org/messagepickup/3.0/messages-received";
+    
+    public const string ProblemReport = "https://didcomm.org/report-problem/2.0/problem-report";
 }
