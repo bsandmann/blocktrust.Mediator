@@ -22,8 +22,6 @@ public class GetMessagesStatusHandler : IRequestHandler<GetMessagesStatusRequest
 
     public async Task<Result<MessagesStatusModel>> Handle(GetMessagesStatusRequest request, CancellationToken cancellationToken)
     {
-        //TODO this all can be done more efficient
-        //also recipientKEy vs recipientDid
         try
         {
             var connection = await _context.MediatorConnections
@@ -36,17 +34,24 @@ public class GetMessagesStatusHandler : IRequestHandler<GetMessagesStatusRequest
 
             if (request.RecipientDid is null)
             {
-                var allRecipientDidKeys = connection.RegisteredRecipients.Select(p => p.RecipientDid);
-                // TODO highly unefficient! I just need the metatdata and not the messages itself
-                var messages = await _context.StoredMessages.Where(p => allRecipientDidKeys.Contains(p.RegisteredRecipient.RecipientDid)).ToListAsync(cancellationToken: cancellationToken);
+                var messages = await _context.StoredMessages
+                    .Where(p => connection.RegisteredRecipients
+                        .Select(q => q.RecipientDid)
+                        .Contains(p.RegisteredRecipient.RecipientDid))
+                    .Select(r => new StoredMessageStatusResult()
+                    {
+                        Created = r.Created,
+                        MessageSize = r.MessageSize,
+                    })
+                    .ToListAsync(cancellationToken: cancellationToken);
 
                 return Result.Ok(new MessagesStatusModel(
                     messageCount: messages.Count,
                     recipientDid: null,
-                    longestWaitedSeconds: (long)(DateTime.UtcNow - messages.MinBy(p => p.Created).Created).TotalSeconds,
-                    newestMessageTime: (new DateTimeOffset(messages.MaxBy(p=>p.Created).Created)).ToUnixTimeMilliseconds(),
-                    oldestMessageTime: (new DateTimeOffset(messages.MinBy(p=>p.Created).Created)).ToUnixTimeMilliseconds(),
-                    totalByteSize: messages.Sum(p=>p.MessageSize)));
+                    longestWaitedSeconds: (long)(DateTime.UtcNow - messages.MinBy(p => p.Created!).Created).TotalSeconds,
+                    newestMessageTime: (new DateTimeOffset(messages.MaxBy(p => p.Created!).Created)).ToUnixTimeSeconds(),
+                    oldestMessageTime: (new DateTimeOffset(messages.MinBy(p => p.Created!).Created)).ToUnixTimeSeconds(),
+                    totalByteSize: messages.Sum(p => p.MessageSize)));
             }
             else
             {
@@ -62,14 +67,21 @@ public class GetMessagesStatusHandler : IRequestHandler<GetMessagesStatusRequest
                         totalByteSize: null));
                 }
 
-                var messages = await _context.StoredMessages.Where(p => p.RegisteredRecipient.RecipientDid.Equals(selectedRecipientDidKey.RecipientDid)).ToListAsync(cancellationToken: cancellationToken);
+                var messages = await _context.StoredMessages
+                    .Where(p => p.RegisteredRecipient.RecipientDid.Equals(selectedRecipientDidKey.RecipientDid))
+                    .Select(r => new StoredMessageStatusResult()
+                    {
+                        Created = r.Created,
+                        MessageSize = r.MessageSize,
+                    })
+                    .ToListAsync(cancellationToken: cancellationToken);
                 return Result.Ok(new MessagesStatusModel(
                     messageCount: messages.Count,
                     recipientDid: selectedRecipientDidKey.RecipientDid,
-                    longestWaitedSeconds: (long)(DateTime.UtcNow - messages.MinBy(p => p.Created).Created).TotalSeconds,
-                    newestMessageTime: (new DateTimeOffset(messages.MaxBy(p=>p.Created).Created)).ToUnixTimeMilliseconds(),
-                    oldestMessageTime: (new DateTimeOffset(messages.MinBy(p=>p.Created).Created)).ToUnixTimeMilliseconds(),
-                    totalByteSize: messages.Sum(p=>p.MessageSize)));
+                    longestWaitedSeconds: (long)(DateTime.UtcNow - messages.MinBy(p => p.Created!).Created).TotalSeconds,
+                    newestMessageTime: (new DateTimeOffset(messages.MaxBy(p => p.Created!).Created)).ToUnixTimeSeconds(),
+                    oldestMessageTime: (new DateTimeOffset(messages.MinBy(p => p.Created!).Created)).ToUnixTimeSeconds(),
+                    totalByteSize: messages.Sum(p => p.MessageSize)));
             }
         }
         catch (Exception e)

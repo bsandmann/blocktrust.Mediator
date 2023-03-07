@@ -23,7 +23,7 @@ public class ProcessUpdateMediatorKeysHandler : IRequestHandler<ProcessUpdateMed
 
     public async Task<Result<Message>> Handle(ProcessUpdateMediatorKeysRequest request, CancellationToken cancellationToken)
     {
-        var existingConnection = await _mediator.Send(new GetConnectionRequest(request.SenderDid), cancellationToken);
+        var existingConnection = await _mediator.Send(new GetConnectionRequest(request.SenderDid, request.MediatorDid), cancellationToken);
         if (existingConnection.IsFailed)
         {
             // database error

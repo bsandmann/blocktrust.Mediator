@@ -21,13 +21,11 @@ public class ProcessForwardMessageHandler : IRequestHandler<ProcessForwardMessag
         this._mediator = mediator;
     }
 
-    //TODO check everywhere: recipient_did vs recipient_key
-
     // TODO dig into https://identity.foundation/didcomm-messaging/spec/#routing-protocol-20
 
     public async Task<Result> Handle(ProcessForwardMessageRequest request, CancellationToken cancellationToken)
     {
-        var existingConnection = await _mediator.Send(new GetConnectionRequest(request.SenderDid), cancellationToken);
+        var existingConnection = await _mediator.Send(new GetConnectionRequest(request.SenderDid, request.MediatorDid), cancellationToken);
         if (existingConnection.IsFailed)
         {
             // database error

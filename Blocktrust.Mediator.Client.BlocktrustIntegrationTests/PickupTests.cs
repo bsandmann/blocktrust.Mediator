@@ -240,7 +240,6 @@ public class PickupTests
         statusRequestResult.IsSuccess.Should().BeTrue();
         statusRequestResult.Value.MessageCount.Should().Be(2);
         statusRequestResult.Value.LiveDelivery.Should().BeFalse();
-        // TODO Currently fails for the roots mediator, but works here
         statusRequestResult.Value.RecipientDid.Should().Be(didToCheckSpecifically);
     }
 

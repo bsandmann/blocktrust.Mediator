@@ -122,7 +122,7 @@ public class MediatorController : ControllerBase
         // Check for existing connection
         FromPrior? fromPrior = null;
         string mediatorDid;
-        var existingConnection = await _mediator.Send(new GetConnectionRequest(senderOldDid));
+        var existingConnection = await _mediator.Send(new GetConnectionRequest(senderOldDid, null));
         if (existingConnection.IsFailed)
         {
             //Internal error

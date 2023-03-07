@@ -23,11 +23,10 @@ public class StoreMessageHandler : IRequestHandler<StoreMessagesRequest, Result>
     {
         _context.ChangeTracker.Clear();
         _context.ChangeTracker.AutoDetectChangesEnabled = false;
-        //TODO this all can be done more efficient
-        //also recipientKEy vs recipientDid
         try
         {
-            var recipientKey = await _context.RegisteredRecipients.Include(p => p.StoredMessage).FirstOrDefaultAsync(p => p.RecipientDid.Equals(request.RecipientDid), cancellationToken: cancellationToken);
+            var recipientKey = await _context.RegisteredRecipients
+                .FirstOrDefaultAsync(p => p.RecipientDid.Equals(request.RecipientDid), cancellationToken: cancellationToken);
             if (recipientKey is null)
             {
                 return Result.Fail("Recipient key not found");
@@ -39,7 +38,7 @@ public class StoreMessageHandler : IRequestHandler<StoreMessagesRequest, Result>
                 messages.Add(new StoredMessage()
                 {
                     RecipientDid = recipientKey.RecipientDid,
-                    Created = DateTime.Now,
+                    Created = DateTime.UtcNow,
                     MessageId = message.MessageId,
                     MessageHash = "123",
                     Message = message.Message,
@@ -47,8 +46,7 @@ public class StoreMessageHandler : IRequestHandler<StoreMessagesRequest, Result>
                 });
             }
 
-            recipientKey.StoredMessage.AddRange(messages);
-            _context.RegisteredRecipients.Update(recipientKey);
+            _context.StoredMessages.AddRange(messages);
             await _context.SaveChangesAsync(cancellationToken);
         }
         catch (Exception e)

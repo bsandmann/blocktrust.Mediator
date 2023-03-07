@@ -1,6 +1,7 @@
 ﻿namespace Blocktrust.Mediator.Server.Commands.DatabaseCommands.GetConnection;
 
 using Blocktrust.Mediator.Server.Models;
+using Entities;
 using FluentResults;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -23,9 +24,16 @@ public class GetConnectionHandler : IRequestHandler<GetConnectionRequest, Result
     {
         try
         {
-            
-            //TODO we ahould ask for the mediator AND the remotedid here!
-            var existingConnection = await _context.MediatorConnections.FirstOrDefaultAsync(p => request.RemoteDid.Equals(p.RemoteDid), cancellationToken: cancellationToken);
+            MediatorConnection? existingConnection;
+            if (request.MediatorDid is null)
+            {
+                existingConnection = await _context.MediatorConnections.FirstOrDefaultAsync(p => request.RemoteDid.Equals(p.RemoteDid), cancellationToken: cancellationToken);
+            }
+            else
+            {
+                existingConnection = await _context.MediatorConnections.FirstOrDefaultAsync(p => request.RemoteDid.Equals(p.RemoteDid) && request.MediatorDid.Equals(p.MediatorDid), cancellationToken: cancellationToken);
+            }
+
             if (existingConnection is null)
             {
                 return Result.Ok<MediatorConnectionModel>(null);
