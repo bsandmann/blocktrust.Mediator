@@ -20,6 +20,7 @@ public class ProcessMediationRequestHandler : IRequestHandler<ProcessMediationRe
         this._mediator = mediator;
     }
 
+    /// <inheritdoc />
     public async Task<Result<Message>> Handle(ProcessMediationRequestRequest requestRequest, CancellationToken cancellationToken)
     {
         // If we already have a mediation, we deny the request
@@ -75,7 +76,5 @@ public class ProcessMediationRequestHandler : IRequestHandler<ProcessMediationRe
                 .build();
             return Result.Ok(mediateGrantMessage);
         }
-
-        return Result.Ok();
     }
 }

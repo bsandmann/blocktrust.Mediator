@@ -39,9 +39,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Commands\DatabaseCommands\DeleteMessages" />
       <Folder Include="Commands\OutOfBand" />
-      <Folder Include="Commands\Pickup\ProcessDeliveryRequest" />
       <Folder Include="Commands\Secrets" />
       <Folder Include="Migrations" />
     </ItemGroup>

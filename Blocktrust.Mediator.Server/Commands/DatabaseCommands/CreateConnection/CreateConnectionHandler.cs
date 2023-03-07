@@ -18,6 +18,7 @@ public class CreateConnectionHandler : IRequestHandler<CreateConnectionRequest, 
         this._context = context;
     }
 
+    /// <inheritdoc />
     public async Task<Result> Handle(CreateConnectionRequest request, CancellationToken cancellationToken)
     {
         await _context.MediatorConnections.AddAsync(new MediatorConnection()
@@ -37,7 +38,7 @@ public class CreateConnectionHandler : IRequestHandler<CreateConnectionRequest, 
         }
         catch (Exception e)
         {
-            return Result.Fail("Error establishing database connection");
+            return Result.Fail(e.Message);
         }
     }
 }

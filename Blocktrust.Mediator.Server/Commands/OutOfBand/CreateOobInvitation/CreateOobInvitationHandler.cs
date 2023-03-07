@@ -44,7 +44,6 @@ public class CreateOobInvitationHandler : IRequestHandler<CreateOobInvitationReq
                 Invitation = invitation
             };
 
-
             await _context.AddAsync(oob, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
 

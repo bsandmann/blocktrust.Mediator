@@ -9,6 +9,8 @@ using Commands.MediatorCoordinator.ProcessQueryMediatorKeys;
 using Commands.MediatorCoordinator.ProcessUpdateMediatorKeys;
 using Commands.OutOfBand.CreateOobInvitation;
 using Commands.OutOfBand.GetOobInvitation;
+using Commands.Pickup.ProcessPickupDeliveryRequest;
+using Commands.Pickup.ProcessPickupMessageReceived;
 using Commands.Pickup.ProcessStatusRequest;
 using Common.Commands.CreatePeerDid;
 using Common.Protocols;
@@ -168,6 +170,12 @@ public class MediatorController : ControllerBase
                 break;
             case ProtocolConstants.MessagePickup3StatusRequest:
                 result = await _mediator.Send(new ProcessPickupStatusRequestRequest(unpacked.Value.Message, senderDid, mediatorDid, hostUrl, fromPrior));
+                break;
+            case ProtocolConstants.MessagePickup3DeliveryRequest:
+                result = await _mediator.Send(new ProcessPickupDeliveryRequestRequest(unpacked.Value.Message, senderDid, mediatorDid, hostUrl, fromPrior));
+                break;
+            case ProtocolConstants.MessagePickup3MessagesReceived:
+                result = await _mediator.Send(new ProcessPickupMessageReceivedRequest(unpacked.Value.Message, senderDid, mediatorDid, hostUrl, fromPrior));
                 break;
             case ProtocolConstants.ForwardMessage:
             {

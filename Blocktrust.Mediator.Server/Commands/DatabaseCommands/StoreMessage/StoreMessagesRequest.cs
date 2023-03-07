@@ -21,9 +21,9 @@ public class StoreMessagesRequest : IRequest<Result>
     /// <summary>
     /// The message that should be store. Currently only JSON is supported
     /// </summary>
-    public List<StoredMessage> Messages { get; set; }
+    public List<StoredMessageModel> Messages { get; set; }
 
-    public StoreMessagesRequest(string mediatorDid, string recipientDid, List<StoredMessage> message)
+    public StoreMessagesRequest(string mediatorDid, string recipientDid, List<StoredMessageModel> message)
     {
         MediatorDid = mediatorDid;
         RecipientDid = recipientDid;

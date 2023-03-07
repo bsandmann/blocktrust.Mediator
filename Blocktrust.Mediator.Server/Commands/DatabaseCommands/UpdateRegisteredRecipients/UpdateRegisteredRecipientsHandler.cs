@@ -19,6 +19,7 @@ public class UpdateRegisteredRecipientsHandler : IRequestHandler<UpdateRegistere
         this._context = context;
     }
 
+    /// <inheritdoc />
     public async Task<Result> Handle(UpdateRegisteredRecipientsRequest request, CancellationToken cancellationToken)
     {
         try

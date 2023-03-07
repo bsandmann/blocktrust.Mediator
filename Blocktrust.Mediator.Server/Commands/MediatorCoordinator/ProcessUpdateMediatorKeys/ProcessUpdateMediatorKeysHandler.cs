@@ -21,6 +21,7 @@ public class ProcessUpdateMediatorKeysHandler : IRequestHandler<ProcessUpdateMed
         this._mediator = mediator;
     }
 
+    /// <inheritdoc />
     public async Task<Result<Message>> Handle(ProcessUpdateMediatorKeysRequest request, CancellationToken cancellationToken)
     {
         var existingConnection = await _mediator.Send(new GetConnectionRequest(request.SenderDid, request.MediatorDid), cancellationToken);
@@ -42,11 +43,16 @@ public class ProcessUpdateMediatorKeysHandler : IRequestHandler<ProcessUpdateMed
                 return Result.Fail("Invalid body");
             }
 
-            var updatesJsonElement = (JsonElement)updatesBody;
+            var updatesJsonElement = (JsonElement)updatesBody!;
             var updatesJson = updatesJsonElement.GetRawText();
             try
             {
                 var updates = JsonSerializer.Deserialize<List<KeyListUpdateModel>>(updatesJson);
+                if (updates is null)
+                {
+                    return Result.Fail("Invalid body: unable to deserialize updates");
+                }
+
                 var addUpdates = updates.Where(p => p.UpdateType == "add").Select(p => p.KeyToUpdate).ToList();
                 var removeUpdates = updates.Where(p => p.UpdateType == "remove").Select(p => p.KeyToUpdate).ToList();
                 var updateResult = await _mediator.Send(new UpdateRegisteredRecipientsRequest(request.SenderDid, addUpdates, removeUpdates), cancellationToken);
@@ -55,7 +61,7 @@ public class ProcessUpdateMediatorKeysHandler : IRequestHandler<ProcessUpdateMed
                     return Result.Fail("Unable to update key entries");
                 }
             }
-            catch (Exception e)
+            catch (Exception _)
             {
                 return Result.Fail("Invalid body: unable to deserialize updates");
             }
@@ -66,7 +72,7 @@ public class ProcessUpdateMediatorKeysHandler : IRequestHandler<ProcessUpdateMed
                     type: ProtocolConstants.CoordinateMediation2KeylistUpdateResponse,
                     body: new Dictionary<string, object>()
                     {
-                        {"updated", updatesBody}
+                        { "updated", updatesBody }
                     }
                 )
                 .fromPrior(request.FromPrior)

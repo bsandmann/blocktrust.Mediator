@@ -41,4 +41,39 @@ public class MessagesStatusModel
         OldestMessageTime = oldestMessageTime;
         TotalByteSize = totalByteSize;
     }
+
+    public Dictionary<string, object> GetMessagePickup3StatusResponseBody()
+    {
+        var body = new Dictionary<string, object>();
+        body.Add("message_count", MessageCount);
+        if (RecipientDid is not null)
+        {
+            body.Add("recipient_did", RecipientDid!);
+        }
+
+        if (LongestWaitedSeconds is not null)
+        {
+            body.Add("longest_waited_seconds", LongestWaitedSeconds!);
+        }
+
+        if (NewestMessageTime is not null)
+        {
+            body.Add("NewestMessageTime", NewestMessageTime!);
+        }
+
+        if (OldestMessageTime is not null)
+        {
+            body.Add("oldest_received_time", OldestMessageTime!);
+        }
+
+        if (TotalByteSize is not null)
+        {
+            body.Add("total_bytes", TotalByteSize!);
+        }
+
+        //TODO
+        body.Add("live_delivery", false);
+        
+        return body;
+    }
 }

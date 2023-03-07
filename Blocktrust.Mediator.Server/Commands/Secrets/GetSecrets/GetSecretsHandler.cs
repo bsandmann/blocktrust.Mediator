@@ -38,7 +38,5 @@ public class GetSecretsHandler : IRequestHandler<GetSecretsRequest, Result<List<
                 value: p.Value
             )
         )).ToList());
-
-        return Result.Fail("Secret not found");
     }
 }

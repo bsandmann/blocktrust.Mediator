@@ -23,6 +23,7 @@ public class ProcessForwardMessageHandler : IRequestHandler<ProcessForwardMessag
 
     // TODO dig into https://identity.foundation/didcomm-messaging/spec/#routing-protocol-20
 
+    /// <inheritdoc />
     public async Task<Result> Handle(ProcessForwardMessageRequest request, CancellationToken cancellationToken)
     {
         var existingConnection = await _mediator.Send(new GetConnectionRequest(request.SenderDid, request.MediatorDid), cancellationToken);
@@ -44,7 +45,7 @@ public class ProcessForwardMessageHandler : IRequestHandler<ProcessForwardMessag
                 return Result.Fail("Invalid body");
             }
 
-            var nextJsonElement = (JsonElement)next;
+            var nextJsonElement = (JsonElement)next!;
             var recipientDid = nextJsonElement.GetString();
             
             //TODO check if recipient is a valid DID (a single DID, not multiple DIDs)?
@@ -55,9 +56,9 @@ public class ProcessForwardMessageHandler : IRequestHandler<ProcessForwardMessag
 
             // TODO Possible code duplication with the DeliveryRequestHandler
             var attachments = request.UnpackedMessage.Attachments;
-            string innerMessage = String.Empty;
-            var messages = new List<StoredMessage>();
-            foreach (var attachment in attachments)
+            string innerMessage;
+            var messages = new List<StoredMessageModel>();
+            foreach (var attachment in attachments!)
             {
                 var id = attachment.Id;
                 var data = attachment.Data;
@@ -67,7 +68,7 @@ public class ProcessForwardMessageHandler : IRequestHandler<ProcessForwardMessag
                     var innerJson = jsonAttachmentData?.JsonString;
                     var msg = innerJson?.GetTyped<Dictionary<string, object>>("json");
                     innerMessage = JsonSerializer.Serialize(msg);
-                    messages.Add(new StoredMessage(id, innerMessage));
+                    messages.Add(new StoredMessageModel(id, innerMessage));
                 }
                 else
                 {

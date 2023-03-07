@@ -19,6 +19,7 @@ public class StoreMessageHandler : IRequestHandler<StoreMessagesRequest, Result>
         this._context = context;
     }
 
+    /// <inheritdoc />
     public async Task<Result> Handle(StoreMessagesRequest request, CancellationToken cancellationToken)
     {
         _context.ChangeTracker.Clear();
@@ -32,6 +33,8 @@ public class StoreMessageHandler : IRequestHandler<StoreMessagesRequest, Result>
                 return Result.Fail("Recipient key not found");
             }
 
+            //TODO calculate message hash
+            
             var messages = new List<StoredMessage>();
             foreach (var message in request.Messages)
             {

@@ -19,6 +19,7 @@ public class UpdateConnectionMediationHandler : IRequestHandler<UpdateConnection
         this._context = context;
     }
 
+    /// <inheritdoc />
     public async Task<Result<MediatorConnectionModel>> Handle(UpdateConnectionMediationRequest request, CancellationToken cancellationToken)
     {
         try
@@ -32,7 +33,7 @@ public class UpdateConnectionMediationHandler : IRequestHandler<UpdateConnection
                 Result.Fail("The connection does not exist. That should not happen at this stage.");
             }
 
-            existingConnection.MediationGranted = request.MediationGranted;
+            existingConnection!.MediationGranted = request.MediationGranted;
             existingConnection.RoutingDid = request.RoutingDid;
             existingConnection.MediatorEndpoint = request.MediatorEndpoint;
 
@@ -49,7 +50,7 @@ public class UpdateConnectionMediationHandler : IRequestHandler<UpdateConnection
         }
         catch (Exception e)
         {
-            return Result.Fail("Error establishing database connection");
+            return Result.Fail(e.Message);
         }
     }
 }

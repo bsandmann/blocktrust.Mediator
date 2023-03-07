@@ -1,6 +1,5 @@
 ﻿namespace Blocktrust.Mediator.Server.Commands.DatabaseCommands.GetMessagesStatus;
 
-using Entities;
 using FluentResults;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +19,7 @@ public class GetMessagesStatusHandler : IRequestHandler<GetMessagesStatusRequest
         this._context = context;
     }
 
+    /// <inheritdoc />
     public async Task<Result<MessagesStatusModel>> Handle(GetMessagesStatusRequest request, CancellationToken cancellationToken)
     {
         try
@@ -48,10 +48,10 @@ public class GetMessagesStatusHandler : IRequestHandler<GetMessagesStatusRequest
                 return Result.Ok(new MessagesStatusModel(
                     messageCount: messages.Count,
                     recipientDid: null,
-                    longestWaitedSeconds: (long)(DateTime.UtcNow - messages.MinBy(p => p.Created!).Created).TotalSeconds,
-                    newestMessageTime: (new DateTimeOffset(messages.MaxBy(p => p.Created!).Created)).ToUnixTimeSeconds(),
-                    oldestMessageTime: (new DateTimeOffset(messages.MinBy(p => p.Created!).Created)).ToUnixTimeSeconds(),
-                    totalByteSize: messages.Sum(p => p.MessageSize)));
+                    longestWaitedSeconds: messages.Any() ? (long)(DateTime.UtcNow - messages.MinBy(p => p.Created)!.Created).TotalSeconds : null,
+                    newestMessageTime: messages.Any() ? (new DateTimeOffset(messages.MaxBy(p => p.Created)!.Created)).ToUnixTimeSeconds() : null,
+                    oldestMessageTime: messages.Any() ? (new DateTimeOffset(messages.MinBy(p => p.Created)!.Created)).ToUnixTimeSeconds() : null,
+                    totalByteSize: messages.Any()? messages.Sum(p => p.MessageSize): null));
             }
             else
             {
@@ -78,10 +78,10 @@ public class GetMessagesStatusHandler : IRequestHandler<GetMessagesStatusRequest
                 return Result.Ok(new MessagesStatusModel(
                     messageCount: messages.Count,
                     recipientDid: selectedRecipientDidKey.RecipientDid,
-                    longestWaitedSeconds: (long)(DateTime.UtcNow - messages.MinBy(p => p.Created!).Created).TotalSeconds,
-                    newestMessageTime: (new DateTimeOffset(messages.MaxBy(p => p.Created!).Created)).ToUnixTimeSeconds(),
-                    oldestMessageTime: (new DateTimeOffset(messages.MinBy(p => p.Created!).Created)).ToUnixTimeSeconds(),
-                    totalByteSize: messages.Sum(p => p.MessageSize)));
+                    longestWaitedSeconds: messages.Any() ? (long)(DateTime.UtcNow - messages.MinBy(p => p.Created)!.Created).TotalSeconds : null,
+                    newestMessageTime: messages.Any() ? (new DateTimeOffset(messages.MaxBy(p => p.Created)!.Created)).ToUnixTimeSeconds() : null,
+                    oldestMessageTime: messages.Any() ? (new DateTimeOffset(messages.MinBy(p => p.Created)!.Created)).ToUnixTimeSeconds() : null,
+                    totalByteSize: messages.Any()? messages.Sum(p => p.MessageSize): null));
             }
         }
         catch (Exception e)

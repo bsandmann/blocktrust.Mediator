@@ -1,8 +1,8 @@
 ﻿namespace Blocktrust.Mediator.Server.Models;
 
-public class StoredMessage
+public class StoredMessageModel
 {
-    public StoredMessage(string messageId, string message)
+    public StoredMessageModel(string messageId, string message)
     {
         MessageId = messageId;
         Message = message;

@@ -1,0 +1,32 @@
+﻿namespace Blocktrust.Mediator.Server.Commands.DatabaseCommands.GetMessages;
+
+using Blocktrust.Mediator.Server.Models;
+using FluentResults;
+using MediatR;
+
+public class GetMessagesRequest : IRequest<Result<List<StoredMessageModel>>>
+{
+    /// <summary>
+    /// Required: The Did all th messages are connected to
+    /// </summary>
+    public string RemoteDid { get; }
+
+    /// <summary>
+    /// Required: The Mediator instance that was used to connect to the RemoteDID
+    /// While this is not stricly required it adds a additional level of security
+    /// </summary>
+    public string MediatorDid { get; set; }
+    
+    /// <summary>
+    /// Optional: Get the status only of messages related to that key
+    /// </summary>
+    public string? RecipientDid { get;  }
+
+
+    public GetMessagesRequest(string remoteDid, string mediatorDid, string? recipientDid)
+    {
+        RemoteDid = remoteDid;
+        MediatorDid = mediatorDid;
+        RecipientDid = recipientDid;
+    }
+}

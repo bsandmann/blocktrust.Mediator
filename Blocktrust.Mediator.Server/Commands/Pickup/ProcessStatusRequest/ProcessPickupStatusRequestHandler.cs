@@ -19,6 +19,7 @@ public class ProcessPickupStatusRequestHandler : IRequestHandler<ProcessPickupSt
         this._mediator = mediator;
     }
 
+    /// <inheritdoc />
     public async Task<Result<Message>> Handle(ProcessPickupStatusRequestRequest request, CancellationToken cancellationToken)
     {
         var body = request.UnpackedMessage.Body;
@@ -26,7 +27,7 @@ public class ProcessPickupStatusRequestHandler : IRequestHandler<ProcessPickupSt
         string? recipientDid = null;
         if (hasRecipientDid)
         {
-            var recipientDidJsonElement = (JsonElement)recipientDidBody;
+            var recipientDidJsonElement = (JsonElement)recipientDidBody!;
             if (recipientDidJsonElement.ValueKind is JsonValueKind.String)
             {
                 //TODO check for valid did
@@ -44,40 +45,10 @@ public class ProcessPickupStatusRequestHandler : IRequestHandler<ProcessPickupSt
             return getStatusResult.ToResult();
         }
 
-        var returnBody = new Dictionary<string, object>();
-        returnBody.Add("message_count", getStatusResult.Value.MessageCount);
-        if (getStatusResult.Value.RecipientDid is not null)
-        {
-            returnBody.Add("recipient_did", getStatusResult.Value.RecipientDid!);
-        }
-
-        if (getStatusResult.Value.LongestWaitedSeconds is not null)
-        {
-            returnBody.Add("longest_waited_seconds", getStatusResult.Value.LongestWaitedSeconds!);
-        }
-
-        if (getStatusResult.Value.NewestMessageTime is not null)
-        {
-            returnBody.Add("NewestMessageTime", getStatusResult.Value.NewestMessageTime!);
-        }
-
-        if (getStatusResult.Value.OldestMessageTime is not null)
-        {
-            returnBody.Add("oldest_received_time", getStatusResult.Value.OldestMessageTime!);
-        }
-
-        if (getStatusResult.Value.TotalByteSize is not null)
-        {
-            returnBody.Add("total_bytes", getStatusResult.Value.TotalByteSize!);
-        }
-
-        //TODO
-        returnBody.Add("live_delivery", false);
-
         var statusMessage = new MessageBuilder(
                 id: Guid.NewGuid().ToString(),
                 type: ProtocolConstants.MessagePickup3StatusResponse,
-                body: returnBody 
+                body: getStatusResult.Value.GetMessagePickup3StatusResponseBody()
             )
             .fromPrior(request.FromPrior)
             .build();

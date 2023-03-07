@@ -19,6 +19,7 @@ public class GetRegisteredRecipientsHandler : IRequestHandler<GetRegisteredRecip
         this._context = context;
     }
 
+    /// <inheritdoc />
     public async Task<Result<List<KeyEntryModel>>> Handle(GetRegisteredRecipientsRequest request, CancellationToken cancellationToken)
     {
         try

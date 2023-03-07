@@ -1,6 +1,5 @@
 ﻿namespace Blocktrust.Mediator.Server;
 
-using System.Security.Cryptography.X509Certificates;
 using Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ValueGeneration;

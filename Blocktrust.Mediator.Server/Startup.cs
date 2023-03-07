@@ -7,7 +7,6 @@ namespace Blocktrust.Mediator.Server;
 
 using Blocktrust.Common.Resolver;
 using Common;
-using MediatR;
 using Resolver;
 
 public class Startup

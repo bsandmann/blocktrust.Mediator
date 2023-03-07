@@ -20,6 +20,7 @@ public class GetConnectionHandler : IRequestHandler<GetConnectionRequest, Result
         this._context = context;
     }
 
+    /// <inheritdoc />
     public async Task<Result<MediatorConnectionModel>> Handle(GetConnectionRequest request, CancellationToken cancellationToken)
     {
         try
@@ -36,7 +37,7 @@ public class GetConnectionHandler : IRequestHandler<GetConnectionRequest, Result
 
             if (existingConnection is null)
             {
-                return Result.Ok<MediatorConnectionModel>(null);
+                return Result.Ok<>(null);
             }
 
             return Result.Ok(new MediatorConnectionModel(
@@ -50,7 +51,7 @@ public class GetConnectionHandler : IRequestHandler<GetConnectionRequest, Result
         }
         catch (Exception e)
         {
-            return Result.Fail<MediatorConnectionModel>(e.Message);
+            return Result.Fail(e.Message);
         }
     }
 }

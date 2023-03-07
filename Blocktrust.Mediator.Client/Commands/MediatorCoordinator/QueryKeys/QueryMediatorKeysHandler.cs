@@ -82,14 +82,14 @@ public class QueryMediatorKeysHandler : IRequestHandler<QueryMediatorKeysRequest
                 var hasKeys = body.TryGetValue("keys", out var keys);
                 if (hasKeys)
                 {
-                    var keysAsJsonElement = (JsonElement)keys;
+                    var keysAsJsonElement = (JsonElement)keys!;
                     var returnList = new List<string>();
                     if (keysAsJsonElement.ValueKind == JsonValueKind.Array)
                     {
                         foreach (var entry in  keysAsJsonElement.EnumerateArray())
                         {
                             entry.TryGetProperty("recipient_did", out var value);
-                            returnList.Add(value.GetString());
+                            returnList.Add(value.GetString()!);
                         }
                         return Result.Ok(returnList);
                     }

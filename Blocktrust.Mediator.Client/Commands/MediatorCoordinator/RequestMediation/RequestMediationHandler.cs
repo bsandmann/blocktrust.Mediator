@@ -86,7 +86,11 @@ public class RequestMediationHandler : IRequestHandler<RequestMediationRequest, 
         );
 
         // We send the message to the mediator
-        var endpoint = invitationPeerDidDocResult.Value.Services?.First().ServiceEndpoint;
+        var endpoint = invitationPeerDidDocResult.Value.Services?.FirstOrDefault()?.ServiceEndpoint;
+        if (endpoint is null)
+        {
+            return Result.Fail("Unable to identify endpoint of mediator");
+        }
         var endpointUri = new Uri(endpoint);
         var response = await _httpClient.PostAsync(endpointUri, new StringContent(packResult.PackedMessage, Encoding.UTF8, MessageTyp.Encrypted), cancellationToken);
 
@@ -136,7 +140,7 @@ public class RequestMediationHandler : IRequestHandler<RequestMediationRequest, 
                 }
             }
 
-            return Result.Ok(new RequestMediationResponse(from!, endpointUri, unpackResult.Value.Message.Body["routing_did"].ToString()));
+            return Result.Ok(new RequestMediationResponse(from!, endpointUri, unpackResult.Value.Message.Body["routing_did"]!.ToString()));
         }
         else
         {

@@ -20,6 +20,7 @@ public class ProcessQueryMediatorKeysHandler : IRequestHandler<ProcessQueryMedia
         this._mediator = mediator;
     }
 
+    /// <inheritdoc />
     public async Task<Result<Message>> Handle(ProcessQueryMediatorKeysRequest request, CancellationToken cancellationToken)
     {
         var existingConnection = await _mediator.Send(new GetConnectionRequest(request.SenderDid, request.MediatorDid), cancellationToken);
