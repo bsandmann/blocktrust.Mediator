@@ -177,6 +177,9 @@ public class MediatorController : ControllerBase
             case ProtocolConstants.MessagePickup3MessagesReceived:
                 result = await _mediator.Send(new ProcessPickupMessageReceivedRequest(unpacked.Value.Message, senderDid, mediatorDid, hostUrl, fromPrior));
                 break;
+            case ProtocolConstants.MessagePickup3LiveDeliveryChange:
+                result = await _mediator.Send(new ProcessPickupMessageReceivedRequest(unpacked.Value.Message, senderDid, mediatorDid, hostUrl, fromPrior));
+                break;
             case ProtocolConstants.ForwardMessage:
             {
                 result = await _mediator.Send(new ProcessForwardMessageRequest(unpacked.Value.Message, senderDid, mediatorDid, hostUrl, fromPrior));
