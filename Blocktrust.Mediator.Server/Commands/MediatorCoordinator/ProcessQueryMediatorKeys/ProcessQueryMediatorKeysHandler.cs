@@ -4,7 +4,7 @@ using Blocktrust.DIDComm.Message.Messages;
 using Blocktrust.Mediator.Common.Models.MediatorCoordinator;
 using Blocktrust.Mediator.Common.Protocols;
 using DatabaseCommands.GetConnection;
-using DatabaseCommands.GetKeyEntries;
+using DatabaseCommands.GetRegisteredRecipients;
 using FluentResults;
 using MediatR;
 
@@ -34,7 +34,7 @@ public class ProcessQueryMediatorKeysHandler : IRequestHandler<ProcessQueryMedia
         }
         else
         {
-            var queryResult = await _mediator.Send(new GetKeyEntriesRequest(request.SenderDid), cancellationToken);
+            var queryResult = await _mediator.Send(new GetRegisteredRecipientsRequest(request.SenderDid), cancellationToken);
             if (queryResult.IsFailed)
             {
                 return Result.Fail("Unable to read keys from database");

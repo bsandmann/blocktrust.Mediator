@@ -20,7 +20,7 @@ public class CreateConnectionHandler : IRequestHandler<CreateConnectionRequest, 
 
     public async Task<Result> Handle(CreateConnectionRequest request, CancellationToken cancellationToken)
     {
-        await _context.Connections.AddAsync(new ConnectionEntity()
+        await _context.MediatorConnections.AddAsync(new MediatorConnection()
         {
             MediatorDid = request.MediatorDid,
             RemoteDid = request.RemoteDid,

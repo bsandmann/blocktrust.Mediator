@@ -31,7 +31,7 @@ public class RoutingTests
     }
 
     /// <summary>
-    /// This tests assumes that the Blocktrust Mediator is running on http:/localhost:7037
+    /// This tests assumes that the Blocktrust Mediator is running on https://localhost:7037
     /// </summary>
     [Fact]
     public async Task BobSendsBasicMessageToAlice()

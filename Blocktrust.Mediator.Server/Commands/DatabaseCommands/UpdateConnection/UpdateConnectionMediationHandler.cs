@@ -25,7 +25,7 @@ public class UpdateConnectionMediationHandler : IRequestHandler<UpdateConnection
         {
             _context.ChangeTracker.Clear();
             _context.ChangeTracker.AutoDetectChangesEnabled = false;
-            var existingConnection = await _context.Connections.FirstOrDefaultAsync(p => p.MediatorDid.Equals(request.MediatorDid) && p.RemoteDid.Equals(request.RemoteDid), cancellationToken);
+            var existingConnection = await _context.MediatorConnections.FirstOrDefaultAsync(p => p.MediatorDid.Equals(request.MediatorDid) && p.RemoteDid.Equals(request.RemoteDid), cancellationToken);
 
             if (existingConnection is null)
             {

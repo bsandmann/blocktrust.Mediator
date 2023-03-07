@@ -11,9 +11,9 @@ public class DataContext : DbContext
 {
     public DbSet<OobInvitationEntity> OobInvitations { get; set; }
     public DbSet<SecretEntity> Secrets { get; set; }
-    public DbSet<ConnectionEntity> Connections { get; set; }
-    public DbSet<ConnectionKeyEntity> RecipientKeys { get; set; }
-    public DbSet<StoredMessageEntity> StoredMessages { get; set; }
+    public DbSet<MediatorConnection> MediatorConnections { get; set; }
+    public DbSet<RegisteredRecipient> RegisteredRecipients { get; set; }
+    public DbSet<StoredMessage> StoredMessages { get; set; }
 
     public DataContext(DbContextOptions<DataContext> options)
         : base(options)
@@ -22,6 +22,10 @@ public class DataContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<MediatorConnection>()
+            .HasKey(b => b.MediatorConnectionId);
+        modelBuilder.Entity<MediatorConnection>().Property(b => b.MediatorConnectionId).HasValueGenerator(typeof(SequentialGuidValueGenerator));
+        
         modelBuilder.Entity<OobInvitationEntity>()
             .HasKey(b => b.OobId);
         modelBuilder.Entity<OobInvitationEntity>().Property(b => b.OobId).HasValueGenerator(typeof(SequentialGuidValueGenerator));
@@ -30,28 +34,27 @@ public class DataContext : DbContext
             .HasKey(b => b.SecretId);
         modelBuilder.Entity<SecretEntity>().Property(b => b.SecretId).HasValueGenerator(typeof(SequentialGuidValueGenerator));
 
-        modelBuilder.Entity<ConnectionEntity>()
-            .HasKey(b => b.ConnectionEntityId);
-        modelBuilder.Entity<ConnectionEntity>().Property(b => b.ConnectionEntityId).HasValueGenerator(typeof(SequentialGuidValueGenerator));
+        modelBuilder.Entity<RegisteredRecipient>()
+            .HasKey(b => b.RecipientDid);
 
-        modelBuilder.Entity<ConnectionKeyEntity>()
-            .HasKey(b => b.ConnectionKeyEntityId);
-        modelBuilder.Entity<ConnectionKeyEntity>().Property(b => b.ConnectionKeyEntityId).HasValueGenerator(typeof(SequentialGuidValueGenerator));
-
-        modelBuilder.Entity<StoredMessageEntity>()
+        modelBuilder.Entity<StoredMessage>()
             .HasKey(b => b.StoredMessageEntityId);
-        modelBuilder.Entity<StoredMessageEntity>().Property(b => b.StoredMessageEntityId).HasValueGenerator(typeof(SequentialGuidValueGenerator));
+        modelBuilder.Entity<StoredMessage>().Property(b => b.StoredMessageEntityId).HasValueGenerator(typeof(SequentialGuidValueGenerator));
 
-        modelBuilder.Entity<ConnectionKeyEntity>()
-            .HasOne(p => p.ConnectionEntity)
-            .WithMany(b => b.KeyList)
-            .HasForeignKey(p => p.ConnectionKeyEntityId)
+        modelBuilder.Entity<MediatorConnection>()
+            .HasIndex(p => new { p.RemoteDid, p.MediatorDid })
+            .IsUnique();
+
+        modelBuilder.Entity<RegisteredRecipient>()
+            .HasOne(p => p.MediatorConnection)
+            .WithMany(b => b.RegisteredRecipients)
+            .HasForeignKey(p=>p.MediatorConnectionId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.Entity<StoredMessageEntity>()
-            .HasOne(p => p.ConnectionKeyEntity)
+        modelBuilder.Entity<StoredMessage>()
+            .HasOne(p => p.RegisteredRecipient)
             .WithMany(b => b.StoredMessage)
-            .HasForeignKey(p => p.StoredMessageEntityId)
+            .HasForeignKey(p=>p.RecipientDid)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

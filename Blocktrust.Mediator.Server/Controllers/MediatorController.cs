@@ -155,35 +155,32 @@ public class MediatorController : ControllerBase
         }
 
         Result<Message> result = Result.Fail(string.Empty);
-        if (unpacked.Value.Message.Type == ProtocolConstants.CoordinateMediation2Request)
+        switch (unpacked.Value.Message.Type)
         {
-            result = await _mediator.Send(new ProcessMediationRequestRequest(unpacked.Value.Message, senderDid, mediatorDid, hostUrl, fromPrior));
-        }
-        else if (unpacked.Value.Message.Type == ProtocolConstants.CoordinateMediation2KeylistUpdate)
-        {
-            result = await _mediator.Send(new ProcessUpdateMediatorKeysRequest(unpacked.Value.Message, senderDid, mediatorDid, hostUrl, fromPrior));
-        }
-        else if (unpacked.Value.Message.Type == ProtocolConstants.CoordinateMediation2KeylistQuery)
-        {
-            result = await _mediator.Send(new ProcessQueryMediatorKeysRequest(unpacked.Value.Message, senderDid, mediatorDid, hostUrl, fromPrior));
-        }
-        else if (unpacked.Value.Message.Type == ProtocolConstants.MessagePickup3StatusRequest)
-        {
-            result = await _mediator.Send(new ProcessPickupStatusRequestRequest(unpacked.Value.Message, senderDid, mediatorDid, hostUrl, fromPrior));
-        }
-        else if (unpacked.Value.Message.Type == ProtocolConstants.ForwardMessage)
-        {
-            result = await _mediator.Send(new ProcessForwardMessageRequest(unpacked.Value.Message, senderDid, mediatorDid, hostUrl, fromPrior));
-            if (result.IsFailed)
+            case ProtocolConstants.CoordinateMediation2Request:
+                result = await _mediator.Send(new ProcessMediationRequestRequest(unpacked.Value.Message, senderDid, mediatorDid, hostUrl, fromPrior));
+                break;
+            case ProtocolConstants.CoordinateMediation2KeylistUpdate:
+                result = await _mediator.Send(new ProcessUpdateMediatorKeysRequest(unpacked.Value.Message, senderDid, mediatorDid, hostUrl, fromPrior));
+                break;
+            case ProtocolConstants.CoordinateMediation2KeylistQuery:
+                result = await _mediator.Send(new ProcessQueryMediatorKeysRequest(unpacked.Value.Message, senderDid, mediatorDid, hostUrl, fromPrior));
+                break;
+            case ProtocolConstants.MessagePickup3StatusRequest:
+                result = await _mediator.Send(new ProcessPickupStatusRequestRequest(unpacked.Value.Message, senderDid, mediatorDid, hostUrl, fromPrior));
+                break;
+            case ProtocolConstants.ForwardMessage:
             {
-                return BadRequest(result.Errors.FirstOrDefault().Message);
-            }
+                result = await _mediator.Send(new ProcessForwardMessageRequest(unpacked.Value.Message, senderDid, mediatorDid, hostUrl, fromPrior));
+                if (result.IsFailed)
+                {
+                    return BadRequest(result.Errors.FirstOrDefault().Message);
+                }
 
-            return Accepted();
-        }
-        else
-        {
-            return BadRequest("Not implemented message type");
+                return Accepted();
+            }
+            default:
+                return BadRequest("Not implemented message type");
         }
 
         if (result.IsFailed)

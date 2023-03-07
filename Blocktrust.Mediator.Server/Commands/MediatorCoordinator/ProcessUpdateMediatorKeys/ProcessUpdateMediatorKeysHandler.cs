@@ -5,7 +5,7 @@ using Blocktrust.DIDComm.Message.Messages;
 using Blocktrust.Mediator.Common.Models.MediatorCoordinator;
 using Blocktrust.Mediator.Common.Protocols;
 using DatabaseCommands.GetConnection;
-using DatabaseCommands.UpdateKeyEntries;
+using DatabaseCommands.UpdateRegisteredRecipients;
 using FluentResults;
 using MediatR;
 
@@ -49,7 +49,7 @@ public class ProcessUpdateMediatorKeysHandler : IRequestHandler<ProcessUpdateMed
                 var updates = JsonSerializer.Deserialize<List<KeyListUpdateModel>>(updatesJson);
                 var addUpdates = updates.Where(p => p.UpdateType == "add").Select(p => p.KeyToUpdate).ToList();
                 var removeUpdates = updates.Where(p => p.UpdateType == "remove").Select(p => p.KeyToUpdate).ToList();
-                var updateResult = await _mediator.Send(new UpdateKeyEntriesRequest(request.SenderDid, addUpdates, removeUpdates), cancellationToken);
+                var updateResult = await _mediator.Send(new UpdateRegisteredRecipientsRequest(request.SenderDid, addUpdates, removeUpdates), cancellationToken);
                 if (updateResult.IsFailed)
                 {
                     return Result.Fail("Unable to update key entries");

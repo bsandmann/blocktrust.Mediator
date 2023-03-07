@@ -4,6 +4,7 @@ using Blocktrust.Mediator.Server;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Blocktrust.Mediator.Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230307071632_initial7")]
+    partial class initial7
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -149,13 +152,13 @@ namespace Blocktrust.Mediator.Server.Migrations
                     b.Property<long>("MessageSize")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("RecipientDid")
+                    b.Property<string>("RegisteredRecipientRecipientDid")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("StoredMessageEntityId");
 
-                    b.HasIndex("RecipientDid");
+                    b.HasIndex("RegisteredRecipientRecipientDid");
 
                     b.ToTable("StoredMessages");
                 });
@@ -175,7 +178,7 @@ namespace Blocktrust.Mediator.Server.Migrations
                 {
                     b.HasOne("Blocktrust.Mediator.Server.Entities.RegisteredRecipient", "RegisteredRecipient")
                         .WithMany("StoredMessage")
-                        .HasForeignKey("RecipientDid")
+                        .HasForeignKey("RegisteredRecipientRecipientDid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

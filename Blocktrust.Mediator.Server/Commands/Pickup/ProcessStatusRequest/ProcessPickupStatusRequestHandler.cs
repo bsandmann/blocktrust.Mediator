@@ -1,15 +1,11 @@
-﻿namespace Blocktrust.Mediator.Server.Commands.MediatorCoordinator.ProcessMediationRequest;
+﻿namespace Blocktrust.Mediator.Server.Commands.Pickup.ProcessStatusRequest;
 
 using System.Text.Json;
 using Blocktrust.DIDComm.Message.Messages;
-using Blocktrust.Mediator.Common.Commands.CreatePeerDid;
 using Blocktrust.Mediator.Common.Protocols;
-using DatabaseCommands.GetConnection;
-using DatabaseCommands.GetMessagesStatus;
-using DatabaseCommands.UpdateConnection;
+using Blocktrust.Mediator.Server.Commands.DatabaseCommands.GetMessagesStatus;
 using FluentResults;
 using MediatR;
-using Pickup.ProcessStatusRequest;
 
 public class ProcessPickupStatusRequestHandler : IRequestHandler<ProcessPickupStatusRequestRequest, Result<Message>>
 {

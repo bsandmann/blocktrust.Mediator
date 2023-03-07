@@ -21,30 +21,34 @@ public class StoreMessageHandler : IRequestHandler<StoreMessagesRequest, Result>
 
     public async Task<Result> Handle(StoreMessagesRequest request, CancellationToken cancellationToken)
     {
+        _context.ChangeTracker.Clear();
+        _context.ChangeTracker.AutoDetectChangesEnabled = false;
         //TODO this all can be done more efficient
         //also recipientKEy vs recipientDid
         try
         {
-            var recipientKey = await _context.RecipientKeys.Include(p=>p.StoredMessage).FirstOrDefaultAsync(p => p.RecipientKey.Equals(request.RecipientDid), cancellationToken: cancellationToken);
+            var recipientKey = await _context.RegisteredRecipients.Include(p => p.StoredMessage).FirstOrDefaultAsync(p => p.RecipientDid.Equals(request.RecipientDid), cancellationToken: cancellationToken);
             if (recipientKey is null)
             {
                 return Result.Fail("Recipient key not found");
             }
 
+            var messages = new List<StoredMessage>();
             foreach (var message in request.Messages)
             {
-                //TODO the hash should be calculated here
-                recipientKey.StoredMessage.Add(new StoredMessageEntity()
+                messages.Add(new StoredMessage()
                 {
+                    RecipientDid = recipientKey.RecipientDid,
                     Created = DateTime.Now,
                     MessageId = message.MessageId,
                     MessageHash = "123",
                     Message = message.Message,
-                    MessageSize =  System.Text.Encoding.UTF8.GetByteCount(message.Message)
+                    MessageSize = System.Text.Encoding.UTF8.GetByteCount(message.Message)
                 });
-                _context.Update(recipientKey);
             }
 
+            recipientKey.StoredMessage.AddRange(messages);
+            _context.RegisteredRecipients.Update(recipientKey);
             await _context.SaveChangesAsync(cancellationToken);
         }
         catch (Exception e)

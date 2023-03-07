@@ -28,7 +28,7 @@ public class MediatorCoordinatorTests
     }
 
     /// <summary>
-    /// This tests assumes that the Blocktrust Mediator is running on http:/localhost:7037
+    /// This tests assumes that the Blocktrust Mediator is running on https://localhost:7037/
     /// </summary>
     [Fact]
     public async Task InitiateMediateRequestsGetsGranted()
@@ -56,7 +56,7 @@ public class MediatorCoordinatorTests
     }
 
     /// <summary>
-    /// This tests assumes that the Blocktrust Mediator is running on http:/localhost:7037
+    /// This tests assumes that the Blocktrust Mediator is running on https://localhost:7037
     /// </summary>
     [Fact]
     public async Task InitiateMediateRequestsGetsDeniedTheSecondTimeBecauseOfExistingConnection()
@@ -89,7 +89,7 @@ public class MediatorCoordinatorTests
     }
 
     /// <summary>
-    /// This tests assumes that the Blocktrust Mediator is running on http:/localhost:7037
+    /// This tests assumes that the Blocktrust Mediator is running on https://localhost:7037
     /// </summary>
     [Fact]
     public async Task AddKeyToExistingConnection()
@@ -123,9 +123,46 @@ public class MediatorCoordinatorTests
         // Assert
         addKeyResult.IsSuccess.Should().BeTrue();
     }
+    
+    /// <summary>
+    /// This tests assumes that the Blocktrust Mediator is running on https://localhost:7037
+    /// </summary>
+    [Fact]
+    public async Task AddTwoKeysToExistingConnection()
+    {
+        // Arrange
+        var response = await _httpClient.GetAsync(_blocktrustMediatorUri + "oob_url");
+        var resultContent = await response.Content.ReadAsStringAsync();
+        var oob = resultContent.Split("=");
+        var oobInvitation = oob[1];
+
+
+        var secretResolverInMemory = new SecretResolverInMemory();
+        var simpleDidDocResolver = new SimpleDidDocResolver();
+        _createPeerDidHandler = new CreatePeerDidHandler(secretResolverInMemory);
+
+        var localDid = await _createPeerDidHandler.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
+        var request = new RequestMediationRequest(oobInvitation, localDid.Value.PeerDid.Value);
+
+        _requestMediationHandler = new RequestMediationHandler(_httpClient, simpleDidDocResolver, secretResolverInMemory);
+        var mediationResult = await _requestMediationHandler.Handle(request, CancellationToken.None);
+
+        mediationResult.IsSuccess.Should().BeTrue();
+        mediationResult.Value.MediationGranted.Should().BeTrue();
+
+        // Act
+        var someTestKeyToAdd = await _createPeerDidHandler.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
+        var someOtherTestKeyToAdd = await _createPeerDidHandler.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
+        var addKeyRequest = new UpdateMediatorKeysRequest(mediationResult.Value.MediatorEndpoint, mediationResult.Value.MediatorDid, localDid.Value.PeerDid.Value, new List<string>() { someTestKeyToAdd.Value.PeerDid.Value, someOtherTestKeyToAdd.Value.PeerDid.Value }, new List<string>());
+        var addMediatorKeysHandler = new UpdateMediatorKeysHandler(_httpClient, simpleDidDocResolver, secretResolverInMemory);
+        var addKeyResult = await addMediatorKeysHandler.Handle(addKeyRequest, CancellationToken.None);
+
+        // Assert
+        addKeyResult.IsSuccess.Should().BeTrue();
+    }
 
     /// <summary>
-    /// This tests assumes that the Blocktrust Mediator is running on http:/localhost:7037
+    /// This tests assumes that the Blocktrust Mediator is running on https://localhost:7037
     /// </summary>
     [Fact]
     public async Task AddKeyAndThenRemoveKeyToExistingConnection()
@@ -166,7 +203,7 @@ public class MediatorCoordinatorTests
     }
 
     /// <summary>
-    /// This tests assumes that the Blocktrust Mediator is running on http:/localhost:7037
+    /// This tests assumes that the Blocktrust Mediator is running on https://localhost:7037
     /// </summary>
     [Fact]
     public async Task AddKeyToExistingConnectionAndQuery()

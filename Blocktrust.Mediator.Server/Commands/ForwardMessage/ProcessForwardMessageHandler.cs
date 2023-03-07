@@ -1,19 +1,13 @@
-﻿namespace Blocktrust.Mediator.Server.Commands.MediatorCoordinator.ProcessQueryMediatorKeys;
+﻿namespace Blocktrust.Mediator.Server.Commands.ForwardMessage;
 
 using System.Text.Json;
-using Blocktrust.DIDComm.Message.Messages;
-using Blocktrust.Mediator.Common.Models.MediatorCoordinator;
-using Blocktrust.Mediator.Common.Protocols;
-using DatabaseCommands.GetConnection;
-using DatabaseCommands.GetKeyEntries;
-using DatabaseCommands.StoreMessage;
-using DIDComm.Message.Attachments;
-using DIDComm.Utils;
+using Blocktrust.DIDComm.Message.Attachments;
+using Blocktrust.DIDComm.Utils;
+using Blocktrust.Mediator.Server.Commands.DatabaseCommands.GetConnection;
+using Blocktrust.Mediator.Server.Commands.DatabaseCommands.StoreMessage;
+using Blocktrust.Mediator.Server.Models;
 using FluentResults;
-using ForwardMessage;
 using MediatR;
-using Models;
-using Org.BouncyCastle.Crypto.Parameters;
 
 public class ProcessForwardMessageHandler : IRequestHandler<ProcessForwardMessageRequest, Result>
 {

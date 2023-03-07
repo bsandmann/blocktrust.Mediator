@@ -25,7 +25,7 @@ public class GetConnectionHandler : IRequestHandler<GetConnectionRequest, Result
         {
             
             //TODO we ahould ask for the mediator AND the remotedid here!
-            var existingConnection = await _context.Connections.FirstOrDefaultAsync(p => request.RemoteDid.Equals(p.RemoteDid), cancellationToken: cancellationToken);
+            var existingConnection = await _context.MediatorConnections.FirstOrDefaultAsync(p => request.RemoteDid.Equals(p.RemoteDid), cancellationToken: cancellationToken);
             if (existingConnection is null)
             {
                 return Result.Ok<MediatorConnectionModel>(null);
