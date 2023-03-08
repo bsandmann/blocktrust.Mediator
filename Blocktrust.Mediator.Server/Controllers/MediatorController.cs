@@ -15,6 +15,7 @@ using Commands.Pickup.ProcessPickupDeliveryRequest;
 using Commands.Pickup.ProcessPickupLiveDeliveryChange;
 using Commands.Pickup.ProcessPickupMessageReceived;
 using Commands.Pickup.ProcessStatusRequest;
+using Commands.ProcessMessage;
 using Common.Commands.CreatePeerDid;
 using Common.Models.ProblemReport;
 using Common.Protocols;

@@ -3,12 +3,13 @@ namespace Blocktrust.Mediator.Server.Commands.MediatorCoordinator.ProcessMediati
 using Blocktrust.DIDComm.Message.Messages;
 using Blocktrust.Mediator.Common.Commands.CreatePeerDid;
 using Blocktrust.Mediator.Common.Protocols;
+using Common.Models.ProblemReport;
 using DatabaseCommands.GetConnection;
 using DatabaseCommands.UpdateConnection;
 using FluentResults;
 using MediatR;
 
-public class ProcessMediationRequestHandler : IRequestHandler<ProcessMediationRequestRequest, Result<Message>>
+public class ProcessMediationRequestHandler : IRequestHandler<ProcessMediationRequestRequest, Message>
 {
     private readonly IMediator _mediator;
 
@@ -21,13 +22,16 @@ public class ProcessMediationRequestHandler : IRequestHandler<ProcessMediationRe
     }
 
     /// <inheritdoc />
-    public async Task<Result<Message>> Handle(ProcessMediationRequestRequest requestRequest, CancellationToken cancellationToken)
+    public async Task<Message> Handle(ProcessMediationRequestRequest request, CancellationToken cancellationToken)
     {
         // If we already have a mediation, we deny the request
-        var existingConnection = await _mediator.Send(new GetConnectionRequest(requestRequest.SenderDid, requestRequest.MediatorDid));
+        var existingConnection = await _mediator.Send(new GetConnectionRequest(request.SenderDid, request.MediatorDid));
         if (existingConnection.IsFailed)
         {
-            
+            return ProblemReportMessage.BuildDefaultInternalError(
+                errorMessage: "Unknown database error",
+                threadIdWhichCausedTheProblem: request.UnpackedMessage.Thid ?? request.UnpackedMessage.Id,
+                fromPrior: request.FromPrior);
         }
 
         if (existingConnection.Value is not null && existingConnection.Value.MediationGranted)
@@ -38,29 +42,35 @@ public class ProcessMediationRequestHandler : IRequestHandler<ProcessMediationRe
                     type: ProtocolConstants.CoordinateMediation2Deny,
                     body: new Dictionary<string, object>()
                 )
-                .fromPrior(requestRequest.FromPrior)
+                .fromPrior(request.FromPrior)
                 .build();
-            return Result.Ok(mediateDenyMessage);
+            return mediateDenyMessage;
         }
         else
         {
-            var routingDidResult = await _mediator.Send(new CreatePeerDidRequest(serviceEndpoint: new Uri(requestRequest.HostUrl)), cancellationToken);
+            var routingDidResult = await _mediator.Send(new CreatePeerDidRequest(serviceEndpoint: new Uri(request.HostUrl)), cancellationToken);
             if (routingDidResult.IsFailed)
             {
-                //TODO handle error
+                return ProblemReportMessage.BuildDefaultInternalError(
+                    errorMessage: "Unable to connect to database",
+                    threadIdWhichCausedTheProblem: request.UnpackedMessage.Thid ?? request.UnpackedMessage.Id,
+                    fromPrior: request.FromPrior);
             }
-            
+
             var updateConnetionResult = await _mediator.Send(new UpdateConnectionMediationRequest(
-                mediatorDid: requestRequest.MediatorDid,
-                remoteDid: requestRequest.SenderDid,
+                mediatorDid: request.MediatorDid,
+                remoteDid: request.SenderDid,
                 routingDid: routingDidResult.Value.PeerDid.Value,
-                mediatorEndpoint: requestRequest.HostUrl,
+                mediatorEndpoint: request.HostUrl,
                 mediationGranted: true
             ), cancellationToken);
 
             if (updateConnetionResult.IsFailed)
             {
-                //TODO handle error
+                return ProblemReportMessage.BuildDefaultInternalError(
+                    errorMessage: "Database update failed",
+                    threadIdWhichCausedTheProblem: request.UnpackedMessage.Thid ?? request.UnpackedMessage.Id,
+                    fromPrior: request.FromPrior);
             }
 
             // Create the grant mediation message
@@ -72,9 +82,9 @@ public class ProcessMediationRequestHandler : IRequestHandler<ProcessMediationRe
                         { "routing_did", routingDidResult.Value.PeerDid.Value }
                     }
                 )
-                .fromPrior(requestRequest.FromPrior)
+                .fromPrior(request.FromPrior)
                 .build();
-            return Result.Ok(mediateGrantMessage);
+            return mediateGrantMessage;
         }
     }
 }

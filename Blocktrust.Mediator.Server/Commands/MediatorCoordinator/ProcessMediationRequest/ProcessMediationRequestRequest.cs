@@ -5,7 +5,7 @@ using Blocktrust.DIDComm.Message.Messages;
 using FluentResults;
 using MediatR;
 
-public class ProcessMediationRequestRequest  : IRequest<Result<Message>>
+public class ProcessMediationRequestRequest  : IRequest<Message>
 {
     public Message UnpackedMessage { get; }
     public string SenderDid { get; }

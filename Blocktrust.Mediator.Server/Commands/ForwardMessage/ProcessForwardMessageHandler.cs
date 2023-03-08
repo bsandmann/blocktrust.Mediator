@@ -6,10 +6,12 @@ using Blocktrust.DIDComm.Utils;
 using Blocktrust.Mediator.Server.Commands.DatabaseCommands.GetConnection;
 using Blocktrust.Mediator.Server.Commands.DatabaseCommands.StoreMessage;
 using Blocktrust.Mediator.Server.Models;
+using Common.Models.ProblemReport;
+using DIDComm.Message.Messages;
 using FluentResults;
 using MediatR;
 
-public class ProcessForwardMessageHandler : IRequestHandler<ProcessForwardMessageRequest, Result>
+public class ProcessForwardMessageHandler : IRequestHandler<ProcessForwardMessageRequest, Message?>
 {
     private readonly IMediator _mediator;
 
@@ -24,7 +26,7 @@ public class ProcessForwardMessageHandler : IRequestHandler<ProcessForwardMessag
     // TODO dig into https://identity.foundation/didcomm-messaging/spec/#routing-protocol-20
 
     /// <inheritdoc />
-    public async Task<Result> Handle(ProcessForwardMessageRequest request, CancellationToken cancellationToken)
+    public async Task<Message?> Handle(ProcessForwardMessageRequest request, CancellationToken cancellationToken)
     {
         var existingConnection = await _mediator.Send(new GetConnectionRequest(request.SenderDid, request.MediatorDid), cancellationToken);
         if (existingConnection.IsFailed)
@@ -34,7 +36,10 @@ public class ProcessForwardMessageHandler : IRequestHandler<ProcessForwardMessag
 
         if (existingConnection.Value is null && !existingConnection.Value!.MediationGranted)
         {
-            return Result.Fail("Connection does not exist or mediation is not granted");
+            return ProblemReportMessage.BuildDefaultMessageMissingArguments(
+                errorMessage: "Connection does not exist or mediation is not granted",
+                threadIdWhichCausedTheProblem: request.UnpackedMessage.Thid ?? request.UnpackedMessage.Id,
+                fromPrior: request.FromPrior);
         }
         else
         {
@@ -42,16 +47,22 @@ public class ProcessForwardMessageHandler : IRequestHandler<ProcessForwardMessag
             var hasNext = body.TryGetValue("next", out var next);
             if (!hasNext)
             {
-                return Result.Fail("Invalid body");
+                return ProblemReportMessage.BuildDefaultMessageMissingArguments(
+                    errorMessage: "Invalid body",
+                    threadIdWhichCausedTheProblem: request.UnpackedMessage.Thid ?? request.UnpackedMessage.Id,
+                    fromPrior: request.FromPrior);
             }
 
             var nextJsonElement = (JsonElement)next!;
             var recipientDid = nextJsonElement.GetString();
-            
+
             //TODO check if recipient is a valid DID (a single DID, not multiple DIDs)?
             if (string.IsNullOrEmpty(recipientDid))
             {
-                return Result.Fail("Invalid body: recipient did is empty");
+                return ProblemReportMessage.BuildDefaultMessageMissingArguments(
+                    errorMessage: "Invalid body: recipient did is empty",
+                    threadIdWhichCausedTheProblem: request.UnpackedMessage.Thid ?? request.UnpackedMessage.Id,
+                    fromPrior: request.FromPrior);
             }
 
             // TODO Possible code duplication with the DeliveryRequestHandler
@@ -72,6 +83,11 @@ public class ProcessForwardMessageHandler : IRequestHandler<ProcessForwardMessag
                 }
                 else
                 {
+                    return ProblemReportMessage.BuildDefaultInternalError(
+                        errorMessage: "Not implemented yet. Use JSON format",
+                        threadIdWhichCausedTheProblem: request.UnpackedMessage.Thid ?? request.UnpackedMessage.Id,
+                        fromPrior: request.FromPrior);
+                    
                     throw new NotImplementedException("Not implemented yet");
                 }
             }
@@ -79,10 +95,13 @@ public class ProcessForwardMessageHandler : IRequestHandler<ProcessForwardMessag
             var storeMessageResult = await _mediator.Send(new StoreMessagesRequest(request.MediatorDid, recipientDid, messages), cancellationToken);
             if (storeMessageResult.IsFailed)
             {
-                return storeMessageResult;
+                return ProblemReportMessage.BuildDefaultInternalError(
+                    errorMessage: storeMessageResult.Errors.FirstOrDefault().Message,
+                    threadIdWhichCausedTheProblem: request.UnpackedMessage.Thid ?? request.UnpackedMessage.Id,
+                    fromPrior: request.FromPrior);
             }
-            
-            return Result.Ok();
+
+            return null;
         }
     }
 }

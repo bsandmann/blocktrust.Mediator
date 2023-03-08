@@ -4,12 +4,13 @@ using System.Text.Json;
 using Blocktrust.DIDComm.Message.Messages;
 using Blocktrust.Mediator.Common.Protocols;
 using Blocktrust.Mediator.Server.Commands.DatabaseCommands.GetMessagesStatus;
+using Common.Models.ProblemReport;
 using DatabaseCommands.DeleteMessages;
 using FluentResults;
 using MediatR;
 using ProcessPickupMessageReceived;
 
-public class ProcessPickupMessageReceivedHandler : IRequestHandler<ProcessPickupMessageReceivedRequest, Result<Message>>
+public class ProcessPickupMessageReceivedHandler : IRequestHandler<ProcessPickupMessageReceivedRequest, Message>
 {
     private readonly IMediator _mediator;
 
@@ -22,13 +23,16 @@ public class ProcessPickupMessageReceivedHandler : IRequestHandler<ProcessPickup
     }
 
     /// <inheritdoc />
-    public async Task<Result<Message>> Handle(ProcessPickupMessageReceivedRequest request, CancellationToken cancellationToken)
+    public async Task<Message> Handle(ProcessPickupMessageReceivedRequest request, CancellationToken cancellationToken)
     {
         var body = request.UnpackedMessage.Body;
         var hasMessageIdList = body.TryGetValue("message_id_list", out var messageIdListJson);
         if (!hasMessageIdList)
         {
-            return Result.Fail("Invalid body format: missing 'message_id_list'");
+            return ProblemReportMessage.BuildDefaultMessageMissingArguments(
+                errorMessage: "Invalid body format: missing 'message_id_list'",
+                threadIdWhichCausedTheProblem: request.UnpackedMessage.Thid ?? request.UnpackedMessage.Id,
+                fromPrior: request.FromPrior);
         }
 
         var messageIdListJsonElement = (JsonElement)messageIdListJson!;
@@ -39,26 +43,38 @@ public class ProcessPickupMessageReceivedHandler : IRequestHandler<ProcessPickup
             {
                 if (idJsonElement.ValueKind is not JsonValueKind.String)
                 {
-                    return Result.Fail("Invalid body format: incorrect entries in 'message_id_list'");
+                    return ProblemReportMessage.BuildDefaultMessageMissingArguments(
+                        errorMessage: "Invalid body format: incorrect entries in 'message_id_list'",
+                        threadIdWhichCausedTheProblem: request.UnpackedMessage.Thid ?? request.UnpackedMessage.Id,
+                        fromPrior: request.FromPrior);
                 }
                 messageIdList.Add(idJsonElement!.GetString());
             }
         }
         else
         {
-            return Result.Fail("Invalid body format: message_id_list");
+            return ProblemReportMessage.BuildDefaultMessageMissingArguments(
+                errorMessage: "Invalid body format: 'message_id_list'",
+                threadIdWhichCausedTheProblem: request.UnpackedMessage.Thid ?? request.UnpackedMessage.Id,
+                fromPrior: request.FromPrior);
         }
 
         var deleteMessagesResult = await _mediator.Send(new DeleteMessagesRequest(request.SenderDid, request.MediatorDid, messageIdList), cancellationToken);
         if (deleteMessagesResult.IsFailed)
         {
-            return deleteMessagesResult;
+            return ProblemReportMessage.BuildDefaultInternalError(
+                errorMessage: deleteMessagesResult.Errors.FirstOrDefault().Message,
+                threadIdWhichCausedTheProblem: request.UnpackedMessage.Thid ?? request.UnpackedMessage.Id,
+                fromPrior: request.FromPrior);
         }
         
         var getStatusResult = await _mediator.Send(new GetMessagesStatusRequest(request.SenderDid, request.MediatorDid, null), cancellationToken);
         if (getStatusResult.IsFailed)
         {
-            return getStatusResult.ToResult();
+            return ProblemReportMessage.BuildDefaultInternalError(
+                errorMessage: getStatusResult.Errors.FirstOrDefault().Message,
+                threadIdWhichCausedTheProblem: request.UnpackedMessage.Thid ?? request.UnpackedMessage.Id,
+                fromPrior: request.FromPrior);
         }
 
         var statusMessage = new MessageBuilder(
@@ -68,6 +84,6 @@ public class ProcessPickupMessageReceivedHandler : IRequestHandler<ProcessPickup
             )
             .fromPrior(request.FromPrior)
             .build();
-        return Result.Ok(statusMessage);
+        return statusMessage;
     }
 }

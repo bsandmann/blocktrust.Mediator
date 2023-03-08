@@ -48,11 +48,11 @@ public static class ProblemReportMessage
         return msg;
     }
 
-    public static Message BuildDefaultInternalError(string errorMessage, string threadIdWhichChausedTheProblem, FromPrior? fromPrior = null)
+    public static Message BuildDefaultInternalError(string errorMessage, string threadIdWhichCausedTheProblem, FromPrior? fromPrior = null)
     {
         return ProblemReportMessage.Build(
             fromPrior: fromPrior,
-            threadIdWhichCausedTheProblem: threadIdWhichChausedTheProblem,
+            threadIdWhichCausedTheProblem: threadIdWhichCausedTheProblem,
             problemCode: new ProblemCode(
                 sorter: EnumProblemCodeSorter.Error,
                 scope: EnumProblemCodeScope.Message,
@@ -61,6 +61,22 @@ public static class ProblemReportMessage
                 otherDescriptor: null
             ),
             comment: $"Internal error: {errorMessage}",
+            commentArguments: null,
+            escalateTo: new Uri("mailto:info@blocktrust.dev"));
+    }
+    public static Message BuildDefaultMessageMissingArguments(string errorMessage, string threadIdWhichCausedTheProblem, FromPrior? fromPrior = null)
+    {
+        return ProblemReportMessage.Build(
+            fromPrior: fromPrior,
+            threadIdWhichCausedTheProblem: threadIdWhichCausedTheProblem,
+            problemCode: new ProblemCode(
+                sorter: EnumProblemCodeSorter.Error,
+                scope: EnumProblemCodeScope.Message,
+                stateNameForScope: null,
+                descriptor: EnumProblemCodeDescriptor.Message,
+                otherDescriptor: null
+            ),
+            comment: $"Message malformed: {errorMessage}",
             commentArguments: null,
             escalateTo: new Uri("mailto:info@blocktrust.dev"));
     }

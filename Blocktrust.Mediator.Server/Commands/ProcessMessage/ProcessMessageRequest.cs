@@ -1,10 +1,7 @@
-﻿namespace Blocktrust.Mediator.Server.Commands;
+﻿namespace Blocktrust.Mediator.Server.Commands.ProcessMessage;
 
-using DIDComm.Message.Messages;
-using DIDComm.Model.UnpackResultModels;
-using FluentResults;
+using Blocktrust.DIDComm.Model.UnpackResultModels;
 using MediatR;
-using ProcessMessage;
 
 public class ProcessMessageRequest : IRequest<ProcessMessageResponse>
 {

@@ -4,10 +4,11 @@ using System.Text.Json;
 using Blocktrust.DIDComm.Message.Messages;
 using Blocktrust.Mediator.Common.Protocols;
 using Blocktrust.Mediator.Server.Commands.DatabaseCommands.GetMessagesStatus;
+using Common.Models.ProblemReport;
 using FluentResults;
 using MediatR;
 
-public class ProcessPickupStatusRequestHandler : IRequestHandler<ProcessPickupStatusRequestRequest, Result<Message>>
+public class ProcessPickupStatusRequestHandler : IRequestHandler<ProcessPickupStatusRequestRequest, Message>
 {
     private readonly IMediator _mediator;
 
@@ -20,7 +21,7 @@ public class ProcessPickupStatusRequestHandler : IRequestHandler<ProcessPickupSt
     }
 
     /// <inheritdoc />
-    public async Task<Result<Message>> Handle(ProcessPickupStatusRequestRequest request, CancellationToken cancellationToken)
+    public async Task<Message> Handle(ProcessPickupStatusRequestRequest request, CancellationToken cancellationToken)
     {
         var body = request.UnpackedMessage.Body;
         var hasRecipientDid = body.TryGetValue("recipient_did", out var recipientDidBody);
@@ -35,14 +36,20 @@ public class ProcessPickupStatusRequestHandler : IRequestHandler<ProcessPickupSt
             }
             else
             {
-                return Result.Fail("Invalid body format: recipient_did");
+                return ProblemReportMessage.BuildDefaultMessageMissingArguments(
+                    errorMessage: "Invalid body format: recipient_did",
+                    threadIdWhichCausedTheProblem: request.UnpackedMessage.Thid ?? request.UnpackedMessage.Id,
+                    fromPrior: request.FromPrior);
             }
         }
 
         var getStatusResult = await _mediator.Send(new GetMessagesStatusRequest(request.SenderDid, request.MediatorDid, recipientDid), cancellationToken);
         if (getStatusResult.IsFailed)
         {
-            return getStatusResult.ToResult();
+            return ProblemReportMessage.BuildDefaultInternalError(
+                errorMessage: getStatusResult.Errors.FirstOrDefault().Message,
+                threadIdWhichCausedTheProblem: request.UnpackedMessage.Thid ?? request.UnpackedMessage.Id,
+                fromPrior: request.FromPrior);
         }
 
         var statusMessage = new MessageBuilder(
@@ -52,6 +59,6 @@ public class ProcessPickupStatusRequestHandler : IRequestHandler<ProcessPickupSt
             )
             .fromPrior(request.FromPrior)
             .build();
-        return Result.Ok(statusMessage);
+        return statusMessage;
     }
 }

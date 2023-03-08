@@ -5,7 +5,7 @@ using DIDComm.Message.Messages;
 using FluentResults;
 using MediatR;
 
-public class ProcessQueryMediatorKeysRequest : IRequest<Result<Message>>
+public class ProcessQueryMediatorKeysRequest : IRequest<Message>
 {
     public Message UnpackedMessage { get; }
     public string SenderDid { get; }

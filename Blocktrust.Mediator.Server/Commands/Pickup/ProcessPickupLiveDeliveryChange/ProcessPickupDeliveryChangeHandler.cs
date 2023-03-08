@@ -5,7 +5,7 @@ using Blocktrust.Mediator.Common.Models.ProblemReport;
 using FluentResults;
 using MediatR;
 
-public class ProcessPickupDeliveryChangeHandler : IRequestHandler<ProcessPickupDeliveryChangeRequest, Result<Message>>
+public class ProcessPickupDeliveryChangeHandler : IRequestHandler<ProcessPickupDeliveryChangeRequest, Message>
 {
     private readonly IMediator _mediator;
 
@@ -18,7 +18,7 @@ public class ProcessPickupDeliveryChangeHandler : IRequestHandler<ProcessPickupD
     }
 
     /// <inheritdoc />
-    public async Task<Result<Message>> Handle(ProcessPickupDeliveryChangeRequest request, CancellationToken cancellationToken)
+    public async Task<Message> Handle(ProcessPickupDeliveryChangeRequest request, CancellationToken cancellationToken)
     {
         var threadId = request.UnpackedMessage.Thid ?? request.UnpackedMessage.Id;
         var problemReport = ProblemReportMessage.Build(

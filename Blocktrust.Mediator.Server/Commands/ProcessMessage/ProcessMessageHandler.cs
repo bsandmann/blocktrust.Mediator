@@ -1,23 +1,22 @@
-﻿namespace Blocktrust.Mediator.Server.Commands;
+﻿namespace Blocktrust.Mediator.Server.Commands.ProcessMessage;
 
-using Common.Commands.CreatePeerDid;
-using Common.Models.ProblemReport;
-using Common.Protocols;
-using DatabaseCommands.CreateConnection;
-using DatabaseCommands.GetConnection;
-using DIDComm.Message.FromPriors;
-using DIDComm.Message.Messages;
+using Blocktrust.DIDComm.Message.FromPriors;
+using Blocktrust.DIDComm.Message.Messages;
+using Blocktrust.Mediator.Common.Commands.CreatePeerDid;
+using Blocktrust.Mediator.Common.Models.ProblemReport;
+using Blocktrust.Mediator.Common.Protocols;
+using Blocktrust.Mediator.Server.Commands.DatabaseCommands.CreateConnection;
+using Blocktrust.Mediator.Server.Commands.DatabaseCommands.GetConnection;
+using Blocktrust.Mediator.Server.Commands.ForwardMessage;
+using Blocktrust.Mediator.Server.Commands.MediatorCoordinator.ProcessMediationRequest;
+using Blocktrust.Mediator.Server.Commands.MediatorCoordinator.ProcessQueryMediatorKeys;
+using Blocktrust.Mediator.Server.Commands.MediatorCoordinator.ProcessUpdateMediatorKeys;
+using Blocktrust.Mediator.Server.Commands.Pickup.ProcessPickupDeliveryRequest;
+using Blocktrust.Mediator.Server.Commands.Pickup.ProcessPickupLiveDeliveryChange;
+using Blocktrust.Mediator.Server.Commands.Pickup.ProcessPickupMessageReceived;
+using Blocktrust.Mediator.Server.Commands.Pickup.ProcessStatusRequest;
 using FluentResults;
-using ForwardMessage;
-using MediatorCoordinator.ProcessMediationRequest;
-using MediatorCoordinator.ProcessQueryMediatorKeys;
-using MediatorCoordinator.ProcessUpdateMediatorKeys;
 using MediatR;
-using Pickup.ProcessPickupDeliveryRequest;
-using Pickup.ProcessPickupLiveDeliveryChange;
-using Pickup.ProcessPickupMessageReceived;
-using Pickup.ProcessStatusRequest;
-using ProcessMessage;
 
 public class ProcessMessageHandler : IRequestHandler<ProcessMessageRequest, ProcessMessageResponse>
 {
@@ -48,7 +47,7 @@ public class ProcessMessageHandler : IRequestHandler<ProcessMessageRequest, Proc
             return new ProcessMessageResponse(
                 ProblemReportMessage.BuildDefaultInternalError(
                     errorMessage: "Unable to connect to database",
-                    threadIdWhichChausedTheProblem: request.UnpackResult.Message.Thid ?? request.UnpackResult.Message.Id,
+                    threadIdWhichCausedTheProblem: request.UnpackResult.Message.Thid ?? request.UnpackResult.Message.Id,
                     fromPrior: fromPrior), fallBackMediatorDidForErrorMessages);
         }
 
@@ -61,7 +60,7 @@ public class ProcessMessageHandler : IRequestHandler<ProcessMessageRequest, Proc
                 return new ProcessMessageResponse(
                     ProblemReportMessage.BuildDefaultInternalError(
                         errorMessage: "Unable to create PeerDID",
-                        threadIdWhichChausedTheProblem: request.UnpackResult.Message.Thid ?? request.UnpackResult.Message.Id,
+                        threadIdWhichCausedTheProblem: request.UnpackResult.Message.Thid ?? request.UnpackResult.Message.Id,
                         fromPrior: fromPrior), fallBackMediatorDidForErrorMessages);
             }
 
@@ -75,7 +74,7 @@ public class ProcessMessageHandler : IRequestHandler<ProcessMessageRequest, Proc
                 return new ProcessMessageResponse(
                     ProblemReportMessage.BuildDefaultInternalError(
                         errorMessage: "Unable grant mediation",
-                        threadIdWhichChausedTheProblem: request.UnpackResult.Message.Thid ?? request.UnpackResult.Message.Id,
+                        threadIdWhichCausedTheProblem: request.UnpackResult.Message.Thid ?? request.UnpackResult.Message.Id,
                         fromPrior: fromPrior), fallBackMediatorDidForErrorMessages);
             }
 
@@ -86,43 +85,39 @@ public class ProcessMessageHandler : IRequestHandler<ProcessMessageRequest, Proc
             mediatorDid = existingConnection.Value.MediatorDid;
         }
 
-        Result<Message> result = Result.Fail(string.Empty);
+        Message? result;
         switch (request.UnpackResult.Message.Type)
         {
             case ProtocolConstants.CoordinateMediation2Request:
-                result = await _mediator.Send(new ProcessMediationRequestRequest(request.UnpackResult.Message, request.SenderDid, mediatorDid, request.HostUrl, fromPrior));
+                result = await _mediator.Send(new ProcessMediationRequestRequest(request.UnpackResult.Message, request.SenderDid, mediatorDid, request.HostUrl, fromPrior), cancellationToken);
                 break;
             case ProtocolConstants.CoordinateMediation2KeylistUpdate:
-                result = await _mediator.Send(new ProcessUpdateMediatorKeysRequest(request.UnpackResult.Message, request.SenderDid, mediatorDid, request.HostUrl, fromPrior));
+                result = await _mediator.Send(new ProcessUpdateMediatorKeysRequest(request.UnpackResult.Message, request.SenderDid, mediatorDid, request.HostUrl, fromPrior), cancellationToken);
                 break;
             case ProtocolConstants.CoordinateMediation2KeylistQuery:
-                result = await _mediator.Send(new ProcessQueryMediatorKeysRequest(request.UnpackResult.Message, request.SenderDid, mediatorDid, request.HostUrl, fromPrior));
+                result = await _mediator.Send(new ProcessQueryMediatorKeysRequest(request.UnpackResult.Message, request.SenderDid, mediatorDid, request.HostUrl, fromPrior), cancellationToken);
                 break;
             case ProtocolConstants.MessagePickup3StatusRequest:
-                result = await _mediator.Send(new ProcessPickupStatusRequestRequest(request.UnpackResult.Message, request.SenderDid, mediatorDid, request.HostUrl, fromPrior));
+                result = await _mediator.Send(new ProcessPickupStatusRequestRequest(request.UnpackResult.Message, request.SenderDid, mediatorDid, request.HostUrl, fromPrior), cancellationToken);
                 break;
             case ProtocolConstants.MessagePickup3DeliveryRequest:
-                result = await _mediator.Send(new ProcessPickupDeliveryRequestRequest(request.UnpackResult.Message, request.SenderDid, mediatorDid, request.HostUrl, fromPrior));
+                result = await _mediator.Send(new ProcessPickupDeliveryRequestRequest(request.UnpackResult.Message, request.SenderDid, mediatorDid, request.HostUrl, fromPrior), cancellationToken);
                 break;
             case ProtocolConstants.MessagePickup3MessagesReceived:
-                result = await _mediator.Send(new ProcessPickupMessageReceivedRequest(request.UnpackResult.Message, request.SenderDid, mediatorDid, request.HostUrl, fromPrior));
+                result = await _mediator.Send(new ProcessPickupMessageReceivedRequest(request.UnpackResult.Message, request.SenderDid, mediatorDid, request.HostUrl, fromPrior), cancellationToken);
                 break;
             case ProtocolConstants.MessagePickup3LiveDeliveryChange:
-                result = await _mediator.Send(new ProcessPickupDeliveryChangeRequest(request.UnpackResult.Message, request.SenderDid, mediatorDid, request.HostUrl, fromPrior));
+                result = await _mediator.Send(new ProcessPickupDeliveryChangeRequest(request.UnpackResult.Message, request.SenderDid, mediatorDid, request.HostUrl, fromPrior), cancellationToken);
                 break;
             case ProtocolConstants.ForwardMessage:
             {
-                result = await _mediator.Send(new ProcessForwardMessageRequest(request.UnpackResult.Message, request.SenderDid, mediatorDid, request.HostUrl, fromPrior));
-                if (result.IsFailed)
+                result = await _mediator.Send(new ProcessForwardMessageRequest(request.UnpackResult.Message, request.SenderDid, mediatorDid, request.HostUrl, fromPrior), cancellationToken);
+                if (result is null)
                 {
-                    return new ProcessMessageResponse(
-                        ProblemReportMessage.BuildDefaultInternalError(
-                            errorMessage: result.Errors.First().Message,
-                            threadIdWhichChausedTheProblem: request.UnpackResult.Message.Thid ?? request.UnpackResult.Message.Id,
-                            fromPrior: fromPrior), mediatorDid);
+                    return new ProcessMessageResponse(); // 202 Accecpted
                 }
 
-                return new ProcessMessageResponse(); // 202 Accecpted
+                return new ProcessMessageResponse(result, mediatorDid);
             }
             default:
                 return new ProcessMessageResponse(ProblemReportMessage.Build(
@@ -140,6 +135,6 @@ public class ProcessMessageHandler : IRequestHandler<ProcessMessageRequest, Proc
                     escalateTo: new Uri("mailto:info@blocktrust.dev")), mediatorDid);
         }
 
-        return new ProcessMessageResponse(result.Value, mediatorDid);
+        return new ProcessMessageResponse(result, mediatorDid);
     }
 }

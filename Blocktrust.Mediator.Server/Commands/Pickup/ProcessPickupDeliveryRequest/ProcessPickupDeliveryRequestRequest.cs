@@ -5,7 +5,7 @@ using Blocktrust.DIDComm.Message.Messages;
 using FluentResults;
 using MediatR;
 
-public class ProcessPickupDeliveryRequestRequest: IRequest<Result<Message>>
+public class ProcessPickupDeliveryRequestRequest: IRequest<Message>
 {
     public Message UnpackedMessage { get; }
     public string SenderDid { get; }
