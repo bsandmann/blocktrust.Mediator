@@ -109,6 +109,9 @@ public class ProcessMessageHandler : IRequestHandler<ProcessMessageRequest, Proc
             case ProtocolConstants.MessagePickup3LiveDeliveryChange:
                 result = await _mediator.Send(new ProcessPickupDeliveryChangeRequest(request.UnpackResult.Message, request.SenderDid, mediatorDid, request.HostUrl, fromPrior), cancellationToken);
                 break;
+            case ProtocolConstants.DiscoverFeatures2Query:
+                result = await _mediator.Send(new ProcessDiscoverFeaturesRequest(request.UnpackResult.Message, request.SenderDid, mediatorDid, request.HostUrl, fromPrior), cancellationToken);
+                break;
             case ProtocolConstants.ForwardMessage:
             {
                 result = await _mediator.Send(new ProcessForwardMessageRequest(request.UnpackResult.Message, request.SenderDid, mediatorDid, request.HostUrl, fromPrior), cancellationToken);
