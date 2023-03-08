@@ -1,6 +1,8 @@
 ﻿namespace Blocktrust.Mediator.Server.Controllers;
 
+using System.Text.Json;
 using Blocktrust.Common.Resolver;
+using Commands;
 using Commands.DatabaseCommands.CreateConnection;
 using Commands.DatabaseCommands.GetConnection;
 using Commands.ForwardMessage;
@@ -14,6 +16,7 @@ using Commands.Pickup.ProcessPickupLiveDeliveryChange;
 using Commands.Pickup.ProcessPickupMessageReceived;
 using Commands.Pickup.ProcessStatusRequest;
 using Common.Commands.CreatePeerDid;
+using Common.Models.ProblemReport;
 using Common.Protocols;
 using DIDComm;
 using DIDComm.Message.FromPriors;
@@ -23,6 +26,7 @@ using DIDComm.Model.UnpackParamsModels;
 using FluentResults;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Models;
 
 [ApiController]
 public class MediatorController : ControllerBase
@@ -122,91 +126,54 @@ public class MediatorController : ControllerBase
             senderOldDid = senderDid;
         }
 
-        // Check for existing connection
-        FromPrior? fromPrior = null;
-        string mediatorDid;
-        var existingConnection = await _mediator.Send(new GetConnectionRequest(senderOldDid, null));
-        if (existingConnection.IsFailed)
+        var processMessageResponse = await _mediator.Send(new ProcessMessageRequest(senderOldDid, senderDid, hostUrl, unpacked.Value));
+
+        // Check if we have a return route flag. Otherwise we should send a separate message
+        var customHeaders = unpacked.Value.Message.CustomHeaders;
+        EnumReturnRoute returnRoute = EnumReturnRoute.None;
+        if (customHeaders is not null && (customHeaders.TryGetValue("return_route", out var returnRouteString)))
         {
-            //Internal error
+            var returnRouteJsonElement = (JsonElement)returnRouteString;
+            if (returnRouteJsonElement.ValueKind == JsonValueKind.String)
+            {
+                EnumReturnRoute.TryParse(returnRouteJsonElement.GetString(), true, out returnRoute);
+            }
         }
 
-        if (existingConnection.Value is null)
+        // TODO simplification: we currently treat 'all' and 'thread' the same
+        if (returnRoute == EnumReturnRoute.All || returnRoute == EnumReturnRoute.Thread)
         {
-            // Create new connection
-            var mediatorDidResult = await _mediator.Send(new CreatePeerDidRequest(serviceEndpoint: new Uri(hostUrl)));
-            if (mediatorDidResult.IsFailed)
+            if (processMessageResponse.RespondWithAccepted)
             {
-                //TODO
+                return Accepted();
             }
 
-            var iss = unpacked.Value.Metadata.EncryptedTo.First().Split('#')[0]; // The current Did of the mediator the msg was send to
-            var sub = mediatorDidResult.Value.PeerDid.Value; // The new Did of the mediator that will be used for future communication
-            fromPrior = FromPrior.Builder(iss, sub).Build();
+            var packResult = didComm.PackEncrypted(
+                new PackEncryptedParamsBuilder(processMessageResponse.Message, to: senderDid)
+                    .From(processMessageResponse.MediatorDid)
+                    .ProtectSenderId(false)
+                    .BuildPackEncryptedParams()
+            );
 
-            var createConnectionResult = await _mediator.Send(new CreateConnectionRequest(mediatorDidResult.Value.PeerDid.Value, senderDid));
-            if (createConnectionResult.IsFailed)
-            {
-                //TODO
-            }
-
-            mediatorDid = mediatorDidResult.Value.PeerDid.Value;
+            return Ok(packResult.PackedMessage);
         }
         else
         {
-            mediatorDid = existingConnection.Value.MediatorDid;
-        }
-
-        Result<Message> result = Result.Fail(string.Empty);
-        switch (unpacked.Value.Message.Type)
-        {
-            case ProtocolConstants.CoordinateMediation2Request:
-                result = await _mediator.Send(new ProcessMediationRequestRequest(unpacked.Value.Message, senderDid, mediatorDid, hostUrl, fromPrior));
-                break;
-            case ProtocolConstants.CoordinateMediation2KeylistUpdate:
-                result = await _mediator.Send(new ProcessUpdateMediatorKeysRequest(unpacked.Value.Message, senderDid, mediatorDid, hostUrl, fromPrior));
-                break;
-            case ProtocolConstants.CoordinateMediation2KeylistQuery:
-                result = await _mediator.Send(new ProcessQueryMediatorKeysRequest(unpacked.Value.Message, senderDid, mediatorDid, hostUrl, fromPrior));
-                break;
-            case ProtocolConstants.MessagePickup3StatusRequest:
-                result = await _mediator.Send(new ProcessPickupStatusRequestRequest(unpacked.Value.Message, senderDid, mediatorDid, hostUrl, fromPrior));
-                break;
-            case ProtocolConstants.MessagePickup3DeliveryRequest:
-                result = await _mediator.Send(new ProcessPickupDeliveryRequestRequest(unpacked.Value.Message, senderDid, mediatorDid, hostUrl, fromPrior));
-                break;
-            case ProtocolConstants.MessagePickup3MessagesReceived:
-                result = await _mediator.Send(new ProcessPickupMessageReceivedRequest(unpacked.Value.Message, senderDid, mediatorDid, hostUrl, fromPrior));
-                break;
-            case ProtocolConstants.MessagePickup3LiveDeliveryChange:
-                result = await _mediator.Send(new ProcessPickupDeliveryChangeRequest(unpacked.Value.Message, senderDid, mediatorDid, hostUrl, fromPrior));
-                break;
-            case ProtocolConstants.ForwardMessage:
+            // TODO we should queue the messages and send them out separately
+            // TODO but we have to ensure that the sending endpoint has indeed a mediator or is a cloud agent
+            if (processMessageResponse.RespondWithAccepted)
             {
-                result = await _mediator.Send(new ProcessForwardMessageRequest(unpacked.Value.Message, senderDid, mediatorDid, hostUrl, fromPrior));
-                if (result.IsFailed)
-                {
-                    return BadRequest(result.Errors.FirstOrDefault().Message);
-                }
-
                 return Accepted();
             }
-            default:
-                return BadRequest("Not implemented message type");
+
+            var packResult = didComm.PackEncrypted(
+                new PackEncryptedParamsBuilder(processMessageResponse.Message, to: senderDid)
+                    .From(processMessageResponse.MediatorDid)
+                    .ProtectSenderId(false)
+                    .BuildPackEncryptedParams()
+            );
+
+            return Ok(packResult.PackedMessage);
         }
-
-        if (result.IsFailed)
-        {
-            return BadRequest("bla");
-        }
-
-        var packResult = didComm.PackEncrypted(
-            new PackEncryptedParamsBuilder(result.Value, to: senderDid)
-                .From(mediatorDid)
-                .ProtectSenderId(false)
-                .BuildPackEncryptedParams()
-        );
-
-        return Ok(packResult.PackedMessage);
     }
 }

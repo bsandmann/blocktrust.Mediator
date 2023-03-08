@@ -47,4 +47,21 @@ public static class ProblemReportMessage
 
         return msg;
     }
+
+    public static Message BuildDefaultInternalError(string errorMessage, string threadIdWhichChausedTheProblem, FromPrior? fromPrior = null)
+    {
+        return ProblemReportMessage.Build(
+            fromPrior: fromPrior,
+            threadIdWhichCausedTheProblem: threadIdWhichChausedTheProblem,
+            problemCode: new ProblemCode(
+                sorter: EnumProblemCodeSorter.Error,
+                scope: EnumProblemCodeScope.Message,
+                stateNameForScope: null,
+                descriptor: EnumProblemCodeDescriptor.InternalError,
+                otherDescriptor: null
+            ),
+            comment: $"Internal error: {errorMessage}",
+            commentArguments: null,
+            escalateTo: new Uri("mailto:info@blocktrust.dev"));
+    }
 }
