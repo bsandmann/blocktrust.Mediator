@@ -20,18 +20,18 @@ public class ProcessPickupDeliveryChangeHandler : IRequestHandler<ProcessPickupD
     /// <inheritdoc />
     public async Task<Result<Message>> Handle(ProcessPickupDeliveryChangeRequest request, CancellationToken cancellationToken)
     {
-        var threadId = request.UnpackedMessage.Thid;
+        var threadId = request.UnpackedMessage.Thid ?? request.UnpackedMessage.Id;
         var problemReport = ProblemReportMessage.Build(
             fromPrior: request.FromPrior,
-            threadIdWithCausedTheProblem: threadId,
+            threadIdWhichCausedTheProblem: threadId,
             problemCode: new ProblemCode(
                 sorter: EnumProblemCodeSorter.Error,
-                scope: EnumProblemCodeScope.Protocol,
+                scope: EnumProblemCodeScope.Message,
                 stateNameForScope: null,
                 descriptor: EnumProblemCodeDescriptor.Other,
                 otherDescriptor: "live-delivery-not-supported"
             ),
-            comment: "Connection does not support Live-Delivery",
+            comment: "Connection does not support Live Delivery",
             commentArguments: null,
             escalateTo: new Uri("mailto:info@blocktrust.dev"));
 

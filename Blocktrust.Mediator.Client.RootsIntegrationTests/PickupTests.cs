@@ -285,10 +285,39 @@ public class PickupTests
         // Alice confirms the delivery of the message
         var messageId = deliveryRequestResult.Value.Messages!.FirstOrDefault().MessageId;
         _messageReceivedHandler = new MessageReceivedHandler(_httpClient, simpleDidDocResolverForAlice, secretResolverInMemoryForAlice);
-        var messageReceivedResult = await _messageReceivedHandler.Handle(new MessageReceivedRequest(localDidOfAliceToUseWithTheMediator.Value.PeerDid.Value, requestMediationResult.Value.MediatorDid, requestMediationResult.Value.MediatorEndpoint, new List<string>() { messageId }), new CancellationToken());
-        
+        var messageReceivedResult = await _messageReceivedHandler.Handle(new MessageReceivedRequest(localDidOfAliceToUseWithTheMediator.Value.PeerDid.Value, requestMediationResult.Value.MediatorDid, requestMediationResult.Value.MediatorEndpoint, new List<string>() { messageId }),
+            new CancellationToken());
+
         // Assert
         messageReceivedResult.IsSuccess.Should().BeTrue();
         messageReceivedResult.Value.MessageCount.Should().Be(0);
+    }
+
+    /// <summary>
+    /// This tests assumes that the Roots Mediator is running on http://127.0.0.1:8000
+    /// </summary>
+    [Fact]
+    public async Task AliceWantsToChangeTheDeliveryLiveMode()
+    {
+        // Setup a Did and a mediator for Alice
+        var oobInvitationRootsLocal =
+            "eyJ0eXBlIjoiaHR0cHM6Ly9kaWRjb21tLm9yZy9vdXQtb2YtYmFuZC8yLjAvaW52aXRhdGlvbiIsImlkIjoiNGZjN2Q3NDYtMzk2Ny00NjFjLTg5MTAtMWM5YTBmMjdkYjQ0IiwiZnJvbSI6ImRpZDpwZWVyOjIuRXo2TFNkRWNzVnZ6ZTNjWkpxaTFLRFdyU2N5MmFINW9IOFlkUVJRaTZmNVpIN1lGMi5WejZNa284aXllUDRITTFpS3ZuY2o3TkVRQ3JjeXpQN1Y1VW1ad2N1QXN6NWhZRkJlLlNleUpwWkNJNkltNWxkeTFwWkNJc0luUWlPaUprYlNJc0luTWlPaUpvZEhSd09pOHZNVEkzTGpBdU1DNHhPamd3TURBaUxDSmhJanBiSW1ScFpHTnZiVzB2ZGpJaVhYMCIsImJvZHkiOnsiZ29hbF9jb2RlIjoicmVxdWVzdC1tZWRpYXRlIiwiZ29hbCI6IlJlcXVlc3RNZWRpYXRlIiwibGFiZWwiOiJNZWRpYXRvciIsImFjY2VwdCI6WyJkaWRjb21tL3YyIl19fQ";
+
+        var secretResolverInMemoryForAlice = new SecretResolverInMemory();
+        var simpleDidDocResolverForAlice = new SimpleDidDocResolver();
+        _createPeerDidHandlerAlice = new CreatePeerDidHandler(secretResolverInMemoryForAlice);
+
+        var localDidOfAliceToUseWithTheMediator = await _createPeerDidHandlerAlice.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
+        var request = new RequestMediationRequest(oobInvitationRootsLocal, localDidOfAliceToUseWithTheMediator.Value.PeerDid.Value);
+
+        _requestMediationHandler = new RequestMediationHandler(_httpClient, simpleDidDocResolverForAlice, secretResolverInMemoryForAlice);
+        var requestMediationResult = await _requestMediationHandler.Handle(request, CancellationToken.None);
+
+        var liveDeliveryChangeHandler = new LiveDeliveryChangeHandler(_httpClient, simpleDidDocResolverForAlice, secretResolverInMemoryForAlice);
+        var result = await liveDeliveryChangeHandler.Handle(new LiveDeliveryChangeRequest(localDidOfAliceToUseWithTheMediator.Value.PeerDid.Value, requestMediationResult.Value.MediatorDid, requestMediationResult.Value.MediatorEndpoint, true), cancellationToken: new CancellationToken());
+
+        result.IsSuccess.Should().BeTrue();
+        result.Value.ProblemCode.ToString().Should().Be("e.m.live-delivery-not-supported");
+        result.Value.Comment.Should().Be("Connection does not support Live Delivery");
     }
 }

@@ -378,4 +378,35 @@ public class PickupTests
         messageReceivedResult.IsSuccess.Should().BeTrue();
         messageReceivedResult.Value.MessageCount.Should().Be(0);
     }
+    
+    /// <summary>
+    /// This tests assumes that the Blocktrust Mediator is running on https://localhost:7037
+    /// </summary>
+    [Fact]
+    public async Task AliceWantsToChangeTheDeliveryLiveMode()
+    {
+        // First get the OOB from the running mediator
+        var response = await _httpClient.GetAsync(_blocktrustMediatorUri + "oob_url");
+        var resultContent = await response.Content.ReadAsStringAsync();
+        var oob = resultContent.Split("=");
+        var oobInvitation = oob[1];
+        
+        var secretResolverInMemoryForAlice = new SecretResolverInMemory();
+        var simpleDidDocResolverForAlice = new SimpleDidDocResolver();
+        _createPeerDidHandlerAlice = new CreatePeerDidHandler(secretResolverInMemoryForAlice);
+
+        var localDidOfAliceToUseWithTheMediator = await _createPeerDidHandlerAlice.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
+        var request = new RequestMediationRequest(oobInvitation, localDidOfAliceToUseWithTheMediator.Value.PeerDid.Value);
+
+        _requestMediationHandler = new RequestMediationHandler(_httpClient, simpleDidDocResolverForAlice, secretResolverInMemoryForAlice);
+        var requestMediationResult = await _requestMediationHandler.Handle(request, CancellationToken.None);
+
+        var liveDeliveryChangeHandler = new LiveDeliveryChangeHandler(_httpClient, simpleDidDocResolverForAlice, secretResolverInMemoryForAlice);
+        var result = await liveDeliveryChangeHandler.Handle(new LiveDeliveryChangeRequest(localDidOfAliceToUseWithTheMediator.Value.PeerDid.Value, requestMediationResult.Value.MediatorDid, requestMediationResult.Value.MediatorEndpoint, true), cancellationToken: new CancellationToken());
+
+        result.IsSuccess.Should().BeTrue();
+        result.Value.ProblemCode.ToString().Should().Be("e.m.live-delivery-not-supported");
+        result.Value.Comment.Should().Be("Connection does not support Live Delivery");
+    }
+
 }

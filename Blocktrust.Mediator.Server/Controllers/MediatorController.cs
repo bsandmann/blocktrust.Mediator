@@ -10,6 +10,7 @@ using Commands.MediatorCoordinator.ProcessUpdateMediatorKeys;
 using Commands.OutOfBand.CreateOobInvitation;
 using Commands.OutOfBand.GetOobInvitation;
 using Commands.Pickup.ProcessPickupDeliveryRequest;
+using Commands.Pickup.ProcessPickupLiveDeliveryChange;
 using Commands.Pickup.ProcessPickupMessageReceived;
 using Commands.Pickup.ProcessStatusRequest;
 using Common.Commands.CreatePeerDid;
@@ -178,7 +179,7 @@ public class MediatorController : ControllerBase
                 result = await _mediator.Send(new ProcessPickupMessageReceivedRequest(unpacked.Value.Message, senderDid, mediatorDid, hostUrl, fromPrior));
                 break;
             case ProtocolConstants.MessagePickup3LiveDeliveryChange:
-                result = await _mediator.Send(new ProcessPickupMessageReceivedRequest(unpacked.Value.Message, senderDid, mediatorDid, hostUrl, fromPrior));
+                result = await _mediator.Send(new ProcessPickupDeliveryChangeRequest(unpacked.Value.Message, senderDid, mediatorDid, hostUrl, fromPrior));
                 break;
             case ProtocolConstants.ForwardMessage:
             {

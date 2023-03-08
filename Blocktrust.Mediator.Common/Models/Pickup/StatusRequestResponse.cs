@@ -54,12 +54,12 @@ public class StatusRequestResponse
     {
     }
 
-    public static Result<StatusRequestResponse> Parse(Dictionary<string, object?> bodyContent)
+    public static Result<StatusRequestResponse> Parse(Dictionary<string, object?> body)
     {
         var statusRequestResponse = new StatusRequestResponse();
-        if (bodyContent.ContainsKey("message_count"))
+        if (body.ContainsKey("message_count"))
         {
-            bodyContent.TryGetValue("message_count", out var messageCount);
+            body.TryGetValue("message_count", out var messageCount);
             var messageCountJsonElement = (JsonElement)messageCount;
             if (messageCountJsonElement.ValueKind is JsonValueKind.Number)
             {
@@ -71,9 +71,9 @@ public class StatusRequestResponse
             return Result.Fail("Required content: message_count is missing in the body");
         }
 
-        if (bodyContent.ContainsKey("recipient_did"))
+        if (body.ContainsKey("recipient_did"))
         {
-            bodyContent.TryGetValue("recipient_did", out var recipientDid);
+            body.TryGetValue("recipient_did", out var recipientDid);
             var recipientDidJsonElement = (JsonElement)recipientDid;
             if (recipientDidJsonElement.ValueKind is JsonValueKind.String)
             {
@@ -81,9 +81,9 @@ public class StatusRequestResponse
             }
         }
 
-        if (bodyContent.ContainsKey("longest_waited_seconds"))
+        if (body.ContainsKey("longest_waited_seconds"))
         {
-            bodyContent.TryGetValue("longest_waited_seconds", out var longestWaitedSeconds);
+            body.TryGetValue("longest_waited_seconds", out var longestWaitedSeconds);
             var longestWaitedSecondsJsonElement = (JsonElement)longestWaitedSeconds;
             if (longestWaitedSecondsJsonElement.ValueKind is JsonValueKind.Number)
             {
@@ -91,9 +91,9 @@ public class StatusRequestResponse
             }
         }
 
-        if (bodyContent.ContainsKey("newest_received_time"))
+        if (body.ContainsKey("newest_received_time"))
         {
-            bodyContent.TryGetValue("newest_received_time", out var newestMessageTime);
+            body.TryGetValue("newest_received_time", out var newestMessageTime);
             var newestMessageTimeJsonElement = (JsonElement)newestMessageTime;
             if (newestMessageTimeJsonElement.ValueKind is JsonValueKind.Number)
             {
@@ -101,9 +101,9 @@ public class StatusRequestResponse
             }
         }
 
-        if (bodyContent.ContainsKey("oldest_received_time"))
+        if (body.ContainsKey("oldest_received_time"))
         {
-            bodyContent.TryGetValue("oldest_received_time", out var oldestMessageTime);
+            body.TryGetValue("oldest_received_time", out var oldestMessageTime);
             var oldestMessageTimeJsonElement = (JsonElement)oldestMessageTime;
             if (oldestMessageTimeJsonElement.ValueKind is JsonValueKind.Number)
             {
@@ -111,9 +111,9 @@ public class StatusRequestResponse
             }
         }
 
-        if (bodyContent.ContainsKey("total_bytes"))
+        if (body.ContainsKey("total_bytes"))
         {
-            bodyContent.TryGetValue("total_bytes", out var totalByteSize);
+            body.TryGetValue("total_bytes", out var totalByteSize);
             var totalByteSizeJsonElement = (JsonElement)totalByteSize;
             if (totalByteSizeJsonElement.ValueKind is JsonValueKind.Number)
             {
@@ -121,9 +121,9 @@ public class StatusRequestResponse
             }
         }
 
-        if (bodyContent.ContainsKey("live_delivery"))
+        if (body.ContainsKey("live_delivery"))
         {
-            bodyContent.TryGetValue("live_delivery", out var liveDelivery);
+            body.TryGetValue("live_delivery", out var liveDelivery);
             var liveDeliveryJsonElement = (JsonElement)liveDelivery;
             if (liveDeliveryJsonElement.ValueKind is JsonValueKind.True || liveDeliveryJsonElement.ValueKind is JsonValueKind.False)
             {

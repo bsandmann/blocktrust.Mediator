@@ -4,6 +4,7 @@ using System.Net;
 using System.Text;
 using Blocktrust.Common.Resolver;
 using Common.Models.Pickup;
+using Common.Models.ProblemReport;
 using Common.Protocols;
 using DIDComm;
 using DIDComm.Common.Types;
@@ -14,7 +15,7 @@ using FluentResults;
 using MediatR;
 using StatusRequest;
 
-public class LiveDeliveryChangeHandler : IRequestHandler<LiveDeliveryChangeRequest, Result>
+public class LiveDeliveryChangeHandler : IRequestHandler<LiveDeliveryChangeRequest, Result<ProblemReport>>
 {
     private readonly HttpClient _httpClient;
     private readonly IDidDocResolver _didDocResolver;
@@ -27,7 +28,7 @@ public class LiveDeliveryChangeHandler : IRequestHandler<LiveDeliveryChangeReque
         _secretResolver = secretResolver;
     }
 
-    public async Task<Result> Handle(LiveDeliveryChangeRequest request, CancellationToken cancellationToken)
+    public async Task<Result<ProblemReport>> Handle(LiveDeliveryChangeRequest request, CancellationToken cancellationToken)
     {
         var body = new Dictionary<string, object>();
         body.Add("live_delivery", request.LiveDelivery);
@@ -62,8 +63,6 @@ public class LiveDeliveryChangeHandler : IRequestHandler<LiveDeliveryChangeReque
             return Result.Fail("Unable to initiate connection: " + response.StatusCode);
         }
 
-        //TODO how to handle the problem report here on the client side
-        
         var content = await response.Content.ReadAsStringAsync(cancellationToken);
 
         var unpackResult = didComm.Unpack(
@@ -76,9 +75,20 @@ public class LiveDeliveryChangeHandler : IRequestHandler<LiveDeliveryChangeReque
             return unpackResult.ToResult();
         }
 
-        if (unpackResult.Value.Message.Type != ProtocolConstants.MessagePickup3StatusResponse)
+        //TODO this is very much just a test to test the compatiblity - not of the expected behaviour for a production system!
+
+        if (unpackResult.Value.Message.Type == ProtocolConstants.ProblemReport)
         {
-            return Result.Fail($"Unexpected header-type: {unpackResult.Value.Message.Type}");
+            if (unpackResult.Value.Message.Pthid != null)
+            {
+                var problemReport = ProblemReport.Parse(unpackResult.Value.Message.Body, unpackResult.Value.Message.Pthid);
+                if (problemReport.IsFailed)
+                {
+                    return Result.Fail("Error parsing the problem report of the mediator");
+                }
+                
+                return Result.Ok(problemReport.Value);
+            }
         }
 
         return Result.Ok();

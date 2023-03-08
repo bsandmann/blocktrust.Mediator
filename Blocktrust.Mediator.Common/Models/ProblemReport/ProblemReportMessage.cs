@@ -11,7 +11,7 @@ using FromPrior = DIDComm.Message.FromPriors.FromPrior;
 
 public static class ProblemReportMessage
 {
-    public static Message Build(FromPrior? fromPrior, string threadIdWithCausedTheProblem, ProblemCode problemCode, string? comment, List<string>? commentArguments, Uri? escalateTo)
+    public static Message Build(FromPrior? fromPrior, string threadIdWhichCausedTheProblem, ProblemCode problemCode, string? comment, List<string>? commentArguments, Uri? escalateTo)
     {
         var body = new Dictionary<string, object>();
         body.Add("code", problemCode.ToString());
@@ -35,7 +35,7 @@ public static class ProblemReportMessage
                 type: ProtocolConstants.ProblemReport,
                 body: body
             )
-            .thid(threadIdWithCausedTheProblem)
+            .pthid(threadIdWhichCausedTheProblem)
             .fromPrior(fromPrior)
             .build();
 

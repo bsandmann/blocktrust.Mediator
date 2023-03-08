@@ -37,7 +37,7 @@ public class GetConnectionHandler : IRequestHandler<GetConnectionRequest, Result
 
             if (existingConnection is null)
             {
-                return Result.Ok<>(null);
+                return Result.Ok();
             }
 
             return Result.Ok(new MediatorConnectionModel(

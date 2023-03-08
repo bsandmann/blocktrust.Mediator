@@ -1,10 +1,11 @@
 ﻿namespace Blocktrust.Mediator.Client.Commands.Pickup.StatusRequest;
 
 using Common.Models.Pickup;
+using Common.Models.ProblemReport;
 using FluentResults;
 using MediatR;
 
-public class LiveDeliveryChangeRequest : IRequest<Result>
+public class LiveDeliveryChangeRequest : IRequest<Result<ProblemReport>>
 {
     /// <summary>
     /// The local did which is used to communicate with the mediator 

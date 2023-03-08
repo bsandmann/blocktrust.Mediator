@@ -1,6 +1,7 @@
 ﻿namespace Blocktrust.Mediator.Common.Models.ProblemReport;
 
 using System.Text;
+using FluentResults;
 
 public class ProblemCode
 {
@@ -158,7 +159,7 @@ public class ProblemCode
                 throw new Exception("Descriptors should not use dots '.' at the end");
             }
 
-            sb.Append(StateNameForScope);
+            sb.Append(OtherDescriptor);
         }
 
         if (!string.IsNullOrEmpty(AdditionalDescriptor1))
@@ -192,5 +193,82 @@ public class ProblemCode
         }
 
         return sb.ToString();
+    }
+
+    public static Result<ProblemCode> Parse(string problemCode)
+    {
+        var splitted = problemCode.Split(".");
+        if (splitted.Length < 3)
+        {
+            return Result.Fail("Invalid problem code");
+        }
+
+        var sorter = ParseSorter(splitted[0]);
+        if (sorter.IsFailed)
+        {
+            return Result.Fail($"Invalid problem code: sorter '{splitted[0]}' not supported");
+        }
+
+        var scope = ParseScope(splitted[1]);
+        var descriptor0 = ParseDescriptor(splitted[2]);
+
+        string? descriptor1 = null;
+        string? descriptor2 = null;
+
+
+        if (splitted.Length == 4)
+        {
+            descriptor1 = splitted[3];
+        }
+
+        if (splitted.Length == 5)
+        {
+            descriptor2 = splitted[4];
+        }
+
+        if (splitted.Length > 5)
+        {
+            return Result.Fail("Problem code format not supported: too long");
+        }
+
+        return Result.Ok(new ProblemCode(sorter.Value, scope.Item1, scope.Item2, descriptor0.Item1, descriptor0.Item2, descriptor1, descriptor2));
+    }
+
+    private static Result<EnumProblemCodeSorter> ParseSorter(string sorter)
+    {
+        return sorter switch
+        {
+            "w" => EnumProblemCodeSorter.Warning,
+            "e" => EnumProblemCodeSorter.Error,
+            _ => Result.Fail("Invalid sorter")
+        };
+    }
+
+    private static (EnumProblemCodeScope, string) ParseScope(string scope)
+    {
+        return scope switch
+        {
+            "m" => (EnumProblemCodeScope.Message, string.Empty),
+            "p" => (EnumProblemCodeScope.Protocol, string.Empty),
+            _ => (EnumProblemCodeScope.StateName, scope),
+        };
+    }
+
+    private static (EnumProblemCodeDescriptor, string) ParseDescriptor(string descriptor)
+    {
+        return descriptor switch
+        {
+            "trust" => (EnumProblemCodeDescriptor.Trust, string.Empty),
+            "trust.crypto" => (EnumProblemCodeDescriptor.TrustCrpyto, string.Empty),
+            "xfer" => (EnumProblemCodeDescriptor.Transfer, string.Empty),
+            "did" => (EnumProblemCodeDescriptor.Did, string.Empty),
+            "msg" => (EnumProblemCodeDescriptor.Message, string.Empty),
+            "me" => (EnumProblemCodeDescriptor.InternalError, string.Empty),
+            "me.res" => (EnumProblemCodeDescriptor.InternalRessourceError, string.Empty),
+            "req" => (EnumProblemCodeDescriptor.RequirementsNotSatified, string.Empty),
+            "req.time" => (EnumProblemCodeDescriptor.TiminingRequirementsNotSatified, string.Empty),
+            "legal" => (EnumProblemCodeDescriptor.LegalReason, string.Empty),
+            _ => (EnumProblemCodeDescriptor.Other, descriptor),
+        };
     }
 }
