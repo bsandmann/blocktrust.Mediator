@@ -42,6 +42,7 @@ public class ProcessMediationRequestHandler : IRequestHandler<ProcessMediationRe
                     type: ProtocolConstants.CoordinateMediation2Deny,
                     body: new Dictionary<string, object>()
                 )
+                .thid(request.UnpackedMessage.Thid ?? request.UnpackedMessage.Id)
                 .fromPrior(request.FromPrior)
                 .build();
             return mediateDenyMessage;
@@ -82,6 +83,7 @@ public class ProcessMediationRequestHandler : IRequestHandler<ProcessMediationRe
                         { "routing_did", routingDidResult.Value.PeerDid.Value }
                     }
                 )
+                .thid(request.UnpackedMessage.Thid ?? request.UnpackedMessage.Id)
                 .fromPrior(request.FromPrior)
                 .build();
             return mediateGrantMessage;

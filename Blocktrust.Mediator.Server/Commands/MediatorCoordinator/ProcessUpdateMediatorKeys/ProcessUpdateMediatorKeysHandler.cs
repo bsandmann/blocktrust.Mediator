@@ -103,6 +103,7 @@ public class ProcessUpdateMediatorKeysHandler : IRequestHandler<ProcessUpdateMed
                         { "updated", updatesBody }
                     }
                 )
+                .thid(request.UnpackedMessage.Thid ?? request.UnpackedMessage.Id)
                 .fromPrior(request.FromPrior)
                 .build();
             return mediateGrantMessage;

@@ -82,6 +82,7 @@ public class ProcessPickupMessageReceivedHandler : IRequestHandler<ProcessPickup
                 type: ProtocolConstants.MessagePickup3StatusResponse,
                 body: getStatusResult.Value.GetMessagePickup3StatusResponseBody()
             )
+            .thid(request.UnpackedMessage.Thid ?? request.UnpackedMessage.Id)
             .fromPrior(request.FromPrior)
             .build();
         return statusMessage;

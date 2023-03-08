@@ -70,6 +70,7 @@ public class ProcessQueryMediatorKeysHandler : IRequestHandler<ProcessQueryMedia
                         { "keys", queryResult.Value.Select(p => new KeyListModel() { QueryResult = p.KeyEntry }).ToList() }
                     }
                 )
+                .thid(request.UnpackedMessage.Thid ?? request.UnpackedMessage.Id)
                 .fromPrior(request.FromPrior)
                 .build();
             return mediateGrantMessage;
