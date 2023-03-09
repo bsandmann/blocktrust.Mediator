@@ -3,6 +3,7 @@ namespace Blocktrust.Mediator.Server
 {
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Hosting;
+    using Microsoft.Extensions.Logging.ApplicationInsights;
 
 
     public class Program
@@ -18,10 +19,10 @@ namespace Blocktrust.Mediator.Server
                 {
                     logging.ClearProviders();
                     logging.AddConsole();
-                    // logging.AddApplicationInsights();
-                    // logging
-                    //     .AddFilter<ApplicationInsightsLoggerProvider>(
-                    //         string.Empty, LogLevel.Information);
+                    logging.AddApplicationInsights();
+                    logging
+                        .AddFilter<ApplicationInsightsLoggerProvider>(
+                            string.Empty, LogLevel.Information);
                 })
                 .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
     }

@@ -31,7 +31,6 @@ public class Startup
     /// <param name="services"></param>
     public void ConfigureServices(IServiceCollection services)
     {
-        // services.AddCors();
         services.AddHttpContextAccessor();
         services.AddDbContext<DataContext>(options =>
         {
@@ -48,26 +47,18 @@ public class Startup
             cfg.RegisterServicesFromAssembly(typeof(SimpleDidDocResolver).Assembly);
         });
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
-        // var appSettingsSection = Configuration.GetSection("AppSettings");
-        // services.Configure<AppSettings>(appSettingsSection);
         services.AddHttpClient();
-        // services.AddHostedService<BackgroundService.BackgroundService>();
-        // services.AddSingleton<BackgroundWorkerQueue>();
         //TODO unclear if the secreat resolver has to be scoped or singleton. Crashing when singleton currently
         services.AddScoped<ISecretResolver, MediatorSecretResolver>();
         services.AddSingleton<IDidDocResolver, SimpleDidDocResolver>();
-        // services.AddSingleton<ISha256Service, Sha256ServiceBouncyCastle>();
         services.AddSwaggerGen(c =>
         {
-            // c.ExampleFilters();
             c.SwaggerDoc("v1", new OpenApiInfo { Title = "Blocktrust.Mediator", Version = "v1" });
             var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
             var commentsFileName = Assembly.GetExecutingAssembly().GetName().Name + ".XML";
             var commentsFile = Path.Combine(baseDirectory, commentsFileName);
             c.IncludeXmlComments(commentsFile);
         });
-
-        // services.AddSwaggerExamplesFromAssemblyOf<CreateDidRequestExample>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -86,18 +77,10 @@ public class Startup
         }
 
         app.UseHttpsRedirection();
-        // app.UseCors(x => x
-        //     .AllowAnyOrigin()
-        //     .AllowAnyMethod()
-        //     .AllowAnyHeader()
-        //     .WithExposedHeaders("Grpc-Status", "Grpc-Message", "Grpc-Encoding", "Grpc-Accept-Encoding"));
         app.UseRouting();
-        // app.UseAuthorization();
-        // app.UseGrpcWeb();
         app.UseHttpsRedirection();
         app.UseEndpoints(endpoints =>
         {
-            // endpoints.MapGrpcService<GrpcReadService>().EnableGrpcWeb();
             endpoints.MapControllers();
             endpoints.MapRazorPages();
         });
