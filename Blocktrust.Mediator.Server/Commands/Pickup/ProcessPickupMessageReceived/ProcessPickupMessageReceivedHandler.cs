@@ -1,14 +1,12 @@
-﻿namespace Blocktrust.Mediator.Server.Commands.Pickup.ProcessPickupDeliveryRequest;
+﻿namespace Blocktrust.Mediator.Server.Commands.Pickup.ProcessPickupMessageReceived;
 
 using System.Text.Json;
 using Blocktrust.DIDComm.Message.Messages;
+using Blocktrust.Mediator.Common.Models.ProblemReport;
 using Blocktrust.Mediator.Common.Protocols;
+using Blocktrust.Mediator.Server.Commands.DatabaseCommands.DeleteMessages;
 using Blocktrust.Mediator.Server.Commands.DatabaseCommands.GetMessagesStatus;
-using Common.Models.ProblemReport;
-using DatabaseCommands.DeleteMessages;
-using FluentResults;
 using MediatR;
-using ProcessPickupMessageReceived;
 
 public class ProcessPickupMessageReceivedHandler : IRequestHandler<ProcessPickupMessageReceivedRequest, Message>
 {

@@ -2,7 +2,6 @@
 
 using Blocktrust.DIDComm.Message.Messages;
 using Blocktrust.Mediator.Common.Models.ProblemReport;
-using FluentResults;
 using MediatR;
 
 public class ProcessPickupDeliveryChangeHandler : IRequestHandler<ProcessPickupDeliveryChangeRequest, Message>

@@ -1,28 +1,25 @@
-﻿namespace Blocktrust.Mediator.Client.RootsIntegrationTests;
+﻿namespace Blocktrust.Mediator.Client.BlocktrustIntegrationTests;
 
 using System.Text;
 using System.Text.Json;
 using Blocktrust.Common.Converter;
+using Blocktrust.DIDComm.Secrets;
+using Blocktrust.Mediator.Client.Commands.DiscoverFeatures;
+using Blocktrust.Mediator.Client.Commands.MediatorCoordinator.QueryKeys;
+using Blocktrust.Mediator.Common;
 using Blocktrust.Mediator.Common.Commands.CreatePeerDid;
-using Commands.DiscoverFeatures;
-using Commands.MediatorCoordinator.QueryKeys;
-using Commands.MediatorCoordinator.RequestMediation;
-using Commands.MediatorCoordinator.UpdateKeys;
-using Common;
-using Common.Models.DiscoverFeatures;
-using Common.Models.OutOfBand;
-using DIDComm.Secrets;
+using Blocktrust.Mediator.Common.Models.DiscoverFeatures;
+using Blocktrust.Mediator.Common.Models.OutOfBand;
+using Blocktrust.PeerDID.DIDDoc;
+using Blocktrust.PeerDID.PeerDIDCreateResolve;
+using Blocktrust.PeerDID.Types;
 using FluentAssertions;
 using MediatR;
 using Moq;
-using PeerDID.DIDDoc;
-using PeerDID.PeerDIDCreateResolve;
-using PeerDID.Types;
 using Xunit;
 
 public class DiscoverFeaturesTest
 {
-    private readonly Mock<IMediator> _mediatorMock;
     private readonly HttpClient _httpClient;
     private DiscoverFeaturesHandler _discoverFeaturesHandler;
     private CreatePeerDidHandler _createPeerDidHandler;
@@ -30,7 +27,6 @@ public class DiscoverFeaturesTest
 
     public DiscoverFeaturesTest()
     {
-        _mediatorMock = new Mock<IMediator>();
         _httpClient = new HttpClient();
     }
 

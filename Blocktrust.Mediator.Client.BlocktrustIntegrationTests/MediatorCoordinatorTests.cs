@@ -1,19 +1,16 @@
-namespace Blocktrust.Mediator.Client.LocalIntegrationTests;
+namespace Blocktrust.Mediator.Client.BlocktrustIntegrationTests;
 
-using Commands.MediatorCoordinator.QueryKeys;
-using Commands.MediatorCoordinator.RequestMediation;
-using Commands.MediatorCoordinator.UpdateKeys;
-using Common;
-using Common.Commands.CreatePeerDid;
-using DIDComm.Secrets;
+using Blocktrust.DIDComm.Secrets;
+using Blocktrust.Mediator.Client.Commands.MediatorCoordinator.QueryKeys;
+using Blocktrust.Mediator.Client.Commands.MediatorCoordinator.RequestMediation;
+using Blocktrust.Mediator.Client.Commands.MediatorCoordinator.UpdateKeys;
+using Blocktrust.Mediator.Common;
+using Blocktrust.Mediator.Common.Commands.CreatePeerDid;
+using Blocktrust.Mediator.Server.Commands.Secrets.GetSecrets;
 using FluentAssertions;
-using MediatR;
-using Moq;
-using Server.Commands.Secrets.GetSecrets;
 
 public class MediatorCoordinatorTests
 {
-    private readonly Mock<IMediator> _mediatorMock;
 
     private CreatePeerDidHandler _createPeerDidHandler;
     private readonly GetSecretsHandler _getSecretsHandler;
@@ -23,7 +20,6 @@ public class MediatorCoordinatorTests
 
     public MediatorCoordinatorTests()
     {
-        _mediatorMock = new Mock<IMediator>();
         _httpClient = new HttpClient();
     }
 

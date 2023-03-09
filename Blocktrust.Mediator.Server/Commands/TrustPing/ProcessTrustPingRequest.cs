@@ -1,18 +1,19 @@
-﻿namespace Blocktrust.Mediator.Server.Commands.ForwardMessage;
+﻿namespace Blocktrust.Mediator.Server.Commands.TrustPing;
 
-using DIDComm.Message.FromPriors;
-using DIDComm.Message.Messages;
+using Blocktrust.DIDComm.Message.FromPriors;
+using Blocktrust.DIDComm.Message.Messages;
 using MediatR;
 
-public class ProcessForwardMessageRequest: IRequest<Message?>
+//TODO unify all these requests!
+public class ProcessTrustPingRequest : IRequest<Message?>
 {
     public Message UnpackedMessage { get; }
     public string SenderDid { get; }
     public string MediatorDid { get; }
     public string HostUrl { get; }
     public FromPrior? FromPrior { get; }
-    
-    public ProcessForwardMessageRequest(Message unpackedMessage, string senderDid, string mediatorDid, string hostUrl, FromPrior? fromPrior)
+
+    public ProcessTrustPingRequest(Message unpackedMessage, string senderDid, string mediatorDid, string hostUrl, FromPrior? fromPrior)
     {
         UnpackedMessage = unpackedMessage;
         SenderDid = senderDid;

@@ -8,7 +8,6 @@ using Blocktrust.Mediator.Server.Commands.DatabaseCommands.StoreMessage;
 using Blocktrust.Mediator.Server.Models;
 using Common.Models.ProblemReport;
 using DIDComm.Message.Messages;
-using FluentResults;
 using MediatR;
 
 public class ProcessForwardMessageHandler : IRequestHandler<ProcessForwardMessageRequest, Message?>

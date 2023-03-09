@@ -15,8 +15,9 @@ using Blocktrust.Mediator.Server.Commands.Pickup.ProcessPickupDeliveryRequest;
 using Blocktrust.Mediator.Server.Commands.Pickup.ProcessPickupLiveDeliveryChange;
 using Blocktrust.Mediator.Server.Commands.Pickup.ProcessPickupMessageReceived;
 using Blocktrust.Mediator.Server.Commands.Pickup.ProcessStatusRequest;
-using FluentResults;
+using DiscoverFeatures;
 using MediatR;
+using TrustPing;
 
 public class ProcessMessageHandler : IRequestHandler<ProcessMessageRequest, ProcessMessageResponse>
 {
@@ -88,6 +89,9 @@ public class ProcessMessageHandler : IRequestHandler<ProcessMessageRequest, Proc
         Message? result;
         switch (request.UnpackResult.Message.Type)
         {
+            case ProtocolConstants.TrustPingRequest:
+                result = await _mediator.Send(new ProcessTrustPingRequest(request.UnpackResult.Message, request.SenderDid, mediatorDid, request.HostUrl, fromPrior), cancellationToken);
+                break;
             case ProtocolConstants.CoordinateMediation2Request:
                 result = await _mediator.Send(new ProcessMediationRequestRequest(request.UnpackResult.Message, request.SenderDid, mediatorDid, request.HostUrl, fromPrior), cancellationToken);
                 break;

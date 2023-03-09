@@ -7,20 +7,16 @@ using Commands.MediatorCoordinator.UpdateKeys;
 using Common;
 using DIDComm.Secrets;
 using FluentAssertions;
-using MediatR;
-using Moq;
 using Xunit;
 
 public class MediationCoordinatorTests
 {
-    private readonly Mock<IMediator> _mediatorMock;
     private readonly HttpClient _httpClient;
     private RequestMediationHandler _requestMediationHandler;
     private CreatePeerDidHandler _createPeerDidHandler;
 
     public MediationCoordinatorTests()
     {
-        _mediatorMock = new Mock<IMediator>();
         _httpClient = new HttpClient();
     }
 

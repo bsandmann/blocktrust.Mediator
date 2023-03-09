@@ -6,7 +6,6 @@ using Blocktrust.Mediator.Common.Protocols;
 using Common.Models.ProblemReport;
 using DatabaseCommands.GetConnection;
 using DatabaseCommands.UpdateConnection;
-using FluentResults;
 using MediatR;
 
 public class ProcessMediationRequestHandler : IRequestHandler<ProcessMediationRequestRequest, Message>

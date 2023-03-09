@@ -1,16 +1,15 @@
-﻿namespace Blocktrust.Mediator.Client.LocalIntegrationTests;
+﻿namespace Blocktrust.Mediator.Client.BlocktrustIntegrationTests;
 
-using Commands.ForwardMessage;
-using Commands.MediatorCoordinator.RequestMediation;
-using Commands.MediatorCoordinator.UpdateKeys;
-using Common;
-using Common.Commands.CreatePeerDid;
-using Common.Protocols;
-using DIDComm.Secrets;
+using Blocktrust.DIDComm.Secrets;
+using Blocktrust.Mediator.Client.Commands.ForwardMessage;
+using Blocktrust.Mediator.Client.Commands.MediatorCoordinator.RequestMediation;
+using Blocktrust.Mediator.Client.Commands.MediatorCoordinator.UpdateKeys;
+using Blocktrust.Mediator.Common;
+using Blocktrust.Mediator.Common.Commands.CreatePeerDid;
+using Blocktrust.Mediator.Common.Protocols;
 using FluentAssertions;
 using MediatR;
 using Moq;
-using Server.Commands.Secrets.GetSecrets;
 
 public class RoutingTests
 {

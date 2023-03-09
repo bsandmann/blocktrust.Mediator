@@ -21,9 +21,12 @@ public class ProtocolConstants
     public const string MessagePickup3DeliveryResponse = "https://didcomm.org/messagepickup/3.0/delivery";
     public const string MessagePickup3MessagesReceived = "https://didcomm.org/messagepickup/3.0/messages-received";
     public const string MessagePickup3LiveDeliveryChange = "https://didcomm.org/messagepickup/3.0/live-delivery-change";
-    
+
     public const string ProblemReport = "https://didcomm.org/report-problem/2.0/problem-report";
-    
+
     public const string DiscoverFeatures2Query = "https://didcomm.org/discover-features/2.0/queries";
     public const string DiscoverFeatures2Response = "https://didcomm.org/discover-features/2.0/disclose";
+
+    public const string TrustPingRequest = "https://didcomm.org/trust-ping/2.0/ping";
+    public const string TrustPingResponse = "https://didcomm.org/trust-ping/2.0/ping-response";
 }

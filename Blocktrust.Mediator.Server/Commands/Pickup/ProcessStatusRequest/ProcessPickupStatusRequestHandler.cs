@@ -5,7 +5,6 @@ using Blocktrust.DIDComm.Message.Messages;
 using Blocktrust.Mediator.Common.Protocols;
 using Blocktrust.Mediator.Server.Commands.DatabaseCommands.GetMessagesStatus;
 using Common.Models.ProblemReport;
-using FluentResults;
 using MediatR;
 
 public class ProcessPickupStatusRequestHandler : IRequestHandler<ProcessPickupStatusRequestRequest, Message>

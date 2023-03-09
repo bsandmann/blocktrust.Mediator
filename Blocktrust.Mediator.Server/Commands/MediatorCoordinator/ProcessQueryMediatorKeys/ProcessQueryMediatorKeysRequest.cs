@@ -2,7 +2,6 @@
 
 using DIDComm.Message.FromPriors;
 using DIDComm.Message.Messages;
-using FluentResults;
 using MediatR;
 
 public class ProcessQueryMediatorKeysRequest : IRequest<Message>

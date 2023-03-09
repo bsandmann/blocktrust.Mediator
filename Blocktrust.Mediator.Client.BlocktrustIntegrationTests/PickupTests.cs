@@ -1,15 +1,15 @@
-﻿namespace Blocktrust.Mediator.Client.RootsIntegrationTests;
+﻿namespace Blocktrust.Mediator.Client.BlocktrustIntegrationTests;
 
+using Blocktrust.DIDComm.Secrets;
+using Blocktrust.Mediator.Client.Commands.ForwardMessage;
+using Blocktrust.Mediator.Client.Commands.MediatorCoordinator.RequestMediation;
+using Blocktrust.Mediator.Client.Commands.MediatorCoordinator.UpdateKeys;
+using Blocktrust.Mediator.Client.Commands.Pickup.DeliveryRequest;
+using Blocktrust.Mediator.Client.Commands.Pickup.MessageReceived;
+using Blocktrust.Mediator.Client.Commands.Pickup.StatusRequest;
+using Blocktrust.Mediator.Common;
 using Blocktrust.Mediator.Common.Commands.CreatePeerDid;
-using Commands.ForwardMessage;
-using Commands.MediatorCoordinator.RequestMediation;
-using Commands.MediatorCoordinator.UpdateKeys;
-using Commands.Pickup.DeliveryRequest;
-using Commands.Pickup.MessageReceived;
-using Commands.Pickup.StatusRequest;
-using Common;
-using Common.Protocols;
-using DIDComm.Secrets;
+using Blocktrust.Mediator.Common.Protocols;
 using FluentAssertions;
 using MediatR;
 using Moq;

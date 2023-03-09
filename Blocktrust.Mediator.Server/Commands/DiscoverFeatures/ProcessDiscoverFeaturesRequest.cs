@@ -1,8 +1,7 @@
-﻿namespace Blocktrust.Mediator.Server.Commands.ForwardMessage;
+﻿namespace Blocktrust.Mediator.Server.Commands.DiscoverFeatures;
 
-using DIDComm.Message.FromPriors;
-using DIDComm.Message.Messages;
-using FluentResults;
+using Blocktrust.DIDComm.Message.FromPriors;
+using Blocktrust.DIDComm.Message.Messages;
 using MediatR;
 
 public class ProcessDiscoverFeaturesRequest : IRequest<Message?>

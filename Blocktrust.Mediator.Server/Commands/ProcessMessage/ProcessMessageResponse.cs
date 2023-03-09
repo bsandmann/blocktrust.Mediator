@@ -1,8 +1,6 @@
 ﻿namespace Blocktrust.Mediator.Server.Commands.ProcessMessage;
 
-using Common.Models.ProblemReport;
 using DIDComm.Message.Messages;
-using DIDComm.Operations;
 
 public class ProcessMessageResponse
 {
