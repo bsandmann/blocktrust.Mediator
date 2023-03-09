@@ -20,7 +20,7 @@
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="BouncyCastle.NetCore" Version="1.9.0" />
+<!--        <PackageReference Include="BouncyCastle.NetCore" Version="1.9.0" />-->
         <PackageReference Include="EntityFrameworkCore.Exceptions.SqlServer" Version="6.0.3.1" />
         <PackageReference Include="FluentResults" Version="3.15.2" />
         <PackageReference Include="JetBrains.Annotations" Version="2022.3.1" />
@@ -40,18 +40,10 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Reference Include="DIDComm">
-        <HintPath>..\..\blocktrust.DIDComm_v2_dotnet\DIDComm\bin\Debug\net7.0\DIDComm.dll</HintPath>
-      </Reference>
-    </ItemGroup>
-
-    <ItemGroup>
       <Folder Include="Migrations" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\blocktrust.DIDComm_v2_dotnet\DIDComm\DIDComm.csproj" />
-      <ProjectReference Include="..\..\blocktrust.PeerDID\Blocktrust.PeerDID\Blocktrust.PeerDID.csproj" />
       <ProjectReference Include="..\Blocktrust.Mediator.Common\Blocktrust.Mediator.Common.csproj" />
     </ItemGroup>
 

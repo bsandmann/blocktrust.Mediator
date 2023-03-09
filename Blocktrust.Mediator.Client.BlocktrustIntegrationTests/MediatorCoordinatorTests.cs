@@ -7,13 +7,11 @@ using Blocktrust.Mediator.Client.Commands.MediatorCoordinator.UpdateKeys;
 using Blocktrust.Mediator.Common;
 using Blocktrust.Mediator.Common.Commands.CreatePeerDid;
 using FluentAssertions;
-using Server.Commands.DatabaseCommands.Secrets.GetSecrets;
 
 public class MediatorCoordinatorTests
 {
 
     private CreatePeerDidHandler _createPeerDidHandler;
-    private readonly GetSecretsHandler _getSecretsHandler;
     private readonly string _blocktrustMediatorUri = "https://localhost:7037/";
     private RequestMediationHandler _requestMediationHandler;
     private readonly HttpClient _httpClient;

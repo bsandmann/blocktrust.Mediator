@@ -24,14 +24,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\blocktrust.DIDComm_v2_dotnet\DIDComm.Tests\DIDComm.Tests.csproj" />
       <ProjectReference Include="..\Blocktrust.Mediator.Server\Blocktrust.Mediator.Server.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Reference Include="DIDComm">
-        <HintPath>..\..\blocktrust.DIDComm_v2_dotnet\DIDComm\bin\Debug\net7.0\DIDComm.dll</HintPath>
-      </Reference>
     </ItemGroup>
 
 </Project>

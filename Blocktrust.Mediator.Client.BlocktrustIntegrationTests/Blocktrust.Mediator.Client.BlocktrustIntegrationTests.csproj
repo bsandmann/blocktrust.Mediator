@@ -25,7 +25,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Blocktrust.Mediator.Client\Blocktrust.Mediator.Client.csproj" />
-      <ProjectReference Include="..\Blocktrust.Mediator.Server\Blocktrust.Mediator.Server.csproj" />
     </ItemGroup>
 
 </Project>
