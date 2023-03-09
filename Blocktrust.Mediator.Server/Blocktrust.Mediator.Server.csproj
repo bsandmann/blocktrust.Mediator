@@ -4,6 +4,11 @@
         <TargetFramework>net7.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <Authors>Bjoern Sandmann / blocktrust</Authors>
+        <Description>DIDComm Mediator, written in .net</Description>
+        <Copyright>Bjoern Sandmann / blocktrust</Copyright>
+        <PackageProjectUrl>blocktrust.dev</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/bsandmann/blocktrust.Mediator</RepositoryUrl>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">

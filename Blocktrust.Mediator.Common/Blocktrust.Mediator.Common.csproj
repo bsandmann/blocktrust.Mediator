@@ -4,6 +4,11 @@
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <Authors>Bjoern Sandmann / blocktrust</Authors>
+        <Description>DIDComm Mediator, written in .net</Description>
+        <Copyright>Bjoern Sandmann / blocktrust</Copyright>
+        <PackageProjectUrl>blocktrust.dev</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/bsandmann/blocktrust.Mediator</RepositoryUrl>
     </PropertyGroup>
 
     <ItemGroup>
@@ -11,17 +16,14 @@
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
+      <PackageReference Include="Blocktrust.Common" Version="0.0.7" />
+      <PackageReference Include="Blocktrust.DIDComm" Version="2.0.2" />
+      <PackageReference Include="Blocktrust.PeerDID" Version="1.0.4" />
       <PackageReference Include="FluentResults" Version="3.15.2" />
       <PackageReference Include="JetBrains.Annotations" Version="2022.3.1" />
       <PackageReference Include="JetBrains.ExternalAnnotations" Version="10.2.125" />
       <PackageReference Include="MediatR" Version="12.0.1" />
       <PackageReference Include="Moq" Version="4.18.4" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\..\blocktrust.DIDComm\Blocktrust.DIDComm\Blocktrust.DIDComm.csproj" />
-      <ProjectReference Include="..\..\blocktrust.DIDComm_v2_dotnet\DIDComm\DIDComm.csproj" />
-      <ProjectReference Include="..\..\blocktrust.PeerDID\Blocktrust.PeerDID\Blocktrust.PeerDID.csproj" />
     </ItemGroup>
 
 </Project>
