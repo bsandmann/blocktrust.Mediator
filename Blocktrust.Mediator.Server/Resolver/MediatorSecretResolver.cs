@@ -2,8 +2,8 @@ namespace Blocktrust.Mediator.Server.Resolver;
 
 using Blocktrust.Common.Models.Secrets;
 using Blocktrust.Common.Resolver;
-using Commands.Secrets.GetSecrets;
-using Commands.Secrets.SaveSecrets;
+using Commands.DatabaseCommands.Secrets.GetSecrets;
+using Commands.DatabaseCommands.Secrets.SaveSecrets;
 using MediatR;
 
 public class MediatorSecretResolver : ISecretResolver

@@ -88,7 +88,7 @@ public class DeliveryRequestHandler : IRequestHandler<DeliveryRequestRequest, Re
 
 
         var attachments = unpackResult.Value.Message.Attachments;
-        if (!attachments.Any())
+        if (attachments is null || !attachments.Any())
         {
             //if we don't have any attachments, we should have a status message in the body
             var bodyContent = unpackResult.Value.Message.Body;

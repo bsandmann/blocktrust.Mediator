@@ -6,8 +6,6 @@ using FluentResults;
 
 public class StatusRequestResponse
 {
-    //TODO Is this really used? the Jsonproperty is not used in the server or in the client i belive
-    
     /// <summary>
     /// Required: Number of messages in the mediator ready to be picked up
     /// </summary>
@@ -60,7 +58,7 @@ public class StatusRequestResponse
         if (body.ContainsKey("message_count"))
         {
             body.TryGetValue("message_count", out var messageCount);
-            var messageCountJsonElement = (JsonElement)messageCount;
+            var messageCountJsonElement = (JsonElement)messageCount!;
             if (messageCountJsonElement.ValueKind is JsonValueKind.Number)
             {
                 statusRequestResponse.MessageCount = messageCountJsonElement.GetInt32();
@@ -74,7 +72,7 @@ public class StatusRequestResponse
         if (body.ContainsKey("recipient_did"))
         {
             body.TryGetValue("recipient_did", out var recipientDid);
-            var recipientDidJsonElement = (JsonElement)recipientDid;
+            var recipientDidJsonElement = (JsonElement)recipientDid!;
             if (recipientDidJsonElement.ValueKind is JsonValueKind.String)
             {
                 statusRequestResponse.RecipientDid = recipientDidJsonElement.GetString();
@@ -84,7 +82,7 @@ public class StatusRequestResponse
         if (body.ContainsKey("longest_waited_seconds"))
         {
             body.TryGetValue("longest_waited_seconds", out var longestWaitedSeconds);
-            var longestWaitedSecondsJsonElement = (JsonElement)longestWaitedSeconds;
+            var longestWaitedSecondsJsonElement = (JsonElement)longestWaitedSeconds!;
             if (longestWaitedSecondsJsonElement.ValueKind is JsonValueKind.Number)
             {
                 statusRequestResponse.LongestWaitedSeconds = longestWaitedSecondsJsonElement.GetInt64();
@@ -94,7 +92,7 @@ public class StatusRequestResponse
         if (body.ContainsKey("newest_received_time"))
         {
             body.TryGetValue("newest_received_time", out var newestMessageTime);
-            var newestMessageTimeJsonElement = (JsonElement)newestMessageTime;
+            var newestMessageTimeJsonElement = (JsonElement)newestMessageTime!;
             if (newestMessageTimeJsonElement.ValueKind is JsonValueKind.Number)
             {
                 statusRequestResponse.LongestWaitedSeconds = newestMessageTimeJsonElement.GetInt64();
@@ -104,7 +102,7 @@ public class StatusRequestResponse
         if (body.ContainsKey("oldest_received_time"))
         {
             body.TryGetValue("oldest_received_time", out var oldestMessageTime);
-            var oldestMessageTimeJsonElement = (JsonElement)oldestMessageTime;
+            var oldestMessageTimeJsonElement = (JsonElement)oldestMessageTime!;
             if (oldestMessageTimeJsonElement.ValueKind is JsonValueKind.Number)
             {
                 statusRequestResponse.LongestWaitedSeconds = oldestMessageTimeJsonElement.GetInt64();
@@ -114,7 +112,7 @@ public class StatusRequestResponse
         if (body.ContainsKey("total_bytes"))
         {
             body.TryGetValue("total_bytes", out var totalByteSize);
-            var totalByteSizeJsonElement = (JsonElement)totalByteSize;
+            var totalByteSizeJsonElement = (JsonElement)totalByteSize!;
             if (totalByteSizeJsonElement.ValueKind is JsonValueKind.Number)
             {
                 statusRequestResponse.LongestWaitedSeconds = totalByteSizeJsonElement.GetInt64();
@@ -124,7 +122,7 @@ public class StatusRequestResponse
         if (body.ContainsKey("live_delivery"))
         {
             body.TryGetValue("live_delivery", out var liveDelivery);
-            var liveDeliveryJsonElement = (JsonElement)liveDelivery;
+            var liveDeliveryJsonElement = (JsonElement)liveDelivery!;
             if (liveDeliveryJsonElement.ValueKind is JsonValueKind.True || liveDeliveryJsonElement.ValueKind is JsonValueKind.False)
             {
                 statusRequestResponse.LiveDelivery = liveDeliveryJsonElement.GetBoolean();

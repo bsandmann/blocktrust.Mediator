@@ -4,6 +4,7 @@ using Blocktrust.Mediator.Server.Models;
 using FluentResults;
 using MediatR;
 
+/// <inheritdoc />
 public class UpdateConnectionMediationRequest : IRequest<Result<MediatorConnectionModel>>
 {
     public string MediatorDid { get; }

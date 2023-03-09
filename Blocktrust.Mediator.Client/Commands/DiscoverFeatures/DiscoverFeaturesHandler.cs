@@ -1,8 +1,7 @@
-﻿namespace Blocktrust.Mediator.Client.Commands.MediatorCoordinator.QueryKeys;
+﻿namespace Blocktrust.Mediator.Client.Commands.DiscoverFeatures;
 
 using System.Net;
 using System.Text;
-using System.Text.Json;
 using System.Text.Json.Nodes;
 using Blocktrust.Common.Resolver;
 using Blocktrust.DIDComm;
@@ -10,9 +9,8 @@ using Blocktrust.DIDComm.Common.Types;
 using Blocktrust.DIDComm.Message.Messages;
 using Blocktrust.DIDComm.Model.PackEncryptedParamsModels;
 using Blocktrust.DIDComm.Model.UnpackParamsModels;
+using Blocktrust.Mediator.Common.Models.DiscoverFeatures;
 using Blocktrust.Mediator.Common.Protocols;
-using Common.Models.DiscoverFeatures;
-using DiscoverFeatures;
 using FluentResults;
 using MediatR;
 

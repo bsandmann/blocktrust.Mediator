@@ -57,10 +57,10 @@ public class ProblemReport
         if (body.ContainsKey("code"))
         {
             body.TryGetValue("code", out var codeJson);
-            var codeJsonElement = (JsonElement)codeJson;
+            var codeJsonElement = (JsonElement)codeJson!;
             if (codeJsonElement.ValueKind is JsonValueKind.String)
             {
-                code = codeJsonElement.GetString();
+                code = codeJsonElement.GetString()!;
             }
             else
             {
@@ -75,7 +75,7 @@ public class ProblemReport
         if (body.ContainsKey("comment"))
         {
             body.TryGetValue("comment", out var commentJson);
-            var commentJsonElement = (JsonElement)commentJson;
+            var commentJsonElement = (JsonElement)commentJson!;
             if (commentJsonElement.ValueKind is JsonValueKind.String)
             {
                 comment = commentJsonElement.GetString();
@@ -89,7 +89,7 @@ public class ProblemReport
         if (body.ContainsKey("args"))
         {
             body.TryGetValue("args", out var commentArgumentsJson);
-            var commentArgumentsJsonElement = (JsonElement)commentArgumentsJson;
+            var commentArgumentsJsonElement = (JsonElement)commentArgumentsJson!;
             if (commentArgumentsJsonElement.ValueKind is JsonValueKind.Array)
             {
                 foreach (var argument in commentArgumentsJsonElement.EnumerateArray())
@@ -101,7 +101,7 @@ public class ProblemReport
                             commentArguments = new List<string>();
                         }
 
-                        commentArguments.Add(argument.GetString());
+                        commentArguments.Add(argument.GetString()!);
                     }
                 }
             }
@@ -114,10 +114,10 @@ public class ProblemReport
         if (body.ContainsKey("escalate_to"))
         {
             body.TryGetValue("escalate_to", out var escalateToJson);
-            var escalateToJsonElement = (JsonElement)escalateToJson;
+            var escalateToJsonElement = (JsonElement)escalateToJson!;
             if (escalateToJsonElement.ValueKind is JsonValueKind.String)
             {
-                escalateTo  = new Uri(escalateToJsonElement.GetString());
+                escalateTo  = new Uri(escalateToJsonElement.GetString()!);
             }
             else if (escalateToJsonElement.ValueKind is not JsonValueKind.Null)
             {

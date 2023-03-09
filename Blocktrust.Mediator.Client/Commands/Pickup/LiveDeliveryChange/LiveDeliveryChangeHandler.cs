@@ -1,19 +1,17 @@
-﻿namespace Blocktrust.Mediator.Client.Commands.Pickup.MessageReceived;
+﻿namespace Blocktrust.Mediator.Client.Commands.Pickup.LiveDeliveryChange;
 
 using System.Net;
 using System.Text;
 using Blocktrust.Common.Resolver;
-using Common.Models.Pickup;
-using Common.Models.ProblemReport;
-using Common.Protocols;
-using DIDComm;
-using DIDComm.Common.Types;
-using DIDComm.Message.Messages;
-using DIDComm.Model.PackEncryptedParamsModels;
-using DIDComm.Model.UnpackParamsModels;
+using Blocktrust.DIDComm;
+using Blocktrust.DIDComm.Common.Types;
+using Blocktrust.DIDComm.Message.Messages;
+using Blocktrust.DIDComm.Model.PackEncryptedParamsModels;
+using Blocktrust.DIDComm.Model.UnpackParamsModels;
+using Blocktrust.Mediator.Common.Models.ProblemReport;
+using Blocktrust.Mediator.Common.Protocols;
 using FluentResults;
 using MediatR;
-using StatusRequest;
 
 public class LiveDeliveryChangeHandler : IRequestHandler<LiveDeliveryChangeRequest, Result<ProblemReport>>
 {

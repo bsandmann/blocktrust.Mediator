@@ -3,6 +3,7 @@
 using FluentResults;
 using MediatR;
 
+/// <inheritdoc />
 public class UpdateRegisteredRecipientsRequest : IRequest<Result>
 {
     public string RemoteDid { get; }

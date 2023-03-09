@@ -1,4 +1,4 @@
-namespace Blocktrust.Mediator.Server.Commands.Secrets.GetSecrets;
+namespace Blocktrust.Mediator.Server.Commands.DatabaseCommands.Secrets.GetSecrets;
 
 using Blocktrust.Common.Models.DidDoc;
 using Blocktrust.Common.Models.Secrets;

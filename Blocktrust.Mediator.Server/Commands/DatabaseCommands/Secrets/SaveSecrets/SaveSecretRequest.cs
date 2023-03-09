@@ -1,4 +1,4 @@
-namespace Blocktrust.Mediator.Server.Commands.Secrets.SaveSecrets;
+namespace Blocktrust.Mediator.Server.Commands.DatabaseCommands.Secrets.SaveSecrets;
 
 using Blocktrust.Common.Models.Secrets;
 using FluentResults;

@@ -40,14 +40,14 @@ public class RequestMediationHandler : IRequestHandler<RequestMediationRequest, 
         {
             var decodedInvitation = Encoding.UTF8.GetString(Base64Url.Decode(request.OobInvitation));
             remoteDid = JsonSerializer.Deserialize<OobModel>(decodedInvitation);
-            if (!remoteDid.Type.Equals(ProtocolConstants.OutOfBand2Invitation, StringComparison.CurrentCultureIgnoreCase))
+            if (!remoteDid!.Type.Equals(ProtocolConstants.OutOfBand2Invitation, StringComparison.CurrentCultureIgnoreCase))
             {
                 return Result.Fail("Invalid invitation type");
             }
         }
         catch (Exception e)
         {
-            return Result.Fail("Unable to parse OutOfBand Invitation");
+            return Result.Fail($"Unable to parse OutOfBand Invitation: {e}");
         }
 
         // We create the message to send to the mediator

@@ -2,7 +2,6 @@
 
 using FluentResults;
 using MediatR;
-using PeerDID.Types;
 
 /// <summary>
 /// Request

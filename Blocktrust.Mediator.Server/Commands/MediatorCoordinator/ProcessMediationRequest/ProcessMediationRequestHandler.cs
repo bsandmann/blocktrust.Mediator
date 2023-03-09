@@ -57,13 +57,11 @@ public class ProcessMediationRequestHandler : IRequestHandler<ProcessMediationRe
                     fromPrior: request.FromPrior);
             }
 
-            var updateConnetionResult = await _mediator.Send(new UpdateConnectionMediationRequest(
-                mediatorDid: request.MediatorDid,
+            var updateConnetionResult = await _mediator.Send(new UpdateConnectionMediationRequest(mediatorDid: request.MediatorDid,
                 remoteDid: request.SenderDid,
                 routingDid: routingDidResult.Value.PeerDid.Value,
                 mediatorEndpoint: request.HostUrl,
-                mediationGranted: true
-            ), cancellationToken);
+                mediationGranted: true), cancellationToken);
 
             if (updateConnetionResult.IsFailed)
             {

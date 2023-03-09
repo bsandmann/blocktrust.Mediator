@@ -46,7 +46,7 @@ public class SimpleDidDocResolver : IDidDocResolver
             }
             var combinedVerificationMethodsOfInvitation = didDocResult.Value.Authentications.Concat(didDocResult.Value.KeyAgreements);
 
-            //TODO this should be done in here
+            //TODO this should not be done in here
             this.AddDoc(new DidDoc()
             {
                 Did = didDocResult.Value.Did,

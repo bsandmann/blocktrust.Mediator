@@ -107,7 +107,7 @@ public class CreatePeerDidHandler : IRequestHandler<CreatePeerDidRequest, Result
         
         var zippedAgreementKeysAndSecrets = privateAgreementKeys
             .Zip(peerDidDocResult.Value.KeyAgreements
-                .Select(p => p.Id), (secret, kid) => new { secret = secret, kid = kid });
+                .Select(p => p.Id), (secret, kid) => new { secret, kid });
         foreach (var zip in zippedAgreementKeysAndSecrets)
         {
             zip.secret.Kid = zip.kid;
@@ -116,7 +116,7 @@ public class CreatePeerDidHandler : IRequestHandler<CreatePeerDidRequest, Result
         
         var zippedAuthenticationKeysAndSecrets = privateAuthenticationKeys
             .Zip(peerDidDocResult.Value.Authentications
-                .Select(p => p.Id), (secret, kid) => new { secret = secret, kid = kid });
+                .Select(p => p.Id), (secret, kid) => new { secret, kid });
         foreach (var zip in zippedAuthenticationKeysAndSecrets)
         {
             zip.secret.Kid = zip.kid;

@@ -1,6 +1,5 @@
-﻿namespace Blocktrust.Mediator.Client.Commands.DiscoverFeatures;
+﻿namespace Blocktrust.Mediator.Client.Commands.TrustPing;
 
-using Common.Models.DiscoverFeatures;
 using FluentResults;
 using MediatR;
 

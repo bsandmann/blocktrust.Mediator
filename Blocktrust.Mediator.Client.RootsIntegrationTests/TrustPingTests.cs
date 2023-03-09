@@ -6,6 +6,7 @@ using Blocktrust.Common.Converter;
 using Blocktrust.Mediator.Common.Commands.CreatePeerDid;
 using Commands.DiscoverFeatures;
 using Commands.MediatorCoordinator.QueryKeys;
+using Commands.TrustPing;
 using Common;
 using Common.Models.OutOfBand;
 using DIDComm.Secrets;

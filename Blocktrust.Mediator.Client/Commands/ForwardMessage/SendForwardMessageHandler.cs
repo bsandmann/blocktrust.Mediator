@@ -15,14 +15,12 @@ using Json = DIDComm.Message.Attachments.Json;
 
 public class SendForwardMessageHandler : IRequestHandler<SendForwardMessageRequest, Result>
 {
-    private readonly IMediator _mediator;
     private readonly HttpClient _httpClient;
     private readonly IDidDocResolver _didDocResolver;
     private readonly ISecretResolver _secretResolver;
 
-    public SendForwardMessageHandler(IMediator mediator, HttpClient httpClient, IDidDocResolver didDocResolver, ISecretResolver secretResolver)
+    public SendForwardMessageHandler(HttpClient httpClient, IDidDocResolver didDocResolver, ISecretResolver secretResolver)
     {
-        _mediator = mediator;
         _httpClient = httpClient;
         _didDocResolver = didDocResolver;
         _secretResolver = secretResolver;
@@ -31,7 +29,21 @@ public class SendForwardMessageHandler : IRequestHandler<SendForwardMessageReque
     public async Task<Result> Handle(SendForwardMessageRequest request, CancellationToken cancellationToken)
     {
         // We create the wrapping message, with has the inner message in the attachments
-        var packedMessage = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(request.Message);
+        Dictionary<string, object> packedMessage;
+        try
+        {
+            packedMessage = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(request.Message);
+        }
+        catch (Exception e)
+        {
+            return Result.Fail($"The message cannot be deserialized: {e}");
+        }
+
+        if (packedMessage is null)
+        {
+            return Result.Fail("The message cannot be deserialized");
+        }
+
         var attachments = new List<Attachment>
         {
             new AttachmentBuilder(
@@ -73,13 +85,13 @@ public class SendForwardMessageHandler : IRequestHandler<SendForwardMessageReque
         {
             return Result.Fail("Unable to initiate connection: " + response.StatusCode);
         }
-        else if(response.StatusCode == HttpStatusCode.Accepted)
+        else if (response.StatusCode == HttpStatusCode.Accepted)
         {
-           return Result.Ok();
+            return Result.Ok();
         }
         else
         {
-           return Result.Fail("The result code should be 202! This is not really a fail here, but anyway....");
+            return Result.Fail("The result code should be 202! This is not really a fail here, but anyway....");
         }
     }
 }

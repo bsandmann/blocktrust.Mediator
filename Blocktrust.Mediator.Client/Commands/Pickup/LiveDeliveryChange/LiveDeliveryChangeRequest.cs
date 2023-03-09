@@ -1,7 +1,6 @@
-﻿namespace Blocktrust.Mediator.Client.Commands.Pickup.StatusRequest;
+﻿namespace Blocktrust.Mediator.Client.Commands.Pickup.LiveDeliveryChange;
 
-using Common.Models.Pickup;
-using Common.Models.ProblemReport;
+using Blocktrust.Mediator.Common.Models.ProblemReport;
 using FluentResults;
 using MediatR;
 

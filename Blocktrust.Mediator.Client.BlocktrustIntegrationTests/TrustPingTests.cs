@@ -12,6 +12,7 @@ using Blocktrust.Mediator.Common.Models.OutOfBand;
 using Blocktrust.PeerDID.DIDDoc;
 using Blocktrust.PeerDID.PeerDIDCreateResolve;
 using Blocktrust.PeerDID.Types;
+using Commands.TrustPing;
 using FluentAssertions;
 using Xunit;
 

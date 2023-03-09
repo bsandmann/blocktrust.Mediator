@@ -10,6 +10,7 @@ using Blocktrust.Mediator.Client.Commands.Pickup.StatusRequest;
 using Blocktrust.Mediator.Common;
 using Blocktrust.Mediator.Common.Commands.CreatePeerDid;
 using Blocktrust.Mediator.Common.Protocols;
+using Commands.Pickup.LiveDeliveryChange;
 using FluentAssertions;
 using MediatR;
 using Moq;
@@ -79,7 +80,7 @@ public class PickupTests
         var localDidOfBobToUseWithAliceMediator = await _createPeerDidHandlerBob.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
 
         // Wrap the Basic Message into a new Message for the mediator to recieve and send it
-        _sendForwardMessageHandler = new SendForwardMessageHandler(_mediatorMock.Object, _httpClient, simpleDidDocResolverForBob, secretResolverInMemoryForBob);
+        _sendForwardMessageHandler = new SendForwardMessageHandler(_httpClient, simpleDidDocResolverForBob, secretResolverInMemoryForBob);
         var result = await _sendForwardMessageHandler.Handle(new SendForwardMessageRequest(
             message: packedBasicMessage,
             localDid: localDidOfBobToUseWithAliceMediator.Value.PeerDid.Value,
@@ -143,7 +144,7 @@ public class PickupTests
         var localDidOfBobToUseWithAliceMediator = await _createPeerDidHandlerBob.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
 
         // Wrap the Basic Message into a new Message for the mediator to recieve and send it
-        _sendForwardMessageHandler = new SendForwardMessageHandler(_mediatorMock.Object, _httpClient, simpleDidDocResolverForBob, secretResolverInMemoryForBob);
+        _sendForwardMessageHandler = new SendForwardMessageHandler(_httpClient, simpleDidDocResolverForBob, secretResolverInMemoryForBob);
         var result = await _sendForwardMessageHandler.Handle(new SendForwardMessageRequest(
             message: packedBasicMessage,
             localDid: localDidOfBobToUseWithAliceMediator.Value.PeerDid.Value,
@@ -213,7 +214,7 @@ public class PickupTests
         var localDidOfBobToUseWithAliceMediator = await _createPeerDidHandlerBob.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
 
         // Wrap the Basic Message into a new Message for the mediator to recieve and send it
-        _sendForwardMessageHandler = new SendForwardMessageHandler(_mediatorMock.Object, _httpClient, simpleDidDocResolverForBob, secretResolverInMemoryForBob);
+        _sendForwardMessageHandler = new SendForwardMessageHandler(_httpClient, simpleDidDocResolverForBob, secretResolverInMemoryForBob);
         var result1 = await _sendForwardMessageHandler.Handle(new SendForwardMessageRequest(
             message: packedBasicMessage1,
             localDid: localDidOfBobToUseWithAliceMediator.Value.PeerDid.Value,
@@ -288,7 +289,7 @@ public class PickupTests
         var localDidOfBobToUseWithAliceMediator = await _createPeerDidHandlerBob.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
 
         // Wrap the Basic Message into a new Message for the mediator to recieve and send it
-        _sendForwardMessageHandler = new SendForwardMessageHandler(_mediatorMock.Object, _httpClient, simpleDidDocResolverForBob, secretResolverInMemoryForBob);
+        _sendForwardMessageHandler = new SendForwardMessageHandler(_httpClient, simpleDidDocResolverForBob, secretResolverInMemoryForBob);
         var result = await _sendForwardMessageHandler.Handle(new SendForwardMessageRequest(
             message: packedBasicMessage,
             localDid: localDidOfBobToUseWithAliceMediator.Value.PeerDid.Value,
@@ -355,7 +356,7 @@ public class PickupTests
         var localDidOfBobToUseWithAliceMediator = await _createPeerDidHandlerBob.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
 
         // Wrap the Basic Message into a new Message for the mediator to recieve and send it
-        _sendForwardMessageHandler = new SendForwardMessageHandler(_mediatorMock.Object, _httpClient, simpleDidDocResolverForBob, secretResolverInMemoryForBob);
+        _sendForwardMessageHandler = new SendForwardMessageHandler(_httpClient, simpleDidDocResolverForBob, secretResolverInMemoryForBob);
         var result = await _sendForwardMessageHandler.Handle(new SendForwardMessageRequest(
             message: packedBasicMessage,
             localDid: localDidOfBobToUseWithAliceMediator.Value.PeerDid.Value,

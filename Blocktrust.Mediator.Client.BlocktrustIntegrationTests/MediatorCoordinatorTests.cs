@@ -6,8 +6,8 @@ using Blocktrust.Mediator.Client.Commands.MediatorCoordinator.RequestMediation;
 using Blocktrust.Mediator.Client.Commands.MediatorCoordinator.UpdateKeys;
 using Blocktrust.Mediator.Common;
 using Blocktrust.Mediator.Common.Commands.CreatePeerDid;
-using Blocktrust.Mediator.Server.Commands.Secrets.GetSecrets;
 using FluentAssertions;
+using Server.Commands.DatabaseCommands.Secrets.GetSecrets;
 
 public class MediatorCoordinatorTests
 {

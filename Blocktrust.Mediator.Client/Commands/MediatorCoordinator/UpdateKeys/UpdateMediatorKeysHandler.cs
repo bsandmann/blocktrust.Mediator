@@ -2,7 +2,6 @@
 
 using System.Net;
 using System.Text;
-using System.Text.Json;
 using System.Text.Json.Nodes;
 using Blocktrust.Common.Resolver;
 using Blocktrust.DIDComm;
@@ -40,8 +39,6 @@ public class UpdateMediatorKeysHandler : IRequestHandler<UpdateMediatorKeysReque
         {
             itemsToUpdate.Add(new KeyListUpdateModel(keyToRemove, false));
         }
-
-        var jsonBody = JsonSerializer.Serialize(itemsToUpdate);
 
         // We create the message to send to the mediator
         // See: https://didcomm.org/mediator-coordination/2.0/

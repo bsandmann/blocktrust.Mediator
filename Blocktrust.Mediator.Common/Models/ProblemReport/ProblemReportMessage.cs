@@ -1,11 +1,6 @@
 ﻿namespace Blocktrust.Mediator.Common.Models.ProblemReport;
 
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using Blocktrust.Common.Converter;
 using DIDComm.Message.Messages;
-using DIDComm.Operations;
 using Protocols;
 using FromPrior = DIDComm.Message.FromPriors.FromPrior;
 
