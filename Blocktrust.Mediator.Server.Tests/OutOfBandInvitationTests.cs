@@ -1,8 +1,8 @@
 namespace Blocktrust.Mediator.Server.Tests;
 
 using Blocktrust.Common.Resolver;
-using Commands.OutOfBand.CreateOobInvitation;
-using Commands.OutOfBand.GetOobInvitation;
+using Commands.DatabaseCommands.CreateOobInvitation;
+using Commands.DatabaseCommands.GetOobInvitation;
 using Common;
 using Common.Commands.CreatePeerDid;
 using Common.Models.OutOfBand;

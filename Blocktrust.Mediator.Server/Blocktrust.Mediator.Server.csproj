@@ -40,7 +40,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Commands\OutOfBand" />
+      <Folder Include="Commands\DatabaseCommands\GetShortenedUrl" />
+      <Folder Include="Commands\DatabaseCommands\InvalidateShortenedUrl" />
       <Folder Include="Migrations" />
     </ItemGroup>
 

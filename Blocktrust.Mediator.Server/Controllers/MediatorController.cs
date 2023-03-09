@@ -2,8 +2,8 @@
 
 using System.Text.Json;
 using Blocktrust.Common.Resolver;
-using Commands.OutOfBand.CreateOobInvitation;
-using Commands.OutOfBand.GetOobInvitation;
+using Commands.DatabaseCommands.CreateOobInvitation;
+using Commands.DatabaseCommands.GetOobInvitation;
 using Commands.ProcessMessage;
 using Common.Commands.CreatePeerDid;
 using DIDComm;

@@ -2,8 +2,8 @@
 
 namespace Blocktrust.Mediator.Server.Pages;
 
-using Commands.OutOfBand.CreateOobInvitation;
-using Commands.OutOfBand.GetOobInvitation;
+using Commands.DatabaseCommands.CreateOobInvitation;
+using Commands.DatabaseCommands.GetOobInvitation;
 using Common.Commands.CreatePeerDid;
 using MediatR;
 using Net.Codecrete.QrCodeGenerator;

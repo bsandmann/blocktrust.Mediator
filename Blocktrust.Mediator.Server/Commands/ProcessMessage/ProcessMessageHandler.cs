@@ -17,6 +17,7 @@ using Blocktrust.Mediator.Server.Commands.Pickup.ProcessPickupMessageReceived;
 using Blocktrust.Mediator.Server.Commands.Pickup.ProcessStatusRequest;
 using DiscoverFeatures;
 using MediatR;
+using ShortenUrl;
 using TrustPing;
 
 public class ProcessMessageHandler : IRequestHandler<ProcessMessageRequest, ProcessMessageResponse>
@@ -42,7 +43,7 @@ public class ProcessMessageHandler : IRequestHandler<ProcessMessageRequest, Proc
             //TODO no clue
         }
 
-        var existingConnection = await _mediator.Send(new GetConnectionRequest(request.SenderOldDid, null));
+        var existingConnection = await _mediator.Send(new GetConnectionRequest(request.SenderOldDid, null), cancellationToken);
         if (existingConnection.IsFailed)
         {
             return new ProcessMessageResponse(
@@ -55,7 +56,7 @@ public class ProcessMessageHandler : IRequestHandler<ProcessMessageRequest, Proc
         if (existingConnection.Value is null)
         {
             // Create new connection
-            var mediatorDidResult = await _mediator.Send(new CreatePeerDidRequest(serviceEndpoint: new Uri(request.HostUrl)));
+            var mediatorDidResult = await _mediator.Send(new CreatePeerDidRequest(serviceEndpoint: new Uri(request.HostUrl)), cancellationToken);
             if (mediatorDidResult.IsFailed)
             {
                 return new ProcessMessageResponse(
@@ -69,7 +70,7 @@ public class ProcessMessageHandler : IRequestHandler<ProcessMessageRequest, Proc
             var sub = mediatorDidResult.Value.PeerDid.Value; // The new Did of the mediator that will be used for future communication
             fromPrior = FromPrior.Builder(iss, sub).Build();
 
-            var createConnectionResult = await _mediator.Send(new CreateConnectionRequest(mediatorDidResult.Value.PeerDid.Value, request.SenderDid));
+            var createConnectionResult = await _mediator.Send(new CreateConnectionRequest(mediatorDidResult.Value.PeerDid.Value, request.SenderDid), cancellationToken);
             if (createConnectionResult.IsFailed)
             {
                 return new ProcessMessageResponse(
@@ -91,6 +92,9 @@ public class ProcessMessageHandler : IRequestHandler<ProcessMessageRequest, Proc
         {
             case ProtocolConstants.TrustPingRequest:
                 result = await _mediator.Send(new ProcessTrustPingRequest(request.UnpackResult.Message, request.SenderDid, mediatorDid, request.HostUrl, fromPrior), cancellationToken);
+                break;
+            case ProtocolConstants.ShortenedUrlRequest:
+                result = await _mediator.Send(new ProcessShortenUrlRequest(request.UnpackResult.Message, request.SenderDid, mediatorDid, request.HostUrl, fromPrior), cancellationToken);
                 break;
             case ProtocolConstants.CoordinateMediation2Request:
                 result = await _mediator.Send(new ProcessMediationRequestRequest(request.UnpackResult.Message, request.SenderDid, mediatorDid, request.HostUrl, fromPrior), cancellationToken);

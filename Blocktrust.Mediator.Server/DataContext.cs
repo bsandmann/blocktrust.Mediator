@@ -13,6 +13,7 @@ public class DataContext : DbContext
     public DbSet<MediatorConnection> MediatorConnections { get; set; }
     public DbSet<RegisteredRecipient> RegisteredRecipients { get; set; }
     public DbSet<StoredMessage> StoredMessages { get; set; }
+    public DbSet<ShortenedUrlEntity> ShortenedUrlEntities { get; set; }
 
     public DataContext(DbContextOptions<DataContext> options)
         : base(options)
@@ -32,6 +33,9 @@ public class DataContext : DbContext
         modelBuilder.Entity<SecretEntity>()
             .HasKey(b => b.SecretId);
         modelBuilder.Entity<SecretEntity>().Property(b => b.SecretId).HasValueGenerator(typeof(SequentialGuidValueGenerator));
+        
+        modelBuilder.Entity<ShortenedUrlEntity>()
+            .HasKey(b => b.ShortenedUrlEntityId);
 
         modelBuilder.Entity<RegisteredRecipient>()
             .HasKey(b => b.RecipientDid);

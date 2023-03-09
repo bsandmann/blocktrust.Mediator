@@ -1,4 +1,4 @@
-﻿namespace Blocktrust.Mediator.Server.Commands.OutOfBand.CreateOobInvitation;
+﻿namespace Blocktrust.Mediator.Server.Commands.DatabaseCommands.CreateOobInvitation;
 
 using Blocktrust.Mediator.Server.Models;
 using Blocktrust.PeerDID.Types;
