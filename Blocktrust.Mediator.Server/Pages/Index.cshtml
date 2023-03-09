@@ -14,10 +14,14 @@
 </head>
 <body>
 <div>
-    @Model.IndexPageModel.OobUrl;
+    @Model.QrCodeModel.OobUrl;
+    @Html.Raw(@Model.QrCodeModel.OobSvg)
 </div>
 <div>
-    @Html.Raw(@Model.IndexPageModel.OobSvg)
+    @Html.Raw(@Model.QrCodeModel.OobSvgSmall)
+    @Model.QrCodeModel.OobUrlShort
+</div>
+<div>
 </div>
 </body >
 </html >

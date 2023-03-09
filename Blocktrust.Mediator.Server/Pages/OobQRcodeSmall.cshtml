@@ -1,0 +1,19 @@
+﻿@page "/oob_small_qrcode"
+@model Blocktrust.Mediator.Server.Pages.OobQRCode
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+<div>
+     @Html.Raw(@Model.QrCodeModel.OobSvgSmall) 
+</div>
+</body>
+</html>

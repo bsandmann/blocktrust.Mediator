@@ -5,8 +5,16 @@ using Commands.DatabaseCommands.GetConnection;
 
 public static class ShortenedUrlGenerator
 {
-   public static string Get(string requestedPartialSlug, Guid shortenedUrlEntityId)
+   public static string Get(string? requestedPartialSlug, Guid shortenedUrlEntityId)
    {
+       if (requestedPartialSlug is null)
+       {
+           requestedPartialSlug = string.Empty;
+       }
+       else
+       {
+           requestedPartialSlug = string.Concat("/", requestedPartialSlug);
+       }
        return string.Concat("/qr", requestedPartialSlug, "?_oobid=", shortenedUrlEntityId);
    } 
    

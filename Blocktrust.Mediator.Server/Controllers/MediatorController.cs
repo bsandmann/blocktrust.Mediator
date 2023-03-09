@@ -32,41 +32,6 @@ public class MediatorController : ControllerBase
     }
 
     /// <summary>
-    /// Endpoint to the out of band invitation
-    /// </summary>
-    /// <returns></returns>
-    [HttpGet("/oob_url")]
-    public async Task<ActionResult<string>> OutOfBandInvitation()
-    {
-        var hostUrl = string.Concat(_httpContextAccessor!.HttpContext.Request.Scheme, "://", _httpContextAccessor.HttpContext.Request.Host);
-        var existingInvitationResult = await _mediator.Send(new GetOobInvitationRequest(hostUrl));
-        var invitation = string.Empty;
-        if (existingInvitationResult.IsFailed)
-        {
-            var peerDidResponse = await _mediator.Send(new CreatePeerDidRequest(numberOfAgreementKeys: 1, numberOfAuthenticationKeys: 1, serviceEndpoint: new Uri(hostUrl), serviceRoutingKeys: new List<string>()));
-            if (peerDidResponse.IsFailed)
-            {
-                return Problem(statusCode: 500, detail: peerDidResponse.Errors.First().Message);
-            }
-
-            var result = await _mediator.Send(new CreateOobInvitationRequest(hostUrl, peerDidResponse.Value.PeerDid));
-            if (result.IsFailed)
-            {
-                return Problem(statusCode: 500, detail: result.Errors.First().Message);
-            }
-
-            invitation = result.Value.Invitation;
-        }
-        else
-        {
-            invitation = existingInvitationResult.Value.Invitation;
-        }
-
-        var invitationUrl = string.Concat(hostUrl, "?_oob=", invitation);
-        return Ok(invitationUrl);
-    }
-
-    /// <summary>
     /// Mediator endpoint
     /// </summary>
     /// <returns></returns>

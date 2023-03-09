@@ -51,6 +51,17 @@ public class CreateShortenedUrlHandler : IRequestHandler<CreateShortenedUrlReque
                 return Result.Fail("Internal error");
             }
 
+            var existingShortenedUrl = _context.ShortenedUrlEntities.FirstOrDefault(p => p.LongFormUrl.Equals(createShortenedUrlRequest.LongFormUrl.AbsoluteUri) && p.RequestedPartialSlug == createShortenedUrlRequest.RequestedPartialSlug);
+            if (existingShortenedUrl is not null)
+            {
+                if (existingShortenedUrl.ExpirationUtc is null || existingShortenedUrl.ExpirationUtc > DateTime.UtcNow)
+                {
+                    var existingUrl = ShortenedUrlGenerator.Get(existingShortenedUrl.RequestedPartialSlug, existingShortenedUrl.ShortenedUrlEntityId);
+
+                    return Result.Ok(existingUrl);
+                }
+            }
+
             var shortenedUrlEntity = new ShortenedUrlEntity()
             {
                 ShortenedUrlEntityId = guid,

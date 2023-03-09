@@ -21,7 +21,7 @@ using Resolver;
 
 public class OutOfBandInvitationTests
 {
-    private readonly Mock<ILogger<MediatorController>> _iLogger;
+    private readonly Mock<ILogger<OobController>> _iLogger;
     private readonly Mock<IMediator> _mediatorMock;
     private readonly Mock<IHttpContextAccessor> _httpContextAccessorMock;
     private readonly CreatePeerDidHandler _createPeerDidHandler;
@@ -30,7 +30,7 @@ public class OutOfBandInvitationTests
 
     public OutOfBandInvitationTests()
     {
-        _iLogger = new Mock<ILogger<MediatorController>>();
+        _iLogger = new Mock<ILogger<OobController>>();
         _mediatorMock = new Mock<IMediator>();
         _httpContextAccessorMock = new Mock<IHttpContextAccessor>();
         _secretResolver = new SecretResolverInMemory();
@@ -57,7 +57,7 @@ public class OutOfBandInvitationTests
             Url = "TheUrlTheMediatorIsListeningOn",
             
         })));
-        var controller = new MediatorController(_iLogger.Object, _mediatorMock.Object, _httpContextAccessorMock.Object, _secretResolver, _didDocResolver);
+        var controller = new OobController(_iLogger.Object, _mediatorMock.Object, _httpContextAccessorMock.Object, _secretResolver, _didDocResolver);
         
         // Act
         var result = await controller.OutOfBandInvitation();
@@ -85,7 +85,7 @@ public class OutOfBandInvitationTests
                     Invitation = OobModel.BuildRequestMediateMessage(request.PeerDid)
                 }
                 )) );
-        var controller = new MediatorController(_iLogger.Object, _mediatorMock.Object, _httpContextAccessorMock.Object,  _secretResolver, _didDocResolver);
+        var controller = new OobController(_iLogger.Object, _mediatorMock.Object, _httpContextAccessorMock.Object,  _secretResolver, _didDocResolver);
         
         // Act
         var result = await controller.OutOfBandInvitation();
