@@ -15,13 +15,13 @@ using Common.Models.ShortenUrl;
 using FluentResults;
 using MediatR;
 
-public class RequestShortenedUrlHandler : IRequestHandler<RequestShortenedUrlRequest, Result<RequestShortenedUrlResponse>>
+public class InvalidateShortenedUrlHandler : IRequestHandler<InvalidateShortenedUrlRequest, Result>
 {
     private readonly HttpClient _httpClient;
     private readonly IDidDocResolver _didDocResolver;
     private readonly ISecretResolver _secretResolver;
 
-    public RequestShortenedUrlHandler(HttpClient httpClient, IDidDocResolver didDocResolver, ISecretResolver secretResolver)
+    public InvalidateShortenedUrlHandler(HttpClient httpClient, IDidDocResolver didDocResolver, ISecretResolver secretResolver)
     {
         _httpClient = httpClient;
         _didDocResolver = didDocResolver;
@@ -30,32 +30,17 @@ public class RequestShortenedUrlHandler : IRequestHandler<RequestShortenedUrlReq
 
     // Details: https://didcomm.org/shorten-url/1.0/
 
-    public async Task<Result<RequestShortenedUrlResponse>> Handle(RequestShortenedUrlRequest request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(InvalidateShortenedUrlRequest request, CancellationToken cancellationToken)
     {
         // We create the message to send to the mediator
         // The special format of the return_route header is required by the python implementation of the roots mediator
         var returnRoute = new JsonObject() { new KeyValuePair<string, JsonNode?>("return_route", "all") };
-
+        
         var body = new Dictionary<string, object>();
-        body.Add("url", request.UrlToShorten);
-        body.Add("requested_validity_seconds", request.RequestValidityInSeconds);
-        if (request.GoalCode == EnumShortenUrlGoalCode.ShortenOOBv2)
-        {
-            body.Add("goal_code", "shorten.oobv2");
-        }
-        else
-        {
-            return Result.Fail("The only supported goal_code is currently 'shorten.oobv2'");
-        }
-
-        if (request.ShortUrlSlug is not null)
-        {
-            body.Add("short_url_slug", request.ShortUrlSlug);
-        }
-
+        body.Add("shortened_url", request.ShortenedUrl);
         var mediateRequestMessage = new MessageBuilder(
                 id: Guid.NewGuid().ToString(),
-                type: ProtocolConstants.ShortenedUrlRequest,
+                type: ProtocolConstants.InvalidateShortenedUrl,
                 body: body
             )
             .customHeader("custom_headers", new List<JsonObject>() { returnRoute })
@@ -83,22 +68,8 @@ public class RequestShortenedUrlHandler : IRequestHandler<RequestShortenedUrlReq
             return Result.Fail("Unable to initiate connection: " + response.StatusCode);
         }
 
-        var content = await response.Content.ReadAsStringAsync(cancellationToken);
-
-        var unpackResult = didComm.Unpack(
-            new UnpackParamsBuilder(content)
-                .SecretResolver(_secretResolver)
-                .BuildUnpackParams());
-        if (unpackResult.IsFailed)
-        {
-            return unpackResult.ToResult();
-        }
-
-        if (unpackResult.Value.Message.Type == ProtocolConstants.ShortenedUrlResponse)
-        {
-            return RequestShortenedUrlResponse.Parse(unpackResult.Value.Message.Body!);
-        }
-
-        return Result.Fail("Error: Unexpected message response type");
+        //TODO return empty message here?
+        
+        return Result.Ok();
     }
 }

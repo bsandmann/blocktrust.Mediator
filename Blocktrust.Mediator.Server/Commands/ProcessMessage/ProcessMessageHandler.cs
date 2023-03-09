@@ -17,7 +17,8 @@ using Blocktrust.Mediator.Server.Commands.Pickup.ProcessPickupMessageReceived;
 using Blocktrust.Mediator.Server.Commands.Pickup.ProcessStatusRequest;
 using DiscoverFeatures;
 using MediatR;
-using ShortenUrl;
+using ShortenedUrl.ProcessInvalidateShortenedUrl;
+using ShortenedUrl.ProcessShortenedUrl;
 using TrustPing;
 
 public class ProcessMessageHandler : IRequestHandler<ProcessMessageRequest, ProcessMessageResponse>
@@ -94,7 +95,10 @@ public class ProcessMessageHandler : IRequestHandler<ProcessMessageRequest, Proc
                 result = await _mediator.Send(new ProcessTrustPingRequest(request.UnpackResult.Message, request.SenderDid, mediatorDid, request.HostUrl, fromPrior), cancellationToken);
                 break;
             case ProtocolConstants.ShortenedUrlRequest:
-                result = await _mediator.Send(new ProcessShortenUrlRequest(request.UnpackResult.Message, request.SenderDid, mediatorDid, request.HostUrl, fromPrior), cancellationToken);
+                result = await _mediator.Send(new ProcessRequestShortenedUrlRequest(request.UnpackResult.Message, request.SenderDid, mediatorDid, request.HostUrl, fromPrior), cancellationToken);
+                break;
+            case ProtocolConstants.InvalidateShortenedUrl:
+                result = await _mediator.Send(new ProcessInvalidateShortenedUrlRequest(request.UnpackResult.Message, request.SenderDid, mediatorDid, request.HostUrl, fromPrior), cancellationToken);
                 break;
             case ProtocolConstants.CoordinateMediation2Request:
                 result = await _mediator.Send(new ProcessMediationRequestRequest(request.UnpackResult.Message, request.SenderDid, mediatorDid, request.HostUrl, fromPrior), cancellationToken);

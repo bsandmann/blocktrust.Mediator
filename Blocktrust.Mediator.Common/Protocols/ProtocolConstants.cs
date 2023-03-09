@@ -32,5 +32,5 @@ public class ProtocolConstants
     
     public const string ShortenedUrlRequest = "https://didcomm.org/shorten-url/1.0/request-shortened-url";
     public const string ShortenedUrlResponse = "https://didcomm.org/shorten-url/1.0/shortened-url";
-    public const string ShortenedUrlInvalidate = "https://didcomm.org/shorten-url/1.0/invalidate-shortened-url";
+    public const string InvalidateShortenedUrl = "https://didcomm.org/shorten-url/1.0/invalidate-shortened-url";
 }

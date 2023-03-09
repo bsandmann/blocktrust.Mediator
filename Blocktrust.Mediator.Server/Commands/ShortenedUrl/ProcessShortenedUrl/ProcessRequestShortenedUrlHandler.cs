@@ -1,13 +1,13 @@
-﻿namespace Blocktrust.Mediator.Server.Commands.ShortenUrl;
+﻿namespace Blocktrust.Mediator.Server.Commands.ShortenedUrl.ProcessShortenedUrl;
 
 using Blocktrust.DIDComm.Message.Messages;
+using Blocktrust.Mediator.Common.Models.ProblemReport;
+using Blocktrust.Mediator.Common.Models.ShortenUrl;
 using Blocktrust.Mediator.Common.Protocols;
-using Common.Models.ProblemReport;
-using Common.Models.ShortenUrl;
-using DatabaseCommands.CreateShortenedUrl;
+using Blocktrust.Mediator.Server.Commands.DatabaseCommands.CreateShortenedUrl;
 using MediatR;
 
-public class ProcessShortenUrlHandler : IRequestHandler<ProcessShortenUrlRequest, Message?>
+public class ProcessRequestShortenedUrlHandler : IRequestHandler<ProcessRequestShortenedUrlRequest, Message?>
 {
     private readonly IMediator _mediator;
     private readonly IHttpContextAccessor _httpContextAccessor;
@@ -15,14 +15,14 @@ public class ProcessShortenUrlHandler : IRequestHandler<ProcessShortenUrlRequest
     /// <summary>
     /// Constructor
     /// </summary>
-    public ProcessShortenUrlHandler(IMediator mediator, IHttpContextAccessor httpContextAccessor)
+    public ProcessRequestShortenedUrlHandler(IMediator mediator, IHttpContextAccessor httpContextAccessor)
     {
         this._mediator = mediator;
         this._httpContextAccessor = httpContextAccessor;
     }
 
     /// <inheritdoc />
-    public async Task<Message?> Handle(ProcessShortenUrlRequest request, CancellationToken cancellationToken)
+    public async Task<Message?> Handle(ProcessRequestShortenedUrlRequest request, CancellationToken cancellationToken)
     {
         var hostUrl = string.Concat(_httpContextAccessor!.HttpContext.Request.Scheme, "://", _httpContextAccessor.HttpContext.Request.Host);
         var shortenedUrlResult = ShortenedUrl.Parse(request.UnpackedMessage.Body);

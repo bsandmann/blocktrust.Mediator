@@ -5,10 +5,10 @@ using FluentResults;
 
 public class RequestShortenedUrlResponse
 {
-    public string ShortenedUrl { get; set; }
+    public Uri ShortenedUrl { get; set; }
     public DateTime? ExpiresTimeUtc { get; set; }
 
-    public RequestShortenedUrlResponse(string shortenedUrl, DateTime? expiresTimeUtc = null)
+    public RequestShortenedUrlResponse(Uri shortenedUrl, DateTime? expiresTimeUtc = null)
     {
         ShortenedUrl = shortenedUrl;
         ExpiresTimeUtc = expiresTimeUtc;
@@ -46,6 +46,6 @@ public class RequestShortenedUrlResponse
             expiresTime = DateTimeOffset.FromUnixTimeSeconds(expiresTimesJsonElement.GetInt64()).DateTime;
         }
 
-        return Result.Ok(new RequestShortenedUrlResponse(shortenedUrl!, expiresTime));
+        return Result.Ok(new RequestShortenedUrlResponse(new Uri(shortenedUrl)!, expiresTime));
     }
 }
