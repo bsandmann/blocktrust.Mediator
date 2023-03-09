@@ -1,0 +1,23 @@
+﻿@page
+@model Blocktrust.Mediator.Server.Pages.Index
+
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+<div>
+    @Model.IndexPageModel.OobUrl;
+</div>
+<div>
+    @Html.Raw(@Model.IndexPageModel.OobSvg)
+</div>
+</body >
+</html >

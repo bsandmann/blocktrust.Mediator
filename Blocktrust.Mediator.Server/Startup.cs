@@ -42,6 +42,7 @@ public class Startup
                 .UseSqlServer(Configuration.GetConnectionString("mediatorDatabase"));
         });
         services.AddControllers();
+        services.AddRazorPages();
         // services.AddApplicationInsightsTelemetry();
         services.AddMediatR(cfg => {
             cfg.RegisterServicesFromAssembly(typeof(SimpleDidDocResolver).Assembly);
@@ -98,6 +99,7 @@ public class Startup
         {
             // endpoints.MapGrpcService<GrpcReadService>().EnableGrpcWeb();
             endpoints.MapControllers();
+            endpoints.MapRazorPages();
         });
     }
 }
