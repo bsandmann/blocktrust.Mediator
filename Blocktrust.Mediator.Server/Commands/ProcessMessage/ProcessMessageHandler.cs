@@ -117,15 +117,8 @@ public class ProcessMessageHandler : IRequestHandler<ProcessMessageRequest, Proc
                 result = await _mediator.Send(new ProcessDiscoverFeaturesRequest(request.UnpackResult.Message, request.SenderDid, mediatorDid, request.HostUrl, fromPrior), cancellationToken);
                 break;
             case ProtocolConstants.ForwardMessage:
-            {
                 result = await _mediator.Send(new ProcessForwardMessageRequest(request.UnpackResult.Message, request.SenderDid, mediatorDid, request.HostUrl, fromPrior), cancellationToken);
-                if (result is null)
-                {
-                    return new ProcessMessageResponse(); // 202 Accecpted
-                }
-
-                return new ProcessMessageResponse(result, mediatorDid);
-            }
+                break;
             default:
                 return new ProcessMessageResponse(ProblemReportMessage.Build(
                     fromPrior: fromPrior,
@@ -140,6 +133,11 @@ public class ProcessMessageHandler : IRequestHandler<ProcessMessageRequest, Proc
                     comment: $"Not supported message type: '{request.UnpackResult.Message.Type}'",
                     commentArguments: null,
                     escalateTo: new Uri("mailto:info@blocktrust.dev")), mediatorDid);
+        }
+
+        if (result is null)
+        {
+            return new ProcessMessageResponse(); // 202 Accecpted
         }
 
         return new ProcessMessageResponse(result, mediatorDid);

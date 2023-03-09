@@ -32,17 +32,6 @@ public class MediatorController : ControllerBase
     }
 
     /// <summary>
-    /// Ping pong sanity check
-    /// </summary>
-    /// <returns></returns>
-    [HttpGet("/ping")]
-    public async Task<ActionResult<string>> Ping(string arg = "")
-    {
-        await Task.Delay(10);
-        return Ok($"Pong {arg}");
-    }
-
-    /// <summary>
     /// Endpoint to the out of band invitation
     /// </summary>
     /// <returns></returns>

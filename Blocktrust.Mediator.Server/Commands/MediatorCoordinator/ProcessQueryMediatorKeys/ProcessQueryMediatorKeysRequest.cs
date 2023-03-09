@@ -2,22 +2,11 @@
 
 using DIDComm.Message.FromPriors;
 using DIDComm.Message.Messages;
-using MediatR;
+using ProcessMessage;
 
-public class ProcessQueryMediatorKeysRequest : IRequest<Message>
+public class ProcessQueryMediatorKeysRequest  : ProcessBaseRequest
 {
-    public Message UnpackedMessage { get; }
-    public string SenderDid { get; }
-    public string MediatorDid { get; }
-    public string HostUrl { get; }
-    public FromPrior? FromPrior { get; }
-    
-    public ProcessQueryMediatorKeysRequest(Message unpackedMessage, string senderDid, string mediatorDid, string hostUrl, FromPrior? fromPrior)
+    public ProcessQueryMediatorKeysRequest(Message unpackedMessage, string senderDid, string mediatorDid, string hostUrl, FromPrior? fromPrior) : base(unpackedMessage, senderDid, mediatorDid, hostUrl, fromPrior)
     {
-        UnpackedMessage = unpackedMessage;
-        SenderDid = senderDid;
-        MediatorDid = mediatorDid;
-        HostUrl = hostUrl;
-        FromPrior = fromPrior;
     }
 }

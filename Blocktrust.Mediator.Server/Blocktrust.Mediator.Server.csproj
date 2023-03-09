@@ -40,7 +40,6 @@
 
     <ItemGroup>
       <Folder Include="Commands\OutOfBand" />
-      <Folder Include="Commands\Secrets" />
       <Folder Include="Migrations" />
     </ItemGroup>
 

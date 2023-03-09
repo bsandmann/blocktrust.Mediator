@@ -1,10 +1,9 @@
-﻿namespace Blocktrust.Mediator.Server.Commands.DiscoverFeatures;
+﻿namespace Blocktrust.Mediator.Server.Commands.TrustPing;
 
 using System.Text.Json;
 using Blocktrust.DIDComm.Message.Messages;
 using Blocktrust.Mediator.Common.Protocols;
 using MediatR;
-using TrustPing;
 
 public class ProcessTrustPingHandler : IRequestHandler<ProcessTrustPingRequest, Message?>
 {
