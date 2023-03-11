@@ -31,6 +31,7 @@ public class Startup
     /// <param name="services"></param>
     public void ConfigureServices(IServiceCollection services)
     {
+        services.AddCors();
         services.AddHttpContextAccessor();
         services.AddDbContext<DataContext>(options =>
         {
@@ -79,6 +80,10 @@ public class Startup
         app.UseHttpsRedirection();
         app.UseRouting();
         app.UseHttpsRedirection();
+        app.UseCors(x => x
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader());
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();
