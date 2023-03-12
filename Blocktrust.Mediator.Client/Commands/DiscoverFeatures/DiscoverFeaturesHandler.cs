@@ -61,9 +61,9 @@ public class DiscoverFeaturesHandler : IRequestHandler<DiscoverFeaturesRequest, 
         {
             response = await _httpClient.PostAsync(request.MediatorEndpoint, new StringContent(packResult.PackedMessage, Encoding.UTF8, MessageTyp.Encrypted), cancellationToken);
         }
-        catch (Exception ex)
+        catch (HttpRequestException ex)
         {
-            return Result.Fail("Connection could not be established");
+            return Result.Fail($"Connection could not be established: {ex.Message}");
         }
         
         if (response.StatusCode == HttpStatusCode.NotFound)

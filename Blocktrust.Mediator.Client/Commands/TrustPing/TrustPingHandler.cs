@@ -56,8 +56,16 @@ public class TrustPingHandler : IRequestHandler<TrustPingRequest, Result>
         );
 
         // We send the message to the mediator
-        var response = await _httpClient.PostAsync(request.MediatorEndpoint, new StringContent(packResult.PackedMessage, Encoding.UTF8, MessageTyp.Encrypted), cancellationToken);
-
+        HttpResponseMessage response;
+        try
+        {
+            response = await _httpClient.PostAsync(request.MediatorEndpoint, new StringContent(packResult.PackedMessage, Encoding.UTF8, MessageTyp.Encrypted), cancellationToken);
+        }
+        catch (HttpRequestException ex)
+        {
+            return Result.Fail($"Connection could not be established: {ex.Message}");
+        }
+        
         if (response.StatusCode == HttpStatusCode.NotFound)
         {
             return Result.Fail("Connection could not be established");
