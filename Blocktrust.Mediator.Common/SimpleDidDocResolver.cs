@@ -39,11 +39,13 @@ public class SimpleDidDocResolver : IDidDocResolver
             {
                 return null;
             }
+
             var didDocResult = DidDocPeerDid.FromJson(didDocJsonResult.Value);
             if (didDocResult.IsFailed)
             {
                 return null;
             }
+
             var combinedVerificationMethodsOfInvitation = didDocResult.Value.Authentications.Concat(didDocResult.Value.KeyAgreements);
 
             //TODO this should not be done in here
@@ -60,7 +62,7 @@ public class SimpleDidDocResolver : IDidDocResolver
                         value: JsonSerializer.Serialize((PeerDidJwk)p.VerMaterial.Value)),
                     controller: p.Controller
                 )).ToList(),
-                Services = new List<Service>()
+                Services = didDocResult.Value?.Services?.ToList() ?? new List<Service>()
             });
             return _docs[did];
         }
