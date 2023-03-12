@@ -51,7 +51,7 @@ public class TrustPingTests
         
         var secretResolverInMemory = new SecretResolverInMemory();
         _createPeerDidHandler = new CreatePeerDidHandler(secretResolverInMemory);
-
+       
         var localDidOfAliceToUseWithTheMediator = await _createPeerDidHandler.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
         var request = new TrustPingRequest(new Uri(mediatorEndpoint), mediatorDid, localDidOfAliceToUseWithTheMediator.Value.PeerDid.Value, true);
 

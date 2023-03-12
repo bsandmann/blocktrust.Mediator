@@ -12,6 +12,8 @@ using Blocktrust.Mediator.Common.Models.OutOfBand;
 using Blocktrust.PeerDID.DIDDoc;
 using Blocktrust.PeerDID.PeerDIDCreateResolve;
 using Blocktrust.PeerDID.Types;
+using Commands.ShortenUrl.InvalidateShortenedUrl;
+using Commands.ShortenUrl.RequestShortenedUrl;
 using Common.Models.ShortenUrl;
 using FluentAssertions;
 using Xunit;

@@ -57,9 +57,17 @@ public class DeliveryRequestHandler : IRequestHandler<DeliveryRequestRequest, Re
                 .BuildPackEncryptedParams()
         );
 
-        // We send the message to the mediator endpoint
-        var response = await _httpClient.PostAsync(request.MediatorEndpoint, new StringContent(packResult.PackedMessage, Encoding.UTF8, MessageTyp.Encrypted), cancellationToken);
-
+        // We send the message to the mediator
+        HttpResponseMessage response;
+        try
+        {
+            response = await _httpClient.PostAsync(request.MediatorEndpoint, new StringContent(packResult.PackedMessage, Encoding.UTF8, MessageTyp.Encrypted), cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            return Result.Fail("Connection could not be established");
+        }
+        
         if (response.StatusCode == HttpStatusCode.NotFound)
         {
             return Result.Fail("Connection could not be established");

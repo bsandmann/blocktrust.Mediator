@@ -1,4 +1,4 @@
-﻿namespace Blocktrust.Mediator.Client.Commands.ShortenUrl;
+﻿namespace Blocktrust.Mediator.Client.Commands.ShortenUrl.RequestShortenedUrl;
 
 using System.Text.Json;
 using FluentResults;

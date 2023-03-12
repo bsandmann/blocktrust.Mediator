@@ -1,8 +1,7 @@
-﻿namespace Blocktrust.Mediator.Client.Commands.ShortenUrl;
+﻿namespace Blocktrust.Mediator.Client.Commands.ShortenUrl.RequestShortenedUrl;
 
 using System.Net;
 using System.Text;
-using System.Text.Json;
 using System.Text.Json.Nodes;
 using Blocktrust.Common.Resolver;
 using Blocktrust.DIDComm;
@@ -10,8 +9,8 @@ using Blocktrust.DIDComm.Common.Types;
 using Blocktrust.DIDComm.Message.Messages;
 using Blocktrust.DIDComm.Model.PackEncryptedParamsModels;
 using Blocktrust.DIDComm.Model.UnpackParamsModels;
+using Blocktrust.Mediator.Common.Models.ShortenUrl;
 using Blocktrust.Mediator.Common.Protocols;
-using Common.Models.ShortenUrl;
 using FluentResults;
 using MediatR;
 
@@ -72,7 +71,15 @@ public class RequestShortenedUrlHandler : IRequestHandler<RequestShortenedUrlReq
         );
 
         // We send the message to the mediator
-        var response = await _httpClient.PostAsync(request.MediatorEndpoint, new StringContent(packResult.PackedMessage, Encoding.UTF8, MessageTyp.Encrypted), cancellationToken);
+        HttpResponseMessage response;
+        try
+        {
+            response = await _httpClient.PostAsync(request.MediatorEndpoint, new StringContent(packResult.PackedMessage, Encoding.UTF8, MessageTyp.Encrypted), cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            return Result.Fail("Connection could not be established");
+        }
 
         if (response.StatusCode == HttpStatusCode.NotFound)
         {

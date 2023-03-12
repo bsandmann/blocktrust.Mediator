@@ -1,6 +1,6 @@
-﻿namespace Blocktrust.Mediator.Client.Commands.ShortenUrl;
+﻿namespace Blocktrust.Mediator.Client.Commands.ShortenUrl.RequestShortenedUrl;
 
-using Common.Models.ShortenUrl;
+using Blocktrust.Mediator.Common.Models.ShortenUrl;
 using FluentResults;
 using MediatR;
 

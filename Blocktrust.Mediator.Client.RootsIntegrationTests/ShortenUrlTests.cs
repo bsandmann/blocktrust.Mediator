@@ -7,6 +7,8 @@ using Blocktrust.Mediator.Common.Commands.CreatePeerDid;
 using Commands.DiscoverFeatures;
 using Commands.MediatorCoordinator.QueryKeys;
 using Commands.ShortenUrl;
+using Commands.ShortenUrl.InvalidateShortenedUrl;
+using Commands.ShortenUrl.RequestShortenedUrl;
 using Common;
 using Common.Models.DiscoverFeatures;
 using Common.Models.OutOfBand;

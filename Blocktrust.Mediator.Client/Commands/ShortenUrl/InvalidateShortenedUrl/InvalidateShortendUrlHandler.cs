@@ -1,17 +1,14 @@
-﻿namespace Blocktrust.Mediator.Client.Commands.ShortenUrl;
+﻿namespace Blocktrust.Mediator.Client.Commands.ShortenUrl.InvalidateShortenedUrl;
 
 using System.Net;
 using System.Text;
-using System.Text.Json;
 using System.Text.Json.Nodes;
 using Blocktrust.Common.Resolver;
 using Blocktrust.DIDComm;
 using Blocktrust.DIDComm.Common.Types;
 using Blocktrust.DIDComm.Message.Messages;
 using Blocktrust.DIDComm.Model.PackEncryptedParamsModels;
-using Blocktrust.DIDComm.Model.UnpackParamsModels;
 using Blocktrust.Mediator.Common.Protocols;
-using Common.Models.ShortenUrl;
 using FluentResults;
 using MediatR;
 
@@ -35,7 +32,7 @@ public class InvalidateShortenedUrlHandler : IRequestHandler<InvalidateShortened
         // We create the message to send to the mediator
         // The special format of the return_route header is required by the python implementation of the roots mediator
         var returnRoute = new JsonObject() { new KeyValuePair<string, JsonNode?>("return_route", "all") };
-        
+
         var body = new Dictionary<string, object>();
         body.Add("shortened_url", request.ShortenedUrl);
         var mediateRequestMessage = new MessageBuilder(
@@ -57,7 +54,15 @@ public class InvalidateShortenedUrlHandler : IRequestHandler<InvalidateShortened
         );
 
         // We send the message to the mediator
-        var response = await _httpClient.PostAsync(request.MediatorEndpoint, new StringContent(packResult.PackedMessage, Encoding.UTF8, MessageTyp.Encrypted), cancellationToken);
+        HttpResponseMessage response;
+        try
+        {
+            response = await _httpClient.PostAsync(request.MediatorEndpoint, new StringContent(packResult.PackedMessage, Encoding.UTF8, MessageTyp.Encrypted), cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            return Result.Fail("Connection could not be established");
+        }
 
         if (response.StatusCode == HttpStatusCode.NotFound)
         {
@@ -69,7 +74,7 @@ public class InvalidateShortenedUrlHandler : IRequestHandler<InvalidateShortened
         }
 
         //TODO return empty message here?
-        
+
         return Result.Ok();
     }
 }

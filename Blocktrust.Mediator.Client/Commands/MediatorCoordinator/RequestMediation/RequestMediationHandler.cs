@@ -91,8 +91,17 @@ public class RequestMediationHandler : IRequestHandler<RequestMediationRequest, 
         {
             return Result.Fail("Unable to identify endpoint of mediator");
         }
+        
         var endpointUri = new Uri(endpoint);
-        var response = await _httpClient.PostAsync(endpointUri, new StringContent(packResult.PackedMessage, Encoding.UTF8, MessageTyp.Encrypted), cancellationToken);
+        HttpResponseMessage response;
+        try
+        {
+            response = await _httpClient.PostAsync(endpointUri, new StringContent(packResult.PackedMessage, Encoding.UTF8, MessageTyp.Encrypted), cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            return Result.Fail("Connection could not be established");
+        }
 
         if (response.StatusCode == HttpStatusCode.NotFound)
         {
