@@ -43,6 +43,12 @@ public class ShortenedUrl
         {
             return Result.Fail("Invalid body format: invalid_url");
         }
+        
+        var isParsed = Uri.TryCreate(url, UriKind.Absolute, out var urlUri);
+        if (!isParsed || urlUri is null)
+        {
+            return Result.Fail("Invalid body format: invalid_url");
+        }
 
         long requestedValiditySeconds = 0;
         var hasRequestedValiditySeconds = body.TryGetValue("requested_validity_seconds", out var requestedValiditySecondsJson);
@@ -94,7 +100,7 @@ public class ShortenedUrl
 
         return Result.Ok(new ShortenedUrl()
         {
-            UrlToShorten = new Uri(url),
+            UrlToShorten = urlUri,
             RequestValidityInSeconds = requestedValiditySeconds,
             GoalCode = EnumShortenUrlGoalCode.ShortenOOBv2,
             ShortUrlSlug = shortUrlSlug

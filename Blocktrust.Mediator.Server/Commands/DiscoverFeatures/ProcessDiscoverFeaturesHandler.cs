@@ -7,15 +7,15 @@ using MediatR;
 
 public class ProcessDiscoverFeaturesHandler : IRequestHandler<ProcessDiscoverFeaturesRequest, Message?>
 {
-
     private List<DiscoverFeature> supportedProtocols = new List<DiscoverFeature>()
     {
         new DiscoverFeature("protocol", "https://didcomm.org/out-of-band/2.0"),
         new DiscoverFeature("protocol", "https://didcomm.org/coordinate-mediation/2.0"),
         new DiscoverFeature("protocol", "https://didcomm.org/messagepickup/3.0"),
-        new DiscoverFeature("protocol", "https://didcomm.org/basicmessage/2.0"),
         new DiscoverFeature("protocol", "https://didcomm.org/trust-ping/2.0"),
-        new DiscoverFeature("protocol", "https://didcomm.org/discover-features/2.0")
+        new DiscoverFeature("protocol", "https://didcomm.org/discover-features/2.0"),
+        new DiscoverFeature("protocol", "https://didcomm.org/shorten-url/1.0/shortened-url"),
+        new DiscoverFeature("protocol", "https://didcomm.org/report-problem/2.0/problem-report")
     };
 
     /// <inheritdoc />

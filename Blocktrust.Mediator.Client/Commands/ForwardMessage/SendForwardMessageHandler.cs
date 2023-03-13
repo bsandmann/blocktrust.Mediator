@@ -28,6 +28,9 @@ public class SendForwardMessageHandler : IRequestHandler<SendForwardMessageReque
 
     public async Task<Result> Handle(SendForwardMessageRequest request, CancellationToken cancellationToken)
     {
+        // https://identity.foundation/didcomm-messaging/spec/#using-a-did-as-an-endpoint
+        // This implementation doesn't support "Exmaple 2". That is double-wrapping the message
+        
         // We create the wrapping message, with has the inner message in the attachments
         Dictionary<string, object> packedMessage;
         try

@@ -110,14 +110,18 @@ public class ProblemReport
                 return Result.Fail("Required field 'args' is invalid");
             }
         }
-        
+
         if (body.ContainsKey("escalate_to"))
         {
             body.TryGetValue("escalate_to", out var escalateToJson);
             var escalateToJsonElement = (JsonElement)escalateToJson!;
             if (escalateToJsonElement.ValueKind is JsonValueKind.String)
             {
-                escalateTo  = new Uri(escalateToJsonElement.GetString()!);
+                var isParsed = Uri.TryCreate(escalateToJsonElement.GetString(), UriKind.Absolute, out escalateTo);
+                if (!isParsed || escalateTo is null)
+                {
+                    return Result.Fail("Required field 'escalate_to' is invalid");
+                }
             }
             else if (escalateToJsonElement.ValueKind is not JsonValueKind.Null)
             {
