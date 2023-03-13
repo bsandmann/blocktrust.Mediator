@@ -68,10 +68,10 @@ public class CreatePeerDidHandler : IRequestHandler<CreatePeerDidRequest, Result
         Dictionary<string, object>? serviceDictionary = null;
         string? service = null;
 
-        if (createdidRequest.ServiceEndpoint is not null)
+        if (createdidRequest.ServiceEndpoint is not null && createdidRequest.ServiceDid is not null)
         {
             serviceDictionary = new Service(
-                id: "new-id",
+                id: createdidRequest.ServiceDid,
                 serviceEndpoint: createdidRequest.ServiceEndpoint.AbsoluteUri,
                 routingKeys: createdidRequest.ServiceRoutingKeys,
                 accept: new List<string>() { "didcomm/v2" },
@@ -102,9 +102,9 @@ public class CreatePeerDidHandler : IRequestHandler<CreatePeerDidRequest, Result
         {
             throw new Exception("A PeerDID just created should always be resolvable.");
         }
-        
+
         // Register the secrets of the created Did in the secretResolver
-        
+
         var zippedAgreementKeysAndSecrets = privateAgreementKeys
             .Zip(peerDidDocResult.Value.KeyAgreements
                 .Select(p => p.Id), (secret, kid) => new { secret, kid });
@@ -113,7 +113,7 @@ public class CreatePeerDidHandler : IRequestHandler<CreatePeerDidRequest, Result
             zip.secret.Kid = zip.kid;
             await _secretResolver.AddKey(zip.kid, zip.secret);
         }
-        
+
         var zippedAuthenticationKeysAndSecrets = privateAuthenticationKeys
             .Zip(peerDidDocResult.Value.Authentications
                 .Select(p => p.Id), (secret, kid) => new { secret, kid });
@@ -128,7 +128,7 @@ public class CreatePeerDidHandler : IRequestHandler<CreatePeerDidRequest, Result
             didDoc: peerDidDocResult.Value,
             privateAgreementKeys: privateAgreementKeys,
             privateAuthenticationKeys: privateAuthenticationKeys);
-        
+
         return Result.Ok(response);
     }
 }
