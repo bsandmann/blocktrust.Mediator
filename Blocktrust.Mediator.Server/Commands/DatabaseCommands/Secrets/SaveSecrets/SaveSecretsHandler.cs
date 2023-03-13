@@ -30,8 +30,8 @@ public class SaveSecretsHandler : IRequestHandler<SaveSecretRequest, Result>
         {
             CreatedUtc = DateTime.UtcNow,
             Kid = saveSecretRequest.Kid,
-            Value = saveSecretRequest.Secret.VerificationMaterial.value,
-            VerificationMaterialFormat = (int)saveSecretRequest.Secret.VerificationMaterial.format,
+            Value = saveSecretRequest.Secret.VerificationMaterial.Value,
+            VerificationMaterialFormat = (int)saveSecretRequest.Secret.VerificationMaterial.Format,
             VerificationMethodType = (int)saveSecretRequest.Secret.Type
         };
         await _context.AddAsync(secretEntity, cancellationToken);
