@@ -111,7 +111,7 @@ public class CreatePeerDidHandler : IRequestHandler<CreatePeerDidRequest, Result
         foreach (var zip in zippedAgreementKeysAndSecrets)
         {
             zip.secret.Kid = zip.kid;
-            _secretResolver.AddKey(zip.kid, zip.secret);
+            await _secretResolver.AddKey(zip.kid, zip.secret);
         }
         
         var zippedAuthenticationKeysAndSecrets = privateAuthenticationKeys
@@ -120,7 +120,7 @@ public class CreatePeerDidHandler : IRequestHandler<CreatePeerDidRequest, Result
         foreach (var zip in zippedAuthenticationKeysAndSecrets)
         {
             zip.secret.Kid = zip.kid;
-            _secretResolver.AddKey(zip.kid, zip.secret);
+            await _secretResolver.AddKey(zip.kid, zip.secret);
         }
 
         var response = new CreatePeerDidResponse(
