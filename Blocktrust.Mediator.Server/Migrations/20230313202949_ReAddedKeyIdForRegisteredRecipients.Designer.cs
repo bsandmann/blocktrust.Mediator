@@ -4,6 +4,7 @@ using Blocktrust.Mediator.Server;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Blocktrust.Mediator.Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230313202949_ReAddedKeyIdForRegisteredRecipients")]
+    partial class ReAddedKeyIdForRegisteredRecipients
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -161,7 +164,6 @@ namespace Blocktrust.Mediator.Server.Migrations
             modelBuilder.Entity("Blocktrust.Mediator.Server.Entities.StoredMessage", b =>
                 {
                     b.Property<Guid>("StoredMessageEntityId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("Created")
@@ -182,12 +184,11 @@ namespace Blocktrust.Mediator.Server.Migrations
                     b.Property<long>("MessageSize")
                         .HasColumnType("bigint");
 
-                    b.Property<Guid>("RegisteredRecipientId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("RecipientDid")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("StoredMessageEntityId");
-
-                    b.HasIndex("RegisteredRecipientId");
 
                     b.ToTable("StoredMessages");
                 });
@@ -206,8 +207,8 @@ namespace Blocktrust.Mediator.Server.Migrations
             modelBuilder.Entity("Blocktrust.Mediator.Server.Entities.StoredMessage", b =>
                 {
                     b.HasOne("Blocktrust.Mediator.Server.Entities.RegisteredRecipient", "RegisteredRecipient")
-                        .WithMany("StoredMessages")
-                        .HasForeignKey("RegisteredRecipientId")
+                        .WithMany("StoredMessage")
+                        .HasForeignKey("StoredMessageEntityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -221,7 +222,7 @@ namespace Blocktrust.Mediator.Server.Migrations
 
             modelBuilder.Entity("Blocktrust.Mediator.Server.Entities.RegisteredRecipient", b =>
                 {
-                    b.Navigation("StoredMessages");
+                    b.Navigation("StoredMessage");
                 });
 #pragma warning restore 612, 618
         }

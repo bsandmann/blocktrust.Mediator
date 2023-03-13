@@ -2,6 +2,8 @@
 
 public class RegisteredRecipient
 {
+    public Guid RegisteredRecipientId { get; set; }
+    
     /// <summary>
     /// The Did used by the owner of the connection to communicate with other parties
     /// If Alice and Bob have a relationship-Did, it could be registered here, so that Alice can pick up a message
@@ -12,7 +14,7 @@ public class RegisteredRecipient
     /// <summary>
     /// Messages that are stored for this key
     /// </summary>
-    public List<StoredMessage> StoredMessage { get; set; }
+    public List<StoredMessage> StoredMessages { get; set; }
 
     /// <summary>
     /// FK

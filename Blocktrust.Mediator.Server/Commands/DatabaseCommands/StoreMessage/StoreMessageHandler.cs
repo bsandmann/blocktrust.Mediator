@@ -40,7 +40,7 @@ public class StoreMessageHandler : IRequestHandler<StoreMessagesRequest, Result>
             {
                 messages.Add(new StoredMessage()
                 {
-                    RecipientDid = recipientKey.RecipientDid,
+                    RegisteredRecipientId = recipientKey.RegisteredRecipientId,
                     Created = DateTime.UtcNow,
                     MessageId = message.MessageId,
                     MessageHash = "123",

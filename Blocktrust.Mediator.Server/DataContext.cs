@@ -38,7 +38,8 @@ public class DataContext : DbContext
             .HasKey(b => b.ShortenedUrlEntityId);
 
         modelBuilder.Entity<RegisteredRecipient>()
-            .HasKey(b => b.RecipientDid);
+            .HasKey(b => b.RegisteredRecipientId);
+        modelBuilder.Entity<RegisteredRecipient>().Property(b => b.RegisteredRecipientId).HasValueGenerator(typeof(SequentialGuidValueGenerator));
 
         modelBuilder.Entity<StoredMessage>()
             .HasKey(b => b.StoredMessageEntityId);
@@ -56,8 +57,8 @@ public class DataContext : DbContext
 
         modelBuilder.Entity<StoredMessage>()
             .HasOne(p => p.RegisteredRecipient)
-            .WithMany(b => b.StoredMessage)
-            .HasForeignKey(p=>p.RecipientDid)
+            .WithMany(b => b.StoredMessages)
+            .HasForeignKey(p=>p.RegisteredRecipientId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

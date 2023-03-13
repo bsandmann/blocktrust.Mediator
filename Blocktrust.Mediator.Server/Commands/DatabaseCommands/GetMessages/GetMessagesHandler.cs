@@ -54,7 +54,7 @@ public class GetMessagesHandler : IRequestHandler<GetMessagesRequest, Result<Lis
                 }
 
                 var messages = await _context.StoredMessages
-                    .Where(p => p.RecipientDid.Equals(request.RecipientDid))
+                    .Where(p => p.RegisteredRecipient.RecipientDid.Equals(request.RecipientDid))
                     .Select(p => new StoredMessageModel(p.MessageId, p.Message))
                     .ToListAsync(cancellationToken: cancellationToken);
                 return Result.Ok(messages);

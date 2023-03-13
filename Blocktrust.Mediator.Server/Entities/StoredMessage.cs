@@ -40,5 +40,5 @@ public class StoredMessage
     /// <summary>
     /// FK
     /// </summary> 
-    public string RecipientDid { get; set; }
+    public Guid RegisteredRecipientId { get; set; }
 }

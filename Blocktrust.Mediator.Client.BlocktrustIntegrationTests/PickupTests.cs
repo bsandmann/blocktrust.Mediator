@@ -58,7 +58,7 @@ public class PickupTests
         var requestMediationResult = await _requestMediationHandler.Handle(request, CancellationToken.None);
 
         // Alice create now an additional DID to be used with Bob. Important: The service endpoint of the DID must be set to the mediator endpoint
-        var localDidOfAliceToUseWithBob = await _createPeerDidHandlerAlice.Handle(new CreatePeerDidRequest(serviceEndpoint: requestMediationResult.Value.MediatorEndpoint), cancellationToken: new CancellationToken());
+        var localDidOfAliceToUseWithBob = await _createPeerDidHandlerAlice.Handle(new CreatePeerDidRequest(serviceEndpoint: requestMediationResult.Value.MediatorEndpoint, serviceRoutingKeys: new List<string>() { requestMediationResult.Value.RoutingDid }), cancellationToken: new CancellationToken());
 
         // Alice registers the new DID with the mediator, so the mediator can now accept messages from Bob to Alice
         var addKeyRequest = new UpdateMediatorKeysRequest(requestMediationResult.Value.MediatorEndpoint, requestMediationResult.Value.MediatorDid, localDidOfAliceToUseWithTheMediator.Value.PeerDid.Value, new List<string>() { localDidOfAliceToUseWithBob.Value.PeerDid.Value }, new List<string>());
