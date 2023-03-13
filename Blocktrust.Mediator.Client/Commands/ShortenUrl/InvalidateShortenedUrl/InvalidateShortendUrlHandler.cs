@@ -46,7 +46,7 @@ public class InvalidateShortenedUrlHandler : IRequestHandler<InvalidateShortened
         var didComm = new DidComm(_didDocResolver, _secretResolver);
 
         // We pack the message and encrypt it for the mediator
-        var packResult = didComm.PackEncrypted(
+        var packResult =await  didComm.PackEncrypted(
             new PackEncryptedParamsBuilder(mediateRequestMessage, to: request.MediatorDid)
                 .From(request.LocalDid)
                 .ProtectSenderId(false)

@@ -25,10 +25,10 @@ public static class BasicMessage
         return basicMessage;
     }
 
-    public static string Pack(Message basicMessage, string from, string to, ISecretResolver secretResolver, IDidDocResolver didDocResolver)
+    public static async Task<string> Pack(Message basicMessage, string from, string to, ISecretResolver secretResolver, IDidDocResolver didDocResolver)
     {
         var didComm = new DidComm(didDocResolver, secretResolver);
-        var packResult = didComm.PackEncrypted(
+        var packResult =await  didComm.PackEncrypted(
             new PackEncryptedParamsBuilder(basicMessage, to: to)
                 .From(from)
                 .ProtectSenderId(false)

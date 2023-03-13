@@ -15,9 +15,9 @@ public class MediatorSecretResolver : ISecretResolver
         _mediator = mediator;
     }
 
-    public Secret? FindKey(string kid)
+    public async Task<Secret?> FindKey(string kid)
     {
-        var secretResults = _mediator.Send(new GetSecretsRequest(new List<string>() { kid })).Result;
+        var secretResults = await _mediator.Send(new GetSecretsRequest(new List<string>() { kid }));
         if (secretResults.IsFailed)
         {
             return null;
@@ -26,14 +26,14 @@ public class MediatorSecretResolver : ISecretResolver
         return secretResults.Value.FirstOrDefault();
     }
 
-    public HashSet<string> FindKeys(List<string> kids)
+    public async Task<HashSet<string>> FindKeys(List<string> kids)
     {
-        var secretResults = _mediator.Send(new GetSecretsRequest(kids)).Result;
+        var secretResults =await _mediator.Send(new GetSecretsRequest(kids));
         return secretResults.Value.Select(p => p.Kid).ToHashSet();
     }
 
-    public void AddKey(string kid, Secret secret)
+    public Task AddKey(string kid, Secret secret)
     {
-        var r = _mediator.Send(new SaveSecretRequest(kid: kid, secret: secret)).Result;
+        return _mediator.Send(new SaveSecretRequest(kid: kid, secret: secret));
     }
 }

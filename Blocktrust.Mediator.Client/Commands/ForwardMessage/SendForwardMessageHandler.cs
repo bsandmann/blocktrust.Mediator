@@ -70,7 +70,7 @@ public class SendForwardMessageHandler : IRequestHandler<SendForwardMessageReque
         var didComm = new DidComm(_didDocResolver, _secretResolver);
 
         // We pack the message and encrypt it for the mediator
-        var packResult = didComm.PackEncrypted(
+        var packResult = await didComm.PackEncrypted(
             new PackEncryptedParamsBuilder(wrappedMessage, to: request.MediatorDid)
                 .From(request.LocalDid)
                 .ProtectSenderId(false)

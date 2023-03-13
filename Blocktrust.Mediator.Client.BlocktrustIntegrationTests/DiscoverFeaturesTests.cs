@@ -65,7 +65,7 @@ public class DiscoverFeaturesTest
 
         // Assert
         result.IsSuccess.Should().BeTrue();
-        result.Value.Count.Should().Be(6);
+        result.Value.Count.Should().Be(7);
         result.Value[0].FeatureType.Should().Be("protocol");
         result.Value[0].Id.Should().Be("https://didcomm.org/out-of-band/2.0");
     }

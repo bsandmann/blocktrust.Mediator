@@ -25,7 +25,7 @@ public class SimpleDidDocResolver : IDidDocResolver
     {
     }
 
-    public DidDoc? Resolve(string did)
+    public async Task<DidDoc?> Resolve(string did)
     {
         if (_docs.ContainsKey(did))
         {

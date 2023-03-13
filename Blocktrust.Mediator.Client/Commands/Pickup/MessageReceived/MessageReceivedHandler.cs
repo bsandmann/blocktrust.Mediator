@@ -42,7 +42,7 @@ public class MessageReceivedHandler : IRequestHandler<MessageReceivedRequest, Re
         var didComm = new DidComm(_didDocResolver, _secretResolver);
 
         // We pack the message and encrypt it for the mediator
-        var packResult = didComm.PackEncrypted(
+        var packResult =await  didComm.PackEncrypted(
             new PackEncryptedParamsBuilder(statusRequestMessage, to: request.MediatorDid)
                 .From(request.LocalDid)
                 .ProtectSenderId(false)
@@ -71,7 +71,7 @@ public class MessageReceivedHandler : IRequestHandler<MessageReceivedRequest, Re
 
         var content = await response.Content.ReadAsStringAsync(cancellationToken);
 
-        var unpackResult = didComm.Unpack(
+        var unpackResult =await  didComm.Unpack(
             new UnpackParamsBuilder(content)
                 .SecretResolver(_secretResolver)
                 .BuildUnpackParams());
