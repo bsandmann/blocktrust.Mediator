@@ -84,8 +84,8 @@ public class PickupTests
         var result = await _sendForwardMessageHandler.Handle(new SendForwardMessageRequest(
             message: packedBasicMessage,
             localDid: localDidOfBobToUseWithAliceMediator.Value.PeerDid.Value,
-            mediatorDid: requestMediationResult.Value.MediatorDid, // The mediator DID was also shared beforehand (should be in the shared DID of alice)
-            mediatorEndpoint: requestMediationResult.Value.MediatorEndpoint,
+            mediatorDid: localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().RoutingKeys.First() , // The mediator DID was also shared beforehand (should be in the shared DID of alice)
+            mediatorEndpoint: new Uri(localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().ServiceEndpoint),
             recipientDid: localDidOfAliceToUseWithBob.Value.PeerDid.Value
         ), new CancellationToken());
 
@@ -122,7 +122,7 @@ public class PickupTests
         var requestMediationResult = await _requestMediationHandler.Handle(request, CancellationToken.None);
 
         // Alice create now an additional DID to be used with Bob. Important: The service endpoint of the DID must be set to the mediator endpoint
-        var localDidOfAliceToUseWithBob = await _createPeerDidHandlerAlice.Handle(new CreatePeerDidRequest(serviceEndpoint: requestMediationResult.Value.MediatorEndpoint), cancellationToken: new CancellationToken());
+        var localDidOfAliceToUseWithBob = await _createPeerDidHandlerAlice.Handle(new CreatePeerDidRequest(serviceEndpoint: requestMediationResult.Value.MediatorEndpoint, serviceRoutingKeys: new List<string>() { requestMediationResult.Value.RoutingDid }), cancellationToken: new CancellationToken());
 
         // Alice registers the new DID with the mediator, so the mediator can now accept messages from Bob to Alice
         var addKeyRequest = new UpdateMediatorKeysRequest(requestMediationResult.Value.MediatorEndpoint, requestMediationResult.Value.MediatorDid, localDidOfAliceToUseWithTheMediator.Value.PeerDid.Value, new List<string>() { localDidOfAliceToUseWithBob.Value.PeerDid.Value }, new List<string>());
@@ -148,8 +148,8 @@ public class PickupTests
         var result = await _sendForwardMessageHandler.Handle(new SendForwardMessageRequest(
             message: packedBasicMessage,
             localDid: localDidOfBobToUseWithAliceMediator.Value.PeerDid.Value,
-            mediatorDid: requestMediationResult.Value.MediatorDid, // The mediator DID was also shared beforehand (should be in the shared DID of alice)
-            mediatorEndpoint: requestMediationResult.Value.MediatorEndpoint,
+            mediatorDid: localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().RoutingKeys.First() , // The mediator DID was also shared beforehand (should be in the shared DID of alice)
+            mediatorEndpoint: new Uri(localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().ServiceEndpoint),
             recipientDid: localDidOfAliceToUseWithBob.Value.PeerDid.Value
         ), new CancellationToken());
 
@@ -189,7 +189,7 @@ public class PickupTests
         var requestMediationResult = await _requestMediationHandler.Handle(request, CancellationToken.None);
 
         // Alice create now an additional DID to be used with Bob. Important: The service endpoint of the DID must be set to the mediator endpoint
-        var localDidOfAliceToUseWithBob = await _createPeerDidHandlerAlice.Handle(new CreatePeerDidRequest(serviceEndpoint: requestMediationResult.Value.MediatorEndpoint), cancellationToken: new CancellationToken());
+        var localDidOfAliceToUseWithBob = await _createPeerDidHandlerAlice.Handle(new CreatePeerDidRequest(serviceEndpoint: requestMediationResult.Value.MediatorEndpoint, serviceRoutingKeys: new List<string>() { requestMediationResult.Value.RoutingDid }), cancellationToken: new CancellationToken());
 
         // Alice registers the new DID with the mediator, so the mediator can now accept messages from Bob to Alice
         var addKeyRequest = new UpdateMediatorKeysRequest(requestMediationResult.Value.MediatorEndpoint, requestMediationResult.Value.MediatorDid, localDidOfAliceToUseWithTheMediator.Value.PeerDid.Value, new List<string>() { localDidOfAliceToUseWithBob.Value.PeerDid.Value }, new List<string>());
@@ -218,16 +218,16 @@ public class PickupTests
         var result1 = await _sendForwardMessageHandler.Handle(new SendForwardMessageRequest(
             message: packedBasicMessage1,
             localDid: localDidOfBobToUseWithAliceMediator.Value.PeerDid.Value,
-            mediatorDid: requestMediationResult.Value.MediatorDid, // The mediator DID was also shared beforehand (should be in the shared DID of alice)
-            mediatorEndpoint: requestMediationResult.Value.MediatorEndpoint,
+            mediatorDid: localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().RoutingKeys.First() , // The mediator DID was also shared beforehand (should be in the shared DID of alice)
+            mediatorEndpoint: new Uri(localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().ServiceEndpoint),
             recipientDid: localDidOfAliceToUseWithBob.Value.PeerDid.Value
         ), new CancellationToken());
         result1.IsSuccess.Should().BeTrue();
         var result2 = await _sendForwardMessageHandler.Handle(new SendForwardMessageRequest(
             message: packedBasicMessage2,
             localDid: localDidOfBobToUseWithAliceMediator.Value.PeerDid.Value,
-            mediatorDid: requestMediationResult.Value.MediatorDid, // The mediator DID was also shared beforehand (should be in the shared DID of alice)
-            mediatorEndpoint: requestMediationResult.Value.MediatorEndpoint,
+            mediatorDid: localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().RoutingKeys.First() , // The mediator DID was also shared beforehand (should be in the shared DID of alice)
+            mediatorEndpoint: new Uri(localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().ServiceEndpoint),
             recipientDid: localDidOfAliceToUseWithBob.Value.PeerDid.Value
         ), new CancellationToken());
         result2.IsSuccess.Should().BeTrue();
@@ -267,7 +267,7 @@ public class PickupTests
         var requestMediationResult = await _requestMediationHandler.Handle(request, CancellationToken.None);
 
         // Alice create now an additional DID to be used with Bob. Important: The service endpoint of the DID must be set to the mediator endpoint
-        var localDidOfAliceToUseWithBob = await _createPeerDidHandlerAlice.Handle(new CreatePeerDidRequest(serviceEndpoint: requestMediationResult.Value.MediatorEndpoint), cancellationToken: new CancellationToken());
+        var localDidOfAliceToUseWithBob = await _createPeerDidHandlerAlice.Handle(new CreatePeerDidRequest(serviceEndpoint: requestMediationResult.Value.MediatorEndpoint, serviceRoutingKeys: new List<string>() { requestMediationResult.Value.RoutingDid }), cancellationToken: new CancellationToken());
 
         // Alice registers the new DID with the mediator, so the mediator can now accept messages from Bob to Alice
         var addKeyRequest = new UpdateMediatorKeysRequest(requestMediationResult.Value.MediatorEndpoint, requestMediationResult.Value.MediatorDid, localDidOfAliceToUseWithTheMediator.Value.PeerDid.Value, new List<string>() { localDidOfAliceToUseWithBob.Value.PeerDid.Value }, new List<string>());
@@ -293,8 +293,9 @@ public class PickupTests
         var result = await _sendForwardMessageHandler.Handle(new SendForwardMessageRequest(
             message: packedBasicMessage,
             localDid: localDidOfBobToUseWithAliceMediator.Value.PeerDid.Value,
-            mediatorDid: requestMediationResult.Value.MediatorDid, // The mediator DID was also shared beforehand (should be in the shared DID of alice)
-            mediatorEndpoint: requestMediationResult.Value.MediatorEndpoint,
+            mediatorDid: localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().RoutingKeys.First() , // The mediator DID was also shared beforehand (should be in the shared DID of alice)
+            // mediatorDid: requestMediationResult.Value.MediatorDid , // The mediator DID was also shared beforehand (should be in the shared DID of alice)
+            mediatorEndpoint: new Uri(localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().ServiceEndpoint),
             recipientDid: localDidOfAliceToUseWithBob.Value.PeerDid.Value
         ), new CancellationToken());
 
@@ -303,6 +304,14 @@ public class PickupTests
         var limit = 100;
         var deliveryRequestResult = await _deliveryRequestHandler.Handle(new DeliveryRequestRequest(localDidOfAliceToUseWithTheMediator.Value.PeerDid.Value, requestMediationResult.Value.MediatorDid, requestMediationResult.Value.MediatorEndpoint, limit), new CancellationToken());
 
+        var aliceDidToUseWithHerMediator = localDidOfAliceToUseWithTheMediator.Value.PeerDid.Value;
+        var aliceDidRegisteredWithTheMediator = localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().RoutingKeys.First();
+        var aliceDidToUseWithBob_alsoTheShared_Did = localDidOfAliceToUseWithBob.Value.PeerDid.Value;
+        var didOfTheMediatorWhenAliceTalksToIt = requestMediationResult.Value.MediatorDid;
+        
+        var bobsDidToTalkToTheMediator = localDidOfBobToUseWithAliceMediator.Value.PeerDid.Value;
+        var bobsDidToTalkToAlice = localDidOfBobToUseWithAlice.Value.PeerDid.Value;
+        
         // Assert
         deliveryRequestResult.IsSuccess.Should().BeTrue();
         deliveryRequestResult.Value.Messages!.Count.Should().Be(1);
@@ -336,7 +345,7 @@ public class PickupTests
         var requestMediationResult = await _requestMediationHandler.Handle(request, CancellationToken.None);
 
         // Alice create now an additional DID to be used with Bob. Important: The service endpoint of the DID must be set to the mediator endpoint
-        var localDidOfAliceToUseWithBob = await _createPeerDidHandlerAlice.Handle(new CreatePeerDidRequest(serviceEndpoint: requestMediationResult.Value.MediatorEndpoint), cancellationToken: new CancellationToken());
+        var localDidOfAliceToUseWithBob = await _createPeerDidHandlerAlice.Handle(new CreatePeerDidRequest(serviceEndpoint: requestMediationResult.Value.MediatorEndpoint, serviceRoutingKeys: new List<string>() { requestMediationResult.Value.RoutingDid }), cancellationToken: new CancellationToken());
 
         // Alice registers the new DID with the mediator, so the mediator can now accept messages from Bob to Alice
         var addKeyRequest = new UpdateMediatorKeysRequest(requestMediationResult.Value.MediatorEndpoint, requestMediationResult.Value.MediatorDid, localDidOfAliceToUseWithTheMediator.Value.PeerDid.Value, new List<string>() { localDidOfAliceToUseWithBob.Value.PeerDid.Value }, new List<string>());
@@ -362,8 +371,8 @@ public class PickupTests
         var result = await _sendForwardMessageHandler.Handle(new SendForwardMessageRequest(
             message: packedBasicMessage,
             localDid: localDidOfBobToUseWithAliceMediator.Value.PeerDid.Value,
-            mediatorDid: requestMediationResult.Value.MediatorDid, // The mediator DID was also shared beforehand (should be in the shared DID of alice)
-            mediatorEndpoint: requestMediationResult.Value.MediatorEndpoint,
+            mediatorDid: localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().RoutingKeys.First() , // The mediator DID was also shared beforehand (should be in the shared DID of alice)
+            mediatorEndpoint: new Uri(localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().ServiceEndpoint),
             recipientDid: localDidOfAliceToUseWithBob.Value.PeerDid.Value
         ), new CancellationToken());
 

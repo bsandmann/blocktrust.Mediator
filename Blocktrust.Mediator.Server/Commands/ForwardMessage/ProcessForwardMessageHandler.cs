@@ -66,8 +66,7 @@ public class ProcessForwardMessageHandler : IRequestHandler<ProcessForwardMessag
 
             // TODO Possible code duplication with the DeliveryRequestHandler
             var attachments = request.UnpackedMessage.Attachments;
-            string innerMessage;
-            var messages = new List<StoredMessageModel>();
+            var innerMessages = new List<StoredMessageModel>();
             foreach (var attachment in attachments!)
             {
                 var id = attachment.Id;
@@ -77,8 +76,8 @@ public class ProcessForwardMessageHandler : IRequestHandler<ProcessForwardMessag
                     Json? jsonAttachmentData = (Json)data;
                     var innerJson = jsonAttachmentData?.JsonString;
                     var msg = innerJson?.GetTyped<Dictionary<string, object>>("json");
-                    innerMessage = JsonSerializer.Serialize(msg);
-                    messages.Add(new StoredMessageModel(id, innerMessage));
+                    var innerMessage = JsonSerializer.Serialize(msg);
+                    innerMessages.Add(new StoredMessageModel(id, innerMessage));
                 }
                 else
                 {
@@ -86,12 +85,12 @@ public class ProcessForwardMessageHandler : IRequestHandler<ProcessForwardMessag
                         errorMessage: "Not implemented yet. Use JSON format",
                         threadIdWhichCausedTheProblem: request.UnpackedMessage.Thid ?? request.UnpackedMessage.Id,
                         fromPrior: request.FromPrior);
-                    
+
                     throw new NotImplementedException("Not implemented yet");
                 }
             }
 
-            var storeMessageResult = await _mediator.Send(new StoreMessagesRequest(request.MediatorDid, recipientDid, messages), cancellationToken);
+            var storeMessageResult = await _mediator.Send(new StoreMessagesRequest(request.MediatorDid, recipientDid, innerMessages), cancellationToken);
             if (storeMessageResult.IsFailed)
             {
                 return ProblemReportMessage.BuildDefaultInternalError(

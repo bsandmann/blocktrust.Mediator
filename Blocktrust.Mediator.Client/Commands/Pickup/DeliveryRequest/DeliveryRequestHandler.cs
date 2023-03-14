@@ -133,7 +133,7 @@ public class DeliveryRequestHandler : IRequestHandler<DeliveryRequestRequest, Re
                     .SecretResolver(_secretResolver)
                     .BuildUnpackParams());
 
-            if (unpackResult.IsFailed)
+            if (unpackInnerResult.IsFailed)
             {
                 messages.Add(new DeliveryResponseModel(unpackResult.Errors!.FirstOrDefault()?.Message));
             }

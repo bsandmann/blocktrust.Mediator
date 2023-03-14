@@ -26,12 +26,13 @@ public static class BasicMessage
         return basicMessage;
     }
 
-    public static async Task<string> Pack(Message basicMessage, string from, string to, ISecretResolver secretResolver, IDidDocResolver didDocResolver)
+    public static async Task<string> Pack(Message basicMessage, string from, string finalRecipientDid, ISecretResolver secretResolver, IDidDocResolver didDocResolver)
     {
         var didComm = new DidComm(didDocResolver, secretResolver);
         var packResult = await didComm.PackEncrypted(
-            new PackEncryptedParamsBuilder(basicMessage, to: to)
+            new PackEncryptedParamsBuilder(basicMessage, to: finalRecipientDid)
                 .From(from)
+                .Forward(false) // When this flag is set to true (default), the Encryption Algo automatically searches for routingsKeys in the did and wraps it by itself
                 .ProtectSenderId(false)
                 .BuildPackEncryptedParams()
         );
