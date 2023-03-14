@@ -45,10 +45,6 @@ public class DataContext : DbContext
             .HasKey(b => b.StoredMessageEntityId);
         modelBuilder.Entity<StoredMessage>().Property(b => b.StoredMessageEntityId).HasValueGenerator(typeof(SequentialGuidValueGenerator));
 
-        modelBuilder.Entity<MediatorConnection>()
-            .HasIndex(p => new { p.RemoteDid, p.MediatorDid })
-            .IsUnique();
-
         modelBuilder.Entity<RegisteredRecipient>()
             .HasOne(p => p.MediatorConnection)
             .WithMany(b => b.RegisteredRecipients)

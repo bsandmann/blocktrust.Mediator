@@ -49,7 +49,7 @@ public class MediatorController : ControllerBase
         var body = await new StreamReader(request.Body).ReadToEndAsync();
 
         var didComm = new DidComm(_didDocResolver, _secretResolver);
-        var unpacked =await  didComm.Unpack(
+        var unpacked = await didComm.Unpack(
             new UnpackParamsBuilder(body).BuildUnpackParams()
         );
         if (unpacked.IsFailed)
@@ -67,7 +67,14 @@ public class MediatorController : ControllerBase
         }
         else
         {
-            senderDid = unpacked.Value.Metadata.EncryptedFrom.Split("#")[0];
+            var encryptedFrom = unpacked.Value.Metadata.EncryptedFrom;
+            if (encryptedFrom is null)
+            {
+                return BadRequest("Unable to unpack message: Unable to read encryptedFrom in Metadata");
+            }
+
+            var split = encryptedFrom.Split("#");
+            senderDid = split.First();
             senderOldDid = senderDid;
         }
 
@@ -95,7 +102,7 @@ public class MediatorController : ControllerBase
                 return Accepted();
             }
 
-            var packResult =await  didComm.PackEncrypted(
+            var packResult = await didComm.PackEncrypted(
                 new PackEncryptedParamsBuilder(processMessageResponse.Message, to: senderDid)
                     .From(processMessageResponse.MediatorDid)
                     .ProtectSenderId(false)
@@ -113,14 +120,14 @@ public class MediatorController : ControllerBase
                 return Accepted();
             }
 
-            var packResult =await  didComm.PackEncrypted(
+            var packResult = await didComm.PackEncrypted(
                 new PackEncryptedParamsBuilder(processMessageResponse.Message, to: senderDid)
                     .From(processMessageResponse.MediatorDid)
                     .ProtectSenderId(false)
                     .BuildPackEncryptedParams()
             );
 
-            var didDocSenderDid =await _didDocResolver.Resolve(senderDid);
+            var didDocSenderDid = await _didDocResolver.Resolve(senderDid);
             //TODO ?
             var service = didDocSenderDid.Services.FirstOrDefault();
             if (service is null)
