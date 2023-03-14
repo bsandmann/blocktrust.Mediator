@@ -50,7 +50,7 @@ public class DeliveryRequestHandler : IRequestHandler<DeliveryRequestRequest, Re
         var didComm = new DidComm(_didDocResolver, _secretResolver);
 
         // We pack the message and encrypt it for the mediator
-        var packResult =await didComm.PackEncrypted(
+        var packResult = await didComm.PackEncrypted(
             new PackEncryptedParamsBuilder(statusRequestMessage, to: request.MediatorDid)
                 .From(request.LocalDid)
                 .ProtectSenderId(false)
@@ -67,7 +67,7 @@ public class DeliveryRequestHandler : IRequestHandler<DeliveryRequestRequest, Re
         {
             return Result.Fail($"Connection could not be established: {ex.Message}");
         }
-        
+
         if (response.StatusCode == HttpStatusCode.NotFound)
         {
             return Result.Fail("Connection could not be established");
@@ -79,7 +79,7 @@ public class DeliveryRequestHandler : IRequestHandler<DeliveryRequestRequest, Re
 
         var content = await response.Content.ReadAsStringAsync(cancellationToken);
 
-        var unpackResult =await  didComm.Unpack(
+        var unpackResult = await didComm.Unpack(
             new UnpackParamsBuilder(content)
                 .SecretResolver(_secretResolver)
                 .BuildUnpackParams());
@@ -128,7 +128,7 @@ public class DeliveryRequestHandler : IRequestHandler<DeliveryRequestRequest, Re
                 throw new NotImplementedException("Not implemented yet");
             }
 
-            var unpackInnerResult =await  didComm.Unpack(
+            var unpackInnerResult = await didComm.Unpack(
                 new UnpackParamsBuilder(innerMessage)
                     .SecretResolver(_secretResolver)
                     .BuildUnpackParams());
@@ -139,7 +139,7 @@ public class DeliveryRequestHandler : IRequestHandler<DeliveryRequestRequest, Re
             }
             else
             {
-                messages.Add(new DeliveryResponseModel(id, unpackInnerResult.Value.Message));
+                messages.Add(new DeliveryResponseModel(id, unpackInnerResult.Value.Message, unpackInnerResult.Value.Metadata));
             }
         }
 
