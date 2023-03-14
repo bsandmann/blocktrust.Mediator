@@ -42,7 +42,7 @@ public static class BasicMessage
     public static Result<BasicMessageContent> Parse(DeliveryResponseModel responseModel)
     {
         var message = responseModel.Message;
-        var mesageId = responseModel.MessageId;
+        var messageId = responseModel.MessageId;
         var metadata = responseModel.Metadata;
 
         if (message is null)
@@ -71,7 +71,7 @@ public static class BasicMessage
             return Result.Fail("Message content is not a string");
         }
 
-        if (string.IsNullOrEmpty(mesageId))
+        if (string.IsNullOrEmpty(messageId))
         {
             return Result.Fail("MessageId should not be emtpy");
         }
@@ -88,6 +88,7 @@ public static class BasicMessage
 
         var basisMessageContent = new BasicMessageContent(
             message: contentJsonElement.GetString()!,
+            messageId: messageId,
             from: message.From?.Split('#').FirstOrDefault() ?? metadata.EncryptedFrom!.Split('#').FirstOrDefault(),
             tos: message.To?.Select(p => p.Split('#').FirstOrDefault()).ToList() ?? metadata.EncryptedTo?.Select(p => p.Split('#').FirstOrDefault()).ToList()!
         );
