@@ -1,15 +1,17 @@
 # .NET DIDComm v2 Mediator
-## .NET Mediator for the .NET ecosystem
+## A Mediator for the .NET ecosystem
 This Mediator is written in C# and built for the .NET ecosystem. It provides a server-project and a client-library to communicate with the mediator. The database uses MS-SQL with EF.
 It allows SSI agents to connect to the mediator, run thorugh the Mediator Corrdination Protocol and then use the Mediator to recieve 'basic messages' using the Pickup Protocol.
 
-A Azure hosted version of the mediator: [https://mediator.blocktrust.dev](https://mediator.blocktrust.dev)
+**A Azure hosted version of the mediator can be found here: [https://mediator.blocktrust.dev](https://mediator.blocktrust.dev)**
+
 To get to the oob_url directly use this [link](https://mediator.blocktrust.dev/oob_url). 
 
 
 The mediator is based on two other blocktrust libraries.
 * [Blocktrust DIDComm v2](https://github.com/bsandmann/blocktrust.DIDComm)
 * [Blocktrust PeerDID](https://github.com/bsandmann/blocktrust.PeerDID)
+
 The projects use a Nuget-feed which is currently private, so the DIDComm and PeerDID libraries have to be build beforehand.
 
 If you have any trouble feel free to contact me at: sandmann@blocktrust.dev and I'll help you setup the environment until a more detailed description will be available.
@@ -21,7 +23,7 @@ This Mediator implements the following protocols:
 * [Out-of-Band Messages 2.0](https://identity.foundation/didcomm-messaging/spec/#out-of-band-messages)
 * [Routing Protocol 2.0](https://identity.foundation/didcomm-messaging/spec/#routing-protocol-20)
 * [Mediator Coordination Protocol 2.0](https://didcomm.org/mediator-coordination/2.0/)
-* [Pickup Protocol 3.0](https://didcomm.org/pickup/3.0/): messages processed by this mediator are responded in the same channel (in the response body of the http POST request). It does not enforce the `return_route` header extencion (pending TODO).
+* [Pickup Protocol 3.0](https://didcomm.org/pickup/3.0/)
 * [Trust Ping Protocol 2.0](https://identity.foundation/didcomm-messaging/spec/#trust-ping-protocol-20)
 * [Discover Features Protocol 2.0](https://identity.foundation/didcomm-messaging/spec/#discover-features-protocol-20)
 * [Basic Message Protocol 2.0](https://didcomm.org/basicmessage/2.0/)
