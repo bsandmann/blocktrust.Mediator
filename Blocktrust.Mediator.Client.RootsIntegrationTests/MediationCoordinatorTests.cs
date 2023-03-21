@@ -187,7 +187,8 @@ public class MediationCoordinatorTests
 
         // Assert
         queryKeyResult.IsSuccess.Should().BeTrue();
-        queryKeyResult.Value.Count.Should().Be(1);
-        queryKeyResult.Value[0].Should().Be(someTestKeysToAdd.Value.PeerDid.Value);
+        queryKeyResult.Value.RegisteredMediatorKeys.Should().NotBeNull();
+        queryKeyResult.Value.RegisteredMediatorKeys.Count.Should().Be(1);
+        queryKeyResult.Value.RegisteredMediatorKeys[0].Should().Be(someTestKeysToAdd.Value.PeerDid.Value);
     }
 }

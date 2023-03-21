@@ -26,6 +26,14 @@ public class ProcessRequestShortenedUrlHandler : IRequestHandler<ProcessRequestS
     {
         var hostUrl = string.Concat(_httpContextAccessor!.HttpContext.Request.Scheme, "://", _httpContextAccessor.HttpContext.Request.Host);
         var shortenedUrlResult = ShortenedUrl.Parse(request.UnpackedMessage.Body);
+        if (shortenedUrlResult.IsFailed)
+        {
+            return ProblemReportMessage.BuildDefaultMessageMissingArguments(
+                errorMessage: shortenedUrlResult.Errors.FirstOrDefault().Message,
+                threadIdWhichCausedTheProblem: request.UnpackedMessage.Thid ?? request.UnpackedMessage.Id,
+                fromPrior: request.FromPrior);
+        }
+        
         var createShortenedUrlResult = await _mediator.Send(new CreateShortenedUrlRequest(shortenedUrlResult.Value.UrlToShorten, shortenedUrlResult.Value.ShortUrlSlug, shortenedUrlResult.Value.GoalCode), cancellationToken);
         if (createShortenedUrlResult.IsFailed)
         {

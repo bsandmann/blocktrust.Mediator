@@ -1,9 +1,10 @@
 ﻿namespace Blocktrust.Mediator.Client.Commands.ForwardMessage;
 
+using Common.Models.ProblemReport;
 using FluentResults;
 using MediatR;
 
-public class SendForwardMessageRequest : IRequest<Result>
+public class SendForwardMessageRequest : IRequest<Result<ProblemReport>>
 {
     /// <summary>
     /// The Message to be forwarded 

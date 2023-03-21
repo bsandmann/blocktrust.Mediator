@@ -1,5 +1,7 @@
 ﻿namespace Blocktrust.Mediator.Client.Commands.MediatorCoordinator.RequestMediation;
 
+using Common.Models.ProblemReport;
+
 public class RequestMediationResponse
 {
     public bool MediationGranted { get; set; }
@@ -8,6 +10,8 @@ public class RequestMediationResponse
     public Uri MediatorEndpoint { get; set; }
 
     public string? RoutingDid { get; set; }
+    
+    public ProblemReport? ProblemReport { get; set; }
 
     public RequestMediationResponse(string mediatorDid, Uri mediatorEndpoint, string routingDid)
     {
@@ -20,5 +24,10 @@ public class RequestMediationResponse
     public RequestMediationResponse()
     {
         MediationGranted = false;
+    }
+
+    public RequestMediationResponse(ProblemReport problemReport)
+    {
+        ProblemReport = problemReport;
     }
 }

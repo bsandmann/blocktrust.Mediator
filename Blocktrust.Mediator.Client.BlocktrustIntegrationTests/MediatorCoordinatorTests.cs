@@ -81,7 +81,7 @@ public class MediatorCoordinatorTests
         secondResult.IsSuccess.Should().BeTrue();
         secondResult.Value.MediationGranted.Should().BeFalse();
     }
-
+    
     /// <summary>
     /// This tests assumes that the Blocktrust Mediator is running on https://localhost:7037
     /// </summary>
@@ -107,6 +107,7 @@ public class MediatorCoordinatorTests
 
         mediationResult.IsSuccess.Should().BeTrue();
         mediationResult.Value.MediationGranted.Should().BeTrue();
+        mediationResult.Value.ProblemReport.Should().BeNull();
 
         // Act
         var someTestKeysToAdd = await _createPeerDidHandler.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
@@ -116,6 +117,7 @@ public class MediatorCoordinatorTests
 
         // Assert
         addKeyResult.IsSuccess.Should().BeTrue();
+        addKeyResult.Value.ProblemReport.Should().BeNull();
     }
     
     /// <summary>
@@ -143,6 +145,7 @@ public class MediatorCoordinatorTests
 
         mediationResult.IsSuccess.Should().BeTrue();
         mediationResult.Value.MediationGranted.Should().BeTrue();
+        mediationResult.Value.ProblemReport.Should().BeNull();
 
         // Act
         var someTestKeyToAdd = await _createPeerDidHandler.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
@@ -153,6 +156,7 @@ public class MediatorCoordinatorTests
 
         // Assert
         addKeyResult.IsSuccess.Should().BeTrue();
+        addKeyResult.Value.ProblemReport.Should().BeNull();
     }
 
     /// <summary>
@@ -179,6 +183,7 @@ public class MediatorCoordinatorTests
 
         mediationResult.IsSuccess.Should().BeTrue();
         mediationResult.Value.MediationGranted.Should().BeTrue();
+        mediationResult.Value.ProblemReport.Should().BeNull();
 
         var someTestKeysToAdd = await _createPeerDidHandler.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
         var addKeyRequest = new UpdateMediatorKeysRequest(mediationResult.Value.MediatorEndpoint, mediationResult.Value.MediatorDid, localDid.Value.PeerDid.Value, new List<string>() { someTestKeysToAdd.Value.PeerDid.Value }, new List<string>());
@@ -186,6 +191,7 @@ public class MediatorCoordinatorTests
         var addKeyResult = await updateMediatorKeysHandler.Handle(addKeyRequest, CancellationToken.None);
 
         addKeyResult.IsSuccess.Should().BeTrue();
+        addKeyResult.Value.ProblemReport.Should().BeNull();
 
         // Act
         var removeKeyRequest = new UpdateMediatorKeysRequest(mediationResult.Value.MediatorEndpoint, mediationResult.Value.MediatorDid, localDid.Value.PeerDid.Value, new List<string>(), new List<string>() { someTestKeysToAdd.Value.PeerDid.Value });
@@ -220,6 +226,7 @@ public class MediatorCoordinatorTests
 
         mediationResult.IsSuccess.Should().BeTrue();
         mediationResult.Value.MediationGranted.Should().BeTrue();
+        mediationResult.Value.ProblemReport.Should().BeNull();
 
         var someTestKeysToAdd = await _createPeerDidHandler.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
         var addKeyRequest = new UpdateMediatorKeysRequest(mediationResult.Value.MediatorEndpoint, mediationResult.Value.MediatorDid, localDid.Value.PeerDid.Value, new List<string>() { someTestKeysToAdd.Value.PeerDid.Value }, new List<string>());
@@ -227,6 +234,7 @@ public class MediatorCoordinatorTests
         var addKeyResult = await addMediatorKeysHandler.Handle(addKeyRequest, CancellationToken.None);
 
         addKeyResult.IsSuccess.Should().BeTrue();
+        addKeyResult.Value.ProblemReport.Should().BeNull();
 
         // Act
         var queryKeysRequest = new QueryMediatorKeysRequest(mediationResult.Value.MediatorEndpoint, mediationResult.Value.MediatorDid, localDid.Value.PeerDid.Value);
@@ -235,7 +243,93 @@ public class MediatorCoordinatorTests
 
         // Assert
         queryKeyResult.IsSuccess.Should().BeTrue();
-        queryKeyResult.Value.Count.Should().Be(1);
-        queryKeyResult.Value[0].Should().Be(someTestKeysToAdd.Value.PeerDid.Value);
+        queryKeyResult.Value.RegisteredMediatorKeys.Should().NotBeNull();
+        queryKeyResult.Value.RegisteredMediatorKeys.Count.Should().Be(1);
+        queryKeyResult.Value.RegisteredMediatorKeys[0].Should().Be(someTestKeysToAdd.Value.PeerDid.Value);
+        queryKeyResult.Value.ProblemReport.Should().BeNull();
+    }
+    
+     /// <summary>
+    /// This tests assumes that the Blocktrust Mediator is running on https://localhost:7037
+    /// </summary>
+    [Fact]
+    public async Task AddKeyToNonExistingConnectionCausesProblemReportAsResponse()
+    {
+        // Arrange
+        var response = await _httpClient.GetAsync(_blocktrustMediatorUri + "oob_url");
+        var resultContent = await response.Content.ReadAsStringAsync();
+        var oob = resultContent.Split("=");
+        var oobInvitation = oob[1];
+
+        var secretResolverInMemory = new SecretResolverInMemory();
+        var simpleDidDocResolver = new SimpleDidDocResolver();
+        _createPeerDidHandler = new CreatePeerDidHandler(secretResolverInMemory);
+
+        var localDid = await _createPeerDidHandler.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
+        var request = new RequestMediationRequest(oobInvitation, localDid.Value.PeerDid.Value);
+
+        _requestMediationHandler = new RequestMediationHandler(_httpClient, simpleDidDocResolver, secretResolverInMemory);
+        var mediationResult = await _requestMediationHandler.Handle(request, CancellationToken.None);
+
+        mediationResult.IsSuccess.Should().BeTrue();
+        mediationResult.Value.MediationGranted.Should().BeTrue();
+        mediationResult.Value.ProblemReport.Should().BeNull();
+        
+        var someOtherNonRegisteredDid = await _createPeerDidHandler.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
+
+        var someTestKeysToAdd = await _createPeerDidHandler.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
+        var addKeyRequest = new UpdateMediatorKeysRequest(mediationResult.Value.MediatorEndpoint, mediationResult.Value.MediatorDid, someOtherNonRegisteredDid.Value.PeerDid.Value, new List<string>() { someTestKeysToAdd.Value.PeerDid.Value }, new List<string>());
+        var addMediatorKeysHandler = new UpdateMediatorKeysHandler(_httpClient, simpleDidDocResolver, secretResolverInMemory);
+        var addKeyResult = await addMediatorKeysHandler.Handle(addKeyRequest, CancellationToken.None);
+
+        // Assert
+        addKeyResult.IsSuccess.Should().BeTrue();
+        addKeyResult.Value.ProblemReport.Should().NotBeNull();
+    }
+     
+       /// <summary>
+    /// This tests assumes that the Blocktrust Mediator is running on https://localhost:7037
+    /// </summary>
+    [Fact]
+    public async Task QueryForNonExistingKeyShouldCauseErrorReport()
+    {
+        // Arrange
+        var response = await _httpClient.GetAsync(_blocktrustMediatorUri + "oob_url");
+        var resultContent = await response.Content.ReadAsStringAsync();
+        var oob = resultContent.Split("=");
+        var oobInvitation = oob[1];
+
+        var secretResolverInMemory = new SecretResolverInMemory();
+        var simpleDidDocResolver = new SimpleDidDocResolver();
+        _createPeerDidHandler = new CreatePeerDidHandler(secretResolverInMemory);
+
+        var localDid = await _createPeerDidHandler.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
+        var request = new RequestMediationRequest(oobInvitation, localDid.Value.PeerDid.Value);
+
+        _requestMediationHandler = new RequestMediationHandler(_httpClient, simpleDidDocResolver, secretResolverInMemory);
+        var mediationResult = await _requestMediationHandler.Handle(request, CancellationToken.None);
+
+        mediationResult.IsSuccess.Should().BeTrue();
+        mediationResult.Value.MediationGranted.Should().BeTrue();
+        mediationResult.Value.ProblemReport.Should().BeNull();
+
+        var someTestKeysToAdd = await _createPeerDidHandler.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
+        var addKeyRequest = new UpdateMediatorKeysRequest(mediationResult.Value.MediatorEndpoint, mediationResult.Value.MediatorDid, localDid.Value.PeerDid.Value, new List<string>() { someTestKeysToAdd.Value.PeerDid.Value }, new List<string>());
+        var addMediatorKeysHandler = new UpdateMediatorKeysHandler(_httpClient, simpleDidDocResolver, secretResolverInMemory);
+        var addKeyResult = await addMediatorKeysHandler.Handle(addKeyRequest, CancellationToken.None);
+
+        addKeyResult.IsSuccess.Should().BeTrue();
+        addKeyResult.Value.ProblemReport.Should().BeNull();
+        
+        var someOtherNonRegisteredDid = await _createPeerDidHandler.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
+
+        // Act
+        var queryKeysRequest = new QueryMediatorKeysRequest(mediationResult.Value.MediatorEndpoint, mediationResult.Value.MediatorDid, someOtherNonRegisteredDid.Value.PeerDid.Value);
+        var queryMediatorKeysHandler = new QueryMediatorKeysHandler(_httpClient, simpleDidDocResolver, secretResolverInMemory);
+        var queryKeyResult = await queryMediatorKeysHandler.Handle(queryKeysRequest, CancellationToken.None);
+
+        // Assert
+        queryKeyResult.IsSuccess.Should().BeTrue();
+        queryKeyResult.Value.ProblemReport.Should().NotBeNull();
     }
 }

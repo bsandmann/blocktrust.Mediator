@@ -9,9 +9,9 @@ using Blocktrust.DIDComm.Common.Types;
 using Blocktrust.DIDComm.Message.Messages;
 using Blocktrust.DIDComm.Model.PackEncryptedParamsModels;
 using Blocktrust.DIDComm.Model.UnpackParamsModels;
-using Blocktrust.Mediator.Common.Models.ShortenUrl;
 using Blocktrust.Mediator.Common.Protocols;
 using Common;
+using Common.Models.ProblemReport;
 using FluentResults;
 using MediatR;
 
@@ -79,7 +79,8 @@ public class RequestShortenedUrlHandler : IRequestHandler<RequestShortenedUrlReq
         {
             return Result.Fail("Connection could not be established");
         }
-        else if (!response.IsSuccessStatusCode)
+
+        if (!response.IsSuccessStatusCode)
         {
             return Result.Fail("Unable to initiate connection: " + response.StatusCode);
         }
@@ -93,6 +94,21 @@ public class RequestShortenedUrlHandler : IRequestHandler<RequestShortenedUrlReq
         if (unpackResult.IsFailed)
         {
             return unpackResult.ToResult();
+        }
+        
+        if (unpackResult.Value.Message.Type == ProtocolConstants.ProblemReport)
+        {
+            if (unpackResult.Value.Message.Pthid != null)
+            {
+                var problemReport = ProblemReport.Parse(unpackResult.Value.Message.Body, unpackResult.Value.Message.Pthid);
+                if (problemReport.IsFailed)
+                {
+                    return Result.Fail("Error parsing the problem report of the mediator");
+                }
+
+                return Result.Ok(new RequestShortenedUrlResponse(problemReport.Value));
+            }
+            return Result.Fail("Error parsing the problem report of the mediator. Missing parent-thread-id");
         }
 
         if (unpackResult.Value.Message.Type == ProtocolConstants.ShortenedUrlResponse)

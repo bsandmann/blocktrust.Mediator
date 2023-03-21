@@ -11,10 +11,11 @@ using Blocktrust.DIDComm.Message.Messages;
 using Blocktrust.DIDComm.Model.PackEncryptedParamsModels;
 using Blocktrust.DIDComm.Model.UnpackParamsModels;
 using Blocktrust.Mediator.Common.Protocols;
+using Common.Models.ProblemReport;
 using FluentResults;
 using MediatR;
 
-public class QueryMediatorKeysHandler : IRequestHandler<QueryMediatorKeysRequest, Result<List<string>>>
+public class QueryMediatorKeysHandler : IRequestHandler<QueryMediatorKeysRequest, Result<QueryMediatorKeysResponse>>
 {
     private readonly HttpClient _httpClient;
     private readonly IDidDocResolver _didDocResolver;
@@ -27,7 +28,7 @@ public class QueryMediatorKeysHandler : IRequestHandler<QueryMediatorKeysRequest
         _secretResolver = secretResolver;
     }
 
-    public async Task<Result<List<string>>> Handle(QueryMediatorKeysRequest request, CancellationToken cancellationToken)
+    public async Task<Result<QueryMediatorKeysResponse>> Handle(QueryMediatorKeysRequest request, CancellationToken cancellationToken)
     {
         // We create the message to send to the mediator
         // See: https://didcomm.org/mediator-coordination/2.0/
@@ -99,16 +100,29 @@ public class QueryMediatorKeysHandler : IRequestHandler<QueryMediatorKeysRequest
                             entry.TryGetProperty("recipient_did", out var value);
                             returnList.Add(value.GetString()!);
                         }
-                        return Result.Ok(returnList);
+                        return Result.Ok(new QueryMediatorKeysResponse(returnList));
                     }
                 }
             }
 
             return Result.Fail("Unexpected body content");
         }
-        else
+
+        if (unpackResult.Value.Message.Type == ProtocolConstants.ProblemReport)
         {
-            return Result.Fail("Error: Unexpected message response type");
+            if (unpackResult.Value.Message.Pthid != null)
+            {
+                var problemReport = ProblemReport.Parse(unpackResult.Value.Message.Body, unpackResult.Value.Message.Pthid);
+                if (problemReport.IsFailed)
+                {
+                    return Result.Fail("Error parsing the problem report of the mediator");
+                }
+
+                return Result.Ok(new QueryMediatorKeysResponse(problemReport.Value));
+            }
+            return Result.Fail("Error parsing the problem report of the mediator. Missing parent-thread-id");
         }
+
+        return Result.Fail("Error: Unexpected message response type");
     }
 }

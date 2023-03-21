@@ -3,7 +3,7 @@
 using FluentResults;
 using MediatR;
 
-public class QueryMediatorKeysRequest : IRequest<Result<List<string>>>
+public class QueryMediatorKeysRequest : IRequest<Result<QueryMediatorKeysResponse>>
 {
     public Uri MediatorEndpoint { get; }
     public string MediatorDid { get; }

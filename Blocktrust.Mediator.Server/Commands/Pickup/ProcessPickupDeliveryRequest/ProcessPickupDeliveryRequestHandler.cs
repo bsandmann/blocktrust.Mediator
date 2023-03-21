@@ -47,7 +47,7 @@ public class ProcessPickupDeliveryRequestHandler : IRequestHandler<ProcessPickup
         var getMessagesResult = await _mediator.Send(new GetMessagesRequest(request.SenderDid, request.MediatorDid, recipientDid), cancellationToken);
         if (getMessagesResult.IsFailed)
         {
-            return ProblemReportMessage.BuildDefaultInternalError(
+            return ProblemReportMessage.BuildDefaultMessageMissingArguments(
                 errorMessage: getMessagesResult.Errors.FirstOrDefault().Message,
                 threadIdWhichCausedTheProblem: request.UnpackedMessage.Thid ?? request.UnpackedMessage.Id,
                 fromPrior: request.FromPrior);

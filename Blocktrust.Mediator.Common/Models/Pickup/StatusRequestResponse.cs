@@ -3,6 +3,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using FluentResults;
+using ProblemReport;
 
 public class StatusRequestResponse
 {
@@ -48,8 +49,15 @@ public class StatusRequestResponse
     [JsonPropertyName("live_delivery")]
     public bool? LiveDelivery { get; set; }
 
+    public ProblemReport? ProblemReport { get; set; } 
+    
     public StatusRequestResponse()
     {
+    }
+    
+    public StatusRequestResponse(ProblemReport problemReport)
+    {
+        this.ProblemReport = problemReport;
     }
 
     public static Result<StatusRequestResponse> Parse(Dictionary<string, object?> body)

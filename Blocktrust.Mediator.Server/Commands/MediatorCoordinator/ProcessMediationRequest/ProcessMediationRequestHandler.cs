@@ -23,8 +23,8 @@ public class ProcessMediationRequestHandler : IRequestHandler<ProcessMediationRe
     /// <inheritdoc />
     public async Task<Message> Handle(ProcessMediationRequestRequest request, CancellationToken cancellationToken)
     {
-        // If we already have a mediation, we deny the request
-        var existingConnection = await _mediator.Send(new GetConnectionRequest(request.SenderDid, request.MediatorDid));
+        // If we have a problem establishing a connection to the database, we return a problem report message 
+        var existingConnection = await _mediator.Send(new GetConnectionRequest(request.SenderDid, request.MediatorDid), cancellationToken);
         if (existingConnection.IsFailed)
         {
             return ProblemReportMessage.BuildDefaultInternalError(

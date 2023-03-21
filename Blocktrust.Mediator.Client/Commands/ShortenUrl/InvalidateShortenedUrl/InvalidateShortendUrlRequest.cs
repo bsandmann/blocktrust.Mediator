@@ -1,9 +1,10 @@
 ﻿namespace Blocktrust.Mediator.Client.Commands.ShortenUrl.InvalidateShortenedUrl;
 
+using Common.Models.ProblemReport;
 using FluentResults;
 using MediatR;
 
-public class InvalidateShortenedUrlRequest : IRequest<Result>
+public class InvalidateShortenedUrlRequest : IRequest<Result<ProblemReport>>
 {
     public Uri MediatorEndpoint { get; }
     public string MediatorDid { get; }

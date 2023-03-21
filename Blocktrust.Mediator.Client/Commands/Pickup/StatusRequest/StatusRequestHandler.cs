@@ -4,6 +4,7 @@ using System.Net;
 using System.Text;
 using Blocktrust.Common.Resolver;
 using Common.Models.Pickup;
+using Common.Models.ProblemReport;
 using Common.Protocols;
 using DIDComm;
 using DIDComm.Common.Types;
@@ -67,7 +68,8 @@ public class StatusRequestHandler : IRequestHandler<StatusRequestRequest, Result
         {
             return Result.Fail("Connection could not be established");
         }
-        else if (!response.IsSuccessStatusCode)
+
+        if (!response.IsSuccessStatusCode)
         {
             return Result.Fail("Unable to initiate connection: " + response.StatusCode);
         }
@@ -83,7 +85,22 @@ public class StatusRequestHandler : IRequestHandler<StatusRequestRequest, Result
         {
             return unpackResult.ToResult();
         }
+        
+        if (unpackResult.Value.Message.Type == ProtocolConstants.ProblemReport)
+        {
+            if (unpackResult.Value.Message.Pthid != null)
+            {
+                var problemReport = ProblemReport.Parse(unpackResult.Value.Message.Body, unpackResult.Value.Message.Pthid);
+                if (problemReport.IsFailed)
+                {
+                    return Result.Fail("Error parsing the problem report of the mediator");
+                }
 
+                return Result.Ok(new StatusRequestResponse(problemReport.Value));
+            }
+            return Result.Fail("Error parsing the problem report of the mediator. Missing parent-thread-id");
+        }
+        
         if (unpackResult.Value.Message.Type != ProtocolConstants.MessagePickup3StatusResponse)
         {
             return Result.Fail($"Unexpected header-type: {unpackResult.Value.Message.Type}");

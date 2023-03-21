@@ -7,7 +7,7 @@ using MediatR;
 
 public class ProcessDiscoverFeaturesHandler : IRequestHandler<ProcessDiscoverFeaturesRequest, Message?>
 {
-    private List<DiscoverFeature> supportedProtocols = new List<DiscoverFeature>()
+    private readonly List<DiscoverFeature> _supportedProtocols = new List<DiscoverFeature>()
     {
         new DiscoverFeature("protocol", "https://didcomm.org/out-of-band/2.0"),
         new DiscoverFeature("protocol", "https://didcomm.org/coordinate-mediation/2.0"),
@@ -31,11 +31,11 @@ public class ProcessDiscoverFeaturesHandler : IRequestHandler<ProcessDiscoverFea
             {
                 if (featureQuery.Match.Equals("*"))
                 {
-                    disclosures.AddRange(supportedProtocols);
+                    disclosures.AddRange(_supportedProtocols);
                 }
                 else
                 {
-                    disclosures.AddRange(supportedProtocols.Where(p => p.Id.StartsWith(featureQuery.Match.Replace(".*", ""))).ToList());
+                    disclosures.AddRange(_supportedProtocols.Where(p => p.Id.StartsWith(featureQuery.Match.Replace(".*", ""))).ToList());
                 }
             }
         }

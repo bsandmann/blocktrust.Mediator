@@ -3,17 +3,19 @@
 using System.Net;
 using System.Text;
 using Blocktrust.Common.Resolver;
+using Common.Models.ProblemReport;
 using Common.Protocols;
 using DIDComm;
 using DIDComm.Common.Types;
 using DIDComm.Message.Attachments;
 using DIDComm.Message.Messages;
 using DIDComm.Model.PackEncryptedParamsModels;
+using DIDComm.Model.UnpackParamsModels;
 using FluentResults;
 using MediatR;
 using Json = DIDComm.Message.Attachments.Json;
 
-public class SendForwardMessageHandler : IRequestHandler<SendForwardMessageRequest, Result>
+public class SendForwardMessageHandler : IRequestHandler<SendForwardMessageRequest, Result<ProblemReport>>
 {
     private readonly HttpClient _httpClient;
     private readonly IDidDocResolver _didDocResolver;
@@ -26,11 +28,11 @@ public class SendForwardMessageHandler : IRequestHandler<SendForwardMessageReque
         _secretResolver = secretResolver;
     }
 
-    public async Task<Result> Handle(SendForwardMessageRequest request, CancellationToken cancellationToken)
+    public async Task<Result<ProblemReport>> Handle(SendForwardMessageRequest request, CancellationToken cancellationToken)
     {
         // https://identity.foundation/didcomm-messaging/spec/#using-a-did-as-an-endpoint
         // This implementation doesn't support "Exmaple 2". That is double-wrapping the message
-        
+
         // We create the wrapping message, with has the inner message in the attachments
         Dictionary<string, object> packedMessage;
         try
@@ -87,7 +89,7 @@ public class SendForwardMessageHandler : IRequestHandler<SendForwardMessageReque
         {
             return Result.Fail($"Connection could not be established: {ex.Message}");
         }
-        
+
         if (response.StatusCode == HttpStatusCode.NotFound)
         {
             return Result.Fail("Connection could not be established");
@@ -100,9 +102,37 @@ public class SendForwardMessageHandler : IRequestHandler<SendForwardMessageReque
         {
             return Result.Ok();
         }
-        else
+        var content = await response.Content.ReadAsStringAsync(cancellationToken);
+        
+        if (!string.IsNullOrEmpty(content))
         {
-            return Result.Fail("The result code should be 202! This is not really a fail here, but anyway....");
-        }
+            var unpackResult = await didComm.Unpack(
+                new UnpackParamsBuilder(content)
+                    .SecretResolver(_secretResolver)
+                    .BuildUnpackParams());
+            if (unpackResult.IsFailed)
+            {
+                return unpackResult.ToResult();
+            }
+
+            if (unpackResult.Value.Message.Type == ProtocolConstants.ProblemReport)
+            {
+                if (unpackResult.Value.Message.Pthid != null)
+                {
+                    var problemReport = ProblemReport.Parse(unpackResult.Value.Message.Body, unpackResult.Value.Message.Pthid);
+                    if (problemReport.IsFailed)
+                    {
+                        return Result.Fail("Error parsing the problem report of the mediator");
+                    }
+
+                    return Result.Ok(problemReport.Value);
+                }
+
+                return Result.Fail("Error parsing the problem report of the mediator. Missing parent-thread-id");
+            }
+        } 
+        
+        
+        return Result.Fail("The result code should be 202! This is not really a fail here, but anyway....");
     }
 }

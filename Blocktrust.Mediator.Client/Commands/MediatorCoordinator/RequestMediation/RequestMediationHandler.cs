@@ -16,6 +16,7 @@ using Blocktrust.Mediator.Common.Protocols;
 using Blocktrust.PeerDID.DIDDoc;
 using Blocktrust.PeerDID.PeerDIDCreateResolve;
 using Blocktrust.PeerDID.Types;
+using Common.Models.ProblemReport;
 using FluentResults;
 using MediatR;
 
@@ -91,7 +92,7 @@ public class RequestMediationHandler : IRequestHandler<RequestMediationRequest, 
         {
             return Result.Fail("Unable to identify endpoint of mediator");
         }
-        
+
         var endpointUri = new Uri(endpoint);
         HttpResponseMessage response;
         try
@@ -128,31 +129,47 @@ public class RequestMediationHandler : IRequestHandler<RequestMediationRequest, 
         {
             return Result.Ok(new RequestMediationResponse());
         }
-        else if (unpackResult.Value.Message.Type == ProtocolConstants.CoordinateMediation2Grant)
-        {
-            if (!unpackResult.Value.Message.Body.ContainsKey("routing_did"))
-            {
-                //TODO a bit unclear what to do here, if the routing_did is not present. Fall back to the already known DID of the mediator?    
-                return Result.Fail("No routing_did present in grant message");
-            }
-
-            var from = unpackResult.Value.Message.From;
-            if (from is null && unpackResult.Value.Message.FromPrior is not null)
-            {
-                // We have a new DID from the mediator, caused by a DID rotation. This is expected.
-                from = unpackResult.Value.Message.FromPrior.Sub;
-                var fromOld = unpackResult.Value.Message.FromPrior.Iss;
-                if (!fromOld.Equals(remoteDid.From))
-                {
-                    // The old DID of the mediator does not match the one we have in the invitation. This is unexpected.
-                    return Result.Fail("Unexpected DID rotation");
-                }
-            }
-
-            return Result.Ok(new RequestMediationResponse(from!, endpointUri, unpackResult.Value.Message.Body["routing_did"]!.ToString()));
-        }
         else
         {
+            if (unpackResult.Value.Message.Type == ProtocolConstants.CoordinateMediation2Grant)
+            {
+                if (!unpackResult.Value.Message.Body.ContainsKey("routing_did"))
+                {
+                    //TODO a bit unclear what to do here, if the routing_did is not present. Fall back to the already known DID of the mediator?    
+                    return Result.Fail("No routing_did present in grant message");
+                }
+
+                var from = unpackResult.Value.Message.From;
+                if (from is null && unpackResult.Value.Message.FromPrior is not null)
+                {
+                    // We have a new DID from the mediator, caused by a DID rotation. This is expected.
+                    from = unpackResult.Value.Message.FromPrior.Sub;
+                    var fromOld = unpackResult.Value.Message.FromPrior.Iss;
+                    if (!fromOld.Equals(remoteDid.From))
+                    {
+                        // The old DID of the mediator does not match the one we have in the invitation. This is unexpected.
+                        return Result.Fail("Unexpected DID rotation");
+                    }
+                }
+
+                return Result.Ok(new RequestMediationResponse(from!, endpointUri, unpackResult.Value.Message.Body["routing_did"]!.ToString()));
+            }
+            
+            if (unpackResult.Value.Message.Type == ProtocolConstants.ProblemReport)
+            {
+                if (unpackResult.Value.Message.Pthid != null)
+                {
+                    var problemReport = ProblemReport.Parse(unpackResult.Value.Message.Body, unpackResult.Value.Message.Pthid);
+                    if (problemReport.IsFailed)
+                    {
+                        return Result.Fail("Error parsing the problem report of the mediator");
+                    }
+
+                    return Result.Ok(new RequestMediationResponse(problemReport.Value));
+                }
+                return Result.Fail("Error parsing the problem report of the mediator. Missing parent-thread-id");
+            }
+
             return Result.Fail("Error: Unexpected message response type");
         }
     }

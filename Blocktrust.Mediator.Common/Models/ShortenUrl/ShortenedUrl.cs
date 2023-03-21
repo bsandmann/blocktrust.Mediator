@@ -52,12 +52,20 @@ public class ShortenedUrl
 
         long requestedValiditySeconds = 0;
         var hasRequestedValiditySeconds = body.TryGetValue("requested_validity_seconds", out var requestedValiditySecondsJson);
-        if (hasRequestedValiditySeconds)
+        if (hasRequestedValiditySeconds) 
         {
             var requestedValiditySecondsJsonElement = (JsonElement)requestedValiditySecondsJson!;
             if (requestedValiditySecondsJsonElement.ValueKind is JsonValueKind.Number)
             {
-                requestedValiditySeconds = requestedValiditySecondsJsonElement.GetInt64();
+                var parsedSeconds = requestedValiditySecondsJsonElement.GetInt64();
+                if (parsedSeconds >= 0)
+                {
+                   requestedValiditySeconds = parsedSeconds; 
+                }
+                else
+                {
+                    return Result.Fail("Invalid value for requested_validity_seconds. Must be a positive integer");
+                }
             }
         }
 

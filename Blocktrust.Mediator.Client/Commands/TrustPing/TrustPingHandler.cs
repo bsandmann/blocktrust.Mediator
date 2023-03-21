@@ -70,7 +70,8 @@ public class TrustPingHandler : IRequestHandler<TrustPingRequest, Result>
         {
             return Result.Fail("Connection could not be established");
         }
-        else if (!response.IsSuccessStatusCode)
+
+        if (!response.IsSuccessStatusCode)
         {
             return Result.Fail("Unable to initiate connection: " + response.StatusCode);
         }

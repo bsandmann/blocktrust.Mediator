@@ -26,10 +26,10 @@ public class GetMessagesStatusHandler : IRequestHandler<GetMessagesStatusRequest
         {
             var connection = await _context.MediatorConnections
                 .Include(p => p.RegisteredRecipients)
-                .FirstOrDefaultAsync(p => p.RemoteDid.Equals(request.RemoteDid) && p.MediatorDid.Equals(request.MediatorDid), cancellationToken: cancellationToken);
+                .FirstOrDefaultAsync(p => p.RemoteDid.Equals(request.RemoteDid) && p.MediatorDid.Equals(request.MediatorDid) && p.MediationGranted, cancellationToken: cancellationToken);
             if (connection is null)
             {
-                return Result.Fail("Connection was not found");
+                return Result.Fail("Connection was not found. Mediation might not have been granted.");
             }
 
             if (request.RecipientDid is null)
@@ -58,13 +58,7 @@ public class GetMessagesStatusHandler : IRequestHandler<GetMessagesStatusRequest
                 var selectedRecipientDidKey = connection.RegisteredRecipients.FirstOrDefault(p => p.RecipientDid.Equals(request.RecipientDid));
                 if (selectedRecipientDidKey is null)
                 {
-                    return Result.Ok(new MessagesStatusModel(
-                        messageCount: 0,
-                        recipientDid: null,
-                        longestWaitedSeconds: null,
-                        newestMessageTime: null,
-                        oldestMessageTime: null,
-                        totalByteSize: null));
+                    return Result.Fail($"Recipient DID '{request.RecipientDid}' was not found.");
                 }
 
                 var messages = await _context.StoredMessages

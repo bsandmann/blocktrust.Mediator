@@ -13,6 +13,7 @@ using Blocktrust.DIDComm.Model.UnpackParamsModels;
 using Blocktrust.DIDComm.Utils;
 using Blocktrust.Mediator.Common.Models.Pickup;
 using Blocktrust.Mediator.Common.Protocols;
+using Common.Models.ProblemReport;
 using FluentResults;
 using MediatR;
 
@@ -89,11 +90,37 @@ public class DeliveryRequestHandler : IRequestHandler<DeliveryRequestRequest, Re
             return unpackResult.ToResult();
         }
 
+        if (unpackResult.Value.Message.Type == ProtocolConstants.ProblemReport)
+        {
+            if (unpackResult.Value.Message.Pthid != null)
+            {
+                var problemReport = ProblemReport.Parse(unpackResult.Value.Message.Body, unpackResult.Value.Message.Pthid);
+                if (problemReport.IsFailed)
+                {
+                    return Result.Fail("Error parsing the problem report of the mediator");
+                }
+
+                return Result.Ok(new DeliveryRequestResponse(problemReport.Value));
+            }
+            return Result.Fail("Error parsing the problem report of the mediator. Missing parent-thread-id");
+        }
+        
+        if (unpackResult.Value.Message.Type == ProtocolConstants.MessagePickup3StatusResponse)
+        {
+            var bodyContent = unpackResult.Value.Message.Body;
+            var statusRequestResponseResult = StatusRequestResponse.Parse(bodyContent);
+            if (statusRequestResponseResult.IsFailed)
+            {
+                return Result.Fail("Error parsing the status response of the mediator");
+            }
+            return Result.Ok(new DeliveryRequestResponse(statusRequestResponseResult.Value));
+        }
+
+        
         if (unpackResult.Value.Message.Type != ProtocolConstants.MessagePickup3DeliveryResponse)
         {
             return Result.Fail($"Unexpected header-type: {unpackResult.Value.Message.Type}");
         }
-
 
         var attachments = unpackResult.Value.Message.Attachments;
         if (attachments is null || !attachments.Any())

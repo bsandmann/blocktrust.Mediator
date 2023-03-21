@@ -1,18 +1,26 @@
 ﻿namespace Blocktrust.Mediator.Client.Commands.ShortenUrl.RequestShortenedUrl;
 
 using System.Text.Json;
+using Common.Models.ProblemReport;
 using FluentResults;
 
 public class RequestShortenedUrlResponse
 {
-    public Uri ShortenedUrl { get; set; }
-    public DateTime? ExpiresTimeUtc { get; set; }
+    public Uri? ShortenedUrl { get; }
+    public DateTime? ExpiresTimeUtc { get;  }
+    
+    public ProblemReport? ProblemReport { get; }
 
     public RequestShortenedUrlResponse(Uri shortenedUrl, DateTime? expiresTimeUtc = null)
     {
         ShortenedUrl = shortenedUrl;
         ExpiresTimeUtc = expiresTimeUtc;
     }
+    public RequestShortenedUrlResponse(ProblemReport problemReport)
+    {
+        ProblemReport = problemReport;
+    }
+    
 
     public static Result<RequestShortenedUrlResponse> Parse(Dictionary<string, object> body)
     {

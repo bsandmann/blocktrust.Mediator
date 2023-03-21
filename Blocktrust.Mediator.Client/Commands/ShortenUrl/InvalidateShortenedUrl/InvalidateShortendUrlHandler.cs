@@ -9,10 +9,12 @@ using Blocktrust.DIDComm.Common.Types;
 using Blocktrust.DIDComm.Message.Messages;
 using Blocktrust.DIDComm.Model.PackEncryptedParamsModels;
 using Blocktrust.Mediator.Common.Protocols;
+using Common.Models.ProblemReport;
+using DIDComm.Model.UnpackParamsModels;
 using FluentResults;
 using MediatR;
 
-public class InvalidateShortenedUrlHandler : IRequestHandler<InvalidateShortenedUrlRequest, Result>
+public class InvalidateShortenedUrlHandler : IRequestHandler<InvalidateShortenedUrlRequest, Result<ProblemReport>>
 {
     private readonly HttpClient _httpClient;
     private readonly IDidDocResolver _didDocResolver;
@@ -27,7 +29,7 @@ public class InvalidateShortenedUrlHandler : IRequestHandler<InvalidateShortened
 
     // Details: https://didcomm.org/shorten-url/1.0/
 
-    public async Task<Result> Handle(InvalidateShortenedUrlRequest request, CancellationToken cancellationToken)
+    public async Task<Result<ProblemReport>> Handle(InvalidateShortenedUrlRequest request, CancellationToken cancellationToken)
     {
         // We create the message to send to the mediator
         // The special format of the return_route header is required by the python implementation of the roots mediator
@@ -46,7 +48,7 @@ public class InvalidateShortenedUrlHandler : IRequestHandler<InvalidateShortened
         var didComm = new DidComm(_didDocResolver, _secretResolver);
 
         // We pack the message and encrypt it for the mediator
-        var packResult =await  didComm.PackEncrypted(
+        var packResult = await didComm.PackEncrypted(
             new PackEncryptedParamsBuilder(mediateRequestMessage, to: request.MediatorDid)
                 .From(request.LocalDid)
                 .ProtectSenderId(false)
@@ -68,12 +70,41 @@ public class InvalidateShortenedUrlHandler : IRequestHandler<InvalidateShortened
         {
             return Result.Fail("Connection could not be established");
         }
-        else if (!response.IsSuccessStatusCode)
+
+        if (!response.IsSuccessStatusCode)
         {
             return Result.Fail("Unable to initiate connection: " + response.StatusCode);
         }
 
-        //TODO return empty message here?
+        var content = await response.Content.ReadAsStringAsync(cancellationToken);
+        
+        if (!string.IsNullOrEmpty(content))
+        {
+            var unpackResult = await didComm.Unpack(
+                new UnpackParamsBuilder(content)
+                    .SecretResolver(_secretResolver)
+                    .BuildUnpackParams());
+            if (unpackResult.IsFailed)
+            {
+                return unpackResult.ToResult();
+            }
+
+            if (unpackResult.Value.Message.Type == ProtocolConstants.ProblemReport)
+            {
+                if (unpackResult.Value.Message.Pthid != null)
+                {
+                    var problemReport = ProblemReport.Parse(unpackResult.Value.Message.Body, unpackResult.Value.Message.Pthid);
+                    if (problemReport.IsFailed)
+                    {
+                        return Result.Fail("Error parsing the problem report of the mediator");
+                    }
+
+                    return Result.Ok(problemReport.Value);
+                }
+
+                return Result.Fail("Error parsing the problem report of the mediator. Missing parent-thread-id");
+            }
+        }
 
         return Result.Ok();
     }

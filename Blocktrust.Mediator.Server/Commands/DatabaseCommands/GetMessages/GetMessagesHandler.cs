@@ -28,10 +28,10 @@ public class GetMessagesHandler : IRequestHandler<GetMessagesRequest, Result<Lis
             {
                 var connection = await _context.MediatorConnections
                     .Include(p => p.RegisteredRecipients)
-                    .FirstOrDefaultAsync(p => p.RemoteDid.Equals(request.RemoteDid) && p.MediatorDid.Equals(request.MediatorDid), cancellationToken: cancellationToken);
+                    .FirstOrDefaultAsync(p => p.RemoteDid.Equals(request.RemoteDid) && p.MediatorDid.Equals(request.MediatorDid) && p.MediationGranted, cancellationToken: cancellationToken);
                 if (connection is null)
                 {
-                    return Result.Fail("Connection was not found");
+                    return Result.Fail("Connection was not found. Mediation might not have been granted.");
                 }
 
                 var messages = await _context.StoredMessages
@@ -47,7 +47,7 @@ public class GetMessagesHandler : IRequestHandler<GetMessagesRequest, Result<Lis
             {
                 var connection = await _context.MediatorConnections
                     .Include(p => p.RegisteredRecipients)
-                    .FirstOrDefaultAsync(p => p.RemoteDid.Equals(request.RemoteDid) && p.MediatorDid.Equals(request.MediatorDid) && p.RegisteredRecipients.Exists(q => q.RecipientDid.Equals(request.RecipientDid)), cancellationToken: cancellationToken);
+                    .FirstOrDefaultAsync(p => p.RemoteDid.Equals(request.RemoteDid) && p.MediatorDid.Equals(request.MediatorDid) && p.RegisteredRecipients.Exists(q => q.RecipientDid.Equals(request.RecipientDid) && p.MediationGranted), cancellationToken: cancellationToken);
                 if (connection is null)
                 {
                     return Result.Fail("Connection was not found, with the given recipientDid");
