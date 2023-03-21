@@ -21,24 +21,18 @@ public class RequestShortenedUrlRequest : IRequest<Result<RequestShortenedUrlRes
     public long? RequestValidityInSeconds { get; }
 
     /// <summary>
-    /// A goal code that can be used to identify the purpose of the shortened url. Currently only support for "shorten.oobv2"
-    /// </summary>
-    public EnumShortenUrlGoalCode GoalCode { get; }
-
-    /// <summary>
     /// Optional:  A string that can be used to specify the slug of the shortened url.
     /// </summary>
     public string? ShortUrlSlug { get; }
 
 
-    public RequestShortenedUrlRequest(Uri mediatorEndpoint, string mediatorDid, string localDid, Uri urlToShorten, EnumShortenUrlGoalCode goalCode, long? requestValidityInSeconds = null, string? shortUrlSlug = null)
+    public RequestShortenedUrlRequest(Uri mediatorEndpoint, string mediatorDid, string localDid, Uri urlToShorten, long? requestValidityInSeconds = null, string? shortUrlSlug = null)
     {
         MediatorEndpoint = mediatorEndpoint;
         MediatorDid = mediatorDid;
         LocalDid = localDid;
         UrlToShorten = urlToShorten;
         RequestValidityInSeconds = requestValidityInSeconds;
-        GoalCode = goalCode;
         ShortUrlSlug = shortUrlSlug;
     }
 }

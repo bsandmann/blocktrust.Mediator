@@ -11,6 +11,7 @@ using Blocktrust.DIDComm.Model.PackEncryptedParamsModels;
 using Blocktrust.DIDComm.Model.UnpackParamsModels;
 using Blocktrust.Mediator.Common.Models.ShortenUrl;
 using Blocktrust.Mediator.Common.Protocols;
+using Common;
 using FluentResults;
 using MediatR;
 
@@ -38,14 +39,7 @@ public class RequestShortenedUrlHandler : IRequestHandler<RequestShortenedUrlReq
         var body = new Dictionary<string, object>();
         body.Add("url", request.UrlToShorten);
         body.Add("requested_validity_seconds", request.RequestValidityInSeconds ?? 0);
-        if (request.GoalCode == EnumShortenUrlGoalCode.ShortenOOBv2)
-        {
-            body.Add("goal_code", "shorten.oobv2");
-        }
-        else
-        {
-            return Result.Fail("The only supported goal_code is currently 'shorten.oobv2'");
-        }
+        body.Add("goal_code", GoalCodes.ShortenOobv2);
 
         if (request.ShortUrlSlug is not null)
         {

@@ -57,13 +57,13 @@ public class ProcessMediationRequestHandler : IRequestHandler<ProcessMediationRe
                     fromPrior: request.FromPrior);
             }
 
-            var updateConnetionResult = await _mediator.Send(new UpdateConnectionMediationRequest(mediatorDid: request.MediatorDid,
+            var connectionResult = await _mediator.Send(new UpdateConnectionMediationRequest(mediatorDid: request.MediatorDid,
                 remoteDid: request.SenderDid,
                 routingDid: routingDidResult.Value.PeerDid.Value,
                 mediatorEndpoint: request.HostUrl,
                 mediationGranted: true), cancellationToken);
 
-            if (updateConnetionResult.IsFailed)
+            if (connectionResult.IsFailed)
             {
                 return ProblemReportMessage.BuildDefaultInternalError(
                     errorMessage: "Database update failed",

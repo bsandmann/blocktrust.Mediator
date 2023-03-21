@@ -54,14 +54,14 @@ public class MediatorController : ControllerBase
         );
         if (unpacked.IsFailed)
         {
-            return BadRequest("Unable to unpack message");
+            return BadRequest($"Unable to unpack message: {unpacked.Errors.First().Message}");
         }
 
         string senderOldDid;
         string senderDid;
         if (unpacked.Value.Message.FromPrior is not null)
         {
-            //TODO assertiongs that thease are not emtpy??
+            //TODO assertions? 
             senderOldDid = unpacked.Value.Message.FromPrior.Iss;
             senderDid = unpacked.Value.Message.FromPrior.Sub;
         }
@@ -83,19 +83,19 @@ public class MediatorController : ControllerBase
         // Check if we have a return route flag. Otherwise we should send a separate message
         var customHeaders = unpacked.Value.Message.CustomHeaders;
         EnumReturnRoute returnRoute = EnumReturnRoute.None;
-        if (customHeaders is not null && (customHeaders.TryGetValue("return_route", out var returnRouteString)))
+        if ((customHeaders.TryGetValue("return_route", out var returnRouteString)))
         {
             var returnRouteJsonElement = (JsonElement)returnRouteString;
             if (returnRouteJsonElement.ValueKind == JsonValueKind.String)
             {
-                EnumReturnRoute.TryParse(returnRouteJsonElement.GetString(), true, out returnRoute);
+                Enum.TryParse(returnRouteJsonElement.GetString(), true, out returnRoute);
             }
         }
 
         //TODO in some cases I might want to respond with a empty-message instead or accepted or a defined response. Figure out where
 
         // TODO simplification: the correct use of 'thid' here should be tested 
-        if (returnRoute == EnumReturnRoute.All || (returnRoute == EnumReturnRoute.Thread && processMessageResponse.Message.Thid.Equals(unpacked.Value.Message.Thid)))
+        if (returnRoute == EnumReturnRoute.All || (returnRoute == EnumReturnRoute.Thread && processMessageResponse.Message.Thid is not null && processMessageResponse.Message!.Thid!.Equals(unpacked.Value.Message.Thid)))
         {
             if (processMessageResponse.RespondWithAccepted)
             {
@@ -128,7 +128,11 @@ public class MediatorController : ControllerBase
             );
 
             var didDocSenderDid = await _didDocResolver.Resolve(senderDid);
-            //TODO ?
+            if (didDocSenderDid is null)
+            {
+                return Ok(packResult.PackedMessage);
+            }
+            
             var service = didDocSenderDid.Services.FirstOrDefault();
             if (service is null)
             {

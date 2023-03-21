@@ -82,7 +82,7 @@ public class OutOfBandInvitationTests
                     Did = request.PeerDid.Value,
                     CreatedUtc = DateTime.UtcNow,
                     Url = request.HostUrl,
-                    Invitation = OobModel.BuildRequestMediateMessage(request.PeerDid)
+                    Invitation = OobModel.BuildRequestMediateOobMessage(request.PeerDid)
                 }
                 )) );
         var controller = new OobController(_iLogger.Object, _mediatorMock.Object, _httpContextAccessorMock.Object,  _secretResolver, _didDocResolver);

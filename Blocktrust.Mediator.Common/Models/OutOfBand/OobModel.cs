@@ -56,7 +56,7 @@ public class OobModel
     /// </summary>
     /// <param name="from"></param>
     /// <returns></returns>
-    public static string BuildRequestMediateMessage(PeerDid from)
+    public static string BuildRequestMediateOobMessage(PeerDid from)
     {
         var msg = new OobModel()
         {
@@ -65,8 +65,33 @@ public class OobModel
             From = from.Value,
             Body = new OobBodyModel()
             {
-                GoalCode = "request_mediate",
+                GoalCode = GoalCodes.RequestMediation,
                 Goal = "Request mediate through the blocktrust mediator",
+                Accept = new List<string>() { "didcomm/v2" }
+            },
+            Attachments = null
+        };
+        var jsonSerializerOptions = new JsonSerializerOptions()
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            IgnoreNullValues = true
+        };
+        var json = JsonSerializer.Serialize(msg, jsonSerializerOptions);
+        var base64Url = Base64Url.Encode(Encoding.UTF8.GetBytes(json));
+        return base64Url;
+    }
+
+    public static string BuildGenericOobMessage(PeerDid from, string? goalCode = null, string? goal = null)
+    {
+        var msg = new OobModel()
+        {
+            Type = ProtocolConstants.OutOfBand2Invitation,
+            Id = Guid.NewGuid().ToString(),
+            From = from.Value,
+            Body = new OobBodyModel()
+            {
+                GoalCode = goalCode,
+                Goal = goal,
                 Accept = new List<string>() { "didcomm/v2" }
             },
             Attachments = null

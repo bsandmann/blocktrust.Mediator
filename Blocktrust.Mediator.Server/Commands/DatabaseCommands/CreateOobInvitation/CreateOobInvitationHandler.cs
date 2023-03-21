@@ -32,7 +32,7 @@ public class CreateOobInvitationHandler : IRequestHandler<CreateOobInvitationReq
     /// <returns></returns>
     public async Task<Result<OobInvitationModel>> Handle(CreateOobInvitationRequest createOobInvitationRequest, CancellationToken cancellationToken)
     {
-        var invitation = OobModel.BuildRequestMediateMessage(createOobInvitationRequest.PeerDid);
+        var invitation = OobModel.BuildRequestMediateOobMessage(createOobInvitationRequest.PeerDid);
 
         try
         {
