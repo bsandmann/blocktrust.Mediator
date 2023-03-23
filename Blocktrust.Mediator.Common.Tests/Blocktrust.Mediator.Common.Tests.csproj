@@ -23,4 +23,8 @@
         </PackageReference>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Blocktrust.Mediator.Common\Blocktrust.Mediator.Common.csproj" />
+    </ItemGroup>
+
 </Project>

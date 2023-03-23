@@ -12,6 +12,17 @@ public class ProblemCode
     public string? OtherDescriptor { get; }
     public string? AdditionalDescriptor1 { get; }
     public string? AdditionalDescriptor2 { get; }
+    
+    // Equality comparison for Sorter, Scope, StateNameForScope, Descriptor, OtherDescriptor, AdditionalDescriptor1 and AdditionalDescriptor2
+    public override bool Equals(object obj)
+    {
+        if (obj is ProblemCode)
+        {
+            return this.ToString().Equals(obj.ToString());
+        }
+
+        return false;
+    }
 
 
     public ProblemCode(EnumProblemCodeSorter sorter, EnumProblemCodeScope scope, string? stateNameForScope = null)

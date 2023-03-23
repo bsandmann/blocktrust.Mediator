@@ -8,26 +8,48 @@ using Protocols;
 
 public class ProblemReport
 {
-    public ProblemCode ProblemCode { get; set; }
-    public string ThreadIdWhichCausedTheProblem { get; set; }
-    public string? Comment { get; set; }
-    public Uri? EscalateTo { get; set; }
+    public ProblemCode ProblemCode { get; }
+    public string ThreadIdWhichCausedTheProblem { get; }
+    public string? Comment { get; }
+    public Uri? EscalateTo { get; }
 
+
+    public ProblemReport(ProblemCode problemCode, string threadIdWhichCausedTheProblem, string? comment = null, Uri? escalateTo = null)
+    {
+        ProblemCode = problemCode;
+        ThreadIdWhichCausedTheProblem = threadIdWhichCausedTheProblem;
+        Comment = comment;
+        EscalateTo = escalateTo;
+    }
+
+    //Comparision for equals for ProblemCode, ThreadIdWhichCausedTheProblem, Comment and EscalateTo
+    public override bool Equals(object obj)
+    {
+        if (obj is ProblemReport problemReport)
+        {
+            return this.ProblemCode.Equals(problemReport.ProblemCode) &&
+                   this.ThreadIdWhichCausedTheProblem.Equals(problemReport.ThreadIdWhichCausedTheProblem) &&
+                   (this.Comment ?? String.Empty).Equals(problemReport.Comment ?? string.Empty) &&
+                   (this.EscalateTo is null ? string.Empty : this.EscalateTo.AbsolutePath).Equals(problemReport.EscalateTo is null ? string.Empty : problemReport.EscalateTo.AbsolutePath);
+        }
+
+        return false;
+    }
 
     public static Result<ProblemReport> Parse(string problemCode, string threadIdWhichCausedTheProblem, string? comment = null, List<string>? commentArguments = null, Uri? escalateTo = null)
     {
-        var problemReport = new ProblemReport();
+        string? tmpComment = null;
+        Uri? tmpEscalateTo = null;
         var problemCodeResult = ProblemCode.Parse(problemCode);
         if (problemCodeResult.IsFailed)
         {
             return problemCodeResult.ToResult();
         }
 
-        problemReport.ProblemCode = problemCodeResult.Value;
-        problemReport.ThreadIdWhichCausedTheProblem = threadIdWhichCausedTheProblem;
+        var tmpProblemCode = problemCodeResult.Value;
         if (commentArguments is null || !commentArguments.Any())
         {
-            problemReport.Comment = comment;
+            tmpComment = comment;
         }
         else
         {
@@ -39,16 +61,16 @@ public class ProblemReport
                     commentParsed = commentParsed.Replace("{" + i + "}", commentArguments[i]);
                 }
 
-                problemReport.Comment = commentParsed;
+                tmpComment = commentParsed;
             }
         }
 
         if (escalateTo is not null)
         {
-            problemReport.EscalateTo = escalateTo;
+            tmpEscalateTo = escalateTo;
         }
 
-        return Result.Ok(problemReport);
+        return Result.Ok(new ProblemReport(tmpProblemCode, threadIdWhichCausedTheProblem, tmpComment, tmpEscalateTo));
     }
 
     public static Result<ProblemReport> Parse(DeliveryResponseModel responseModel)
@@ -65,7 +87,7 @@ public class ProblemReport
         {
             return Result.Fail("Message is not a problem report");
         }
-        
+
         if (string.IsNullOrEmpty(messageId))
         {
             return Result.Fail("MessageId should not be emtpy");
@@ -73,7 +95,7 @@ public class ProblemReport
 
         return Parse(message.Body, messageId);
     }
-    
+
     public static Result<ProblemReport> Parse(Dictionary<string, object?> body, string threadIdWhichCausedTheProblem)
     {
         string code;
