@@ -1,7 +1,10 @@
 ﻿namespace Blocktrust.Mediator.Common.Models.ProblemReport;
 
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 using FluentResults;
+using Pickup;
+using Protocols;
 
 public class ProblemReport
 {
@@ -48,6 +51,29 @@ public class ProblemReport
         return Result.Ok(problemReport);
     }
 
+    public static Result<ProblemReport> Parse(DeliveryResponseModel responseModel)
+    {
+        var message = responseModel.Message;
+        var messageId = responseModel.MessageId;
+
+        if (message is null)
+        {
+            return Result.Fail("Message should not be null");
+        }
+
+        if (message.Type != ProtocolConstants.ProblemReport)
+        {
+            return Result.Fail("Message is not a problem report");
+        }
+        
+        if (string.IsNullOrEmpty(messageId))
+        {
+            return Result.Fail("MessageId should not be emtpy");
+        }
+
+        return Parse(message.Body, messageId);
+    }
+    
     public static Result<ProblemReport> Parse(Dictionary<string, object?> body, string threadIdWhichCausedTheProblem)
     {
         string code;
