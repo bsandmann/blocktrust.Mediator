@@ -24,11 +24,11 @@ public class GetMessagesHandler : IRequestHandler<GetMessagesRequest, Result<Lis
         try
         {
             //TODO this can be done more elegant in one query each
+            var connection = await _context.MediatorConnections
+                .Include(p => p.RegisteredRecipients)
+                .FirstOrDefaultAsync(p => p.RemoteDid.Equals(request.RemoteDid) && p.MediatorDid.Equals(request.MediatorDid) && p.MediationGranted, cancellationToken: cancellationToken);
             if (request.RecipientDid is null)
             {
-                var connection = await _context.MediatorConnections
-                    .Include(p => p.RegisteredRecipients)
-                    .FirstOrDefaultAsync(p => p.RemoteDid.Equals(request.RemoteDid) && p.MediatorDid.Equals(request.MediatorDid) && p.MediationGranted, cancellationToken: cancellationToken);
                 if (connection is null)
                 {
                     return Result.Fail("Connection was not found. Mediation might not have been granted.");
@@ -45,9 +45,6 @@ public class GetMessagesHandler : IRequestHandler<GetMessagesRequest, Result<Lis
             }
             else
             {
-                var connection = await _context.MediatorConnections
-                    .Include(p => p.RegisteredRecipients)
-                    .FirstOrDefaultAsync(p => p.RemoteDid.Equals(request.RemoteDid) && p.MediatorDid.Equals(request.MediatorDid) && p.RegisteredRecipients.Exists(q => q.RecipientDid.Equals(request.RecipientDid) && p.MediationGranted), cancellationToken: cancellationToken);
                 if (connection is null)
                 {
                     return Result.Fail("Connection was not found, with the given recipientDid");

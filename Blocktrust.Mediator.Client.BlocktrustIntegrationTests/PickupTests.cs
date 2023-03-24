@@ -304,13 +304,75 @@ public class PickupTests
         var limit = 100;
         var deliveryRequestResult = await _deliveryRequestHandler.Handle(new DeliveryRequestRequest(localDidOfAliceToUseWithTheMediator.Value.PeerDid.Value, requestMediationResult.Value.MediatorDid, requestMediationResult.Value.MediatorEndpoint, limit), new CancellationToken());
 
-        var aliceDidToUseWithHerMediator = localDidOfAliceToUseWithTheMediator.Value.PeerDid.Value;
-        var aliceDidRegisteredWithTheMediator = localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().RoutingKeys.First();
-        var aliceDidToUseWithBob_alsoTheShared_Did = localDidOfAliceToUseWithBob.Value.PeerDid.Value;
-        var didOfTheMediatorWhenAliceTalksToIt = requestMediationResult.Value.MediatorDid;
+        // Assert
+        deliveryRequestResult.IsSuccess.Should().BeTrue();
+        deliveryRequestResult.Value.Messages!.Count.Should().Be(1);
+        var basicMessageResult = BasicMessage.Parse(deliveryRequestResult.Value.Messages[0]);
+        basicMessageResult.IsSuccess.Should().BeTrue();
+        basicMessageResult.Value.Message.Should().Be("Hello Alice");
+        basicMessageResult.Value.From.Should().Be(localDidOfBobToUseWithAlice.Value.PeerDid.Value);
+        basicMessageResult.Value.Tos.FirstOrDefault().Should().Be(localDidOfAliceToUseWithBob.Value.PeerDid.Value);
+    }
+    
+        /// <summary>
+    /// This tests assumes that the Blocktrust Mediator is running on https://localhost:7037
+    /// </summary>
+    [Fact]
+    public async Task BobSendsBasicMessageToAliceAndAliceGetsTheMessageFromTheMediatorForASpecificDid()
+    {
+        // First get the OOB from the running mediator
+        var response = await _httpClient.GetAsync(_blocktrustMediatorUri + "oob_url");
+        var resultContent = await response.Content.ReadAsStringAsync();
+        var oob = resultContent.Split("=");
+        var oobInvitation = oob[1];
 
-        var bobsDidToTalkToTheMediator = localDidOfBobToUseWithAliceMediator.Value.PeerDid.Value;
-        var bobsDidToTalkToAlice = localDidOfBobToUseWithAlice.Value.PeerDid.Value;
+        var secretResolverInMemoryForAlice = new SecretResolverInMemory();
+        var simpleDidDocResolverForAlice = new SimpleDidDocResolver();
+        _createPeerDidHandlerAlice = new CreatePeerDidHandler(secretResolverInMemoryForAlice);
+
+        var localDidOfAliceToUseWithTheMediator = await _createPeerDidHandlerAlice.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
+        var request = new RequestMediationRequest(oobInvitation, localDidOfAliceToUseWithTheMediator.Value.PeerDid.Value);
+
+        _requestMediationHandler = new RequestMediationHandler(_httpClient, simpleDidDocResolverForAlice, secretResolverInMemoryForAlice);
+        var requestMediationResult = await _requestMediationHandler.Handle(request, CancellationToken.None);
+
+        // Alice create now an additional DID to be used with Bob. Important: The service endpoint of the DID must be set to the mediator endpoint
+        var localDidOfAliceToUseWithBob = await _createPeerDidHandlerAlice.Handle(new CreatePeerDidRequest(serviceEndpoint: requestMediationResult.Value.MediatorEndpoint, serviceRoutingKeys: new List<string>() { requestMediationResult.Value.RoutingDid }), cancellationToken: new CancellationToken());
+
+        // Alice registers the new DID with the mediator, so the mediator can now accept messages from Bob to Alice
+        var addKeyRequest = new UpdateMediatorKeysRequest(requestMediationResult.Value.MediatorEndpoint, requestMediationResult.Value.MediatorDid, localDidOfAliceToUseWithTheMediator.Value.PeerDid.Value, new List<string>() { localDidOfAliceToUseWithBob.Value.PeerDid.Value }, new List<string>());
+        var addMediatorKeysHandler = new UpdateMediatorKeysHandler(_httpClient, simpleDidDocResolverForAlice, secretResolverInMemoryForAlice);
+        var addKeyResult = await addMediatorKeysHandler.Handle(addKeyRequest, CancellationToken.None);
+        addKeyResult.IsSuccess.Should().BeTrue();
+
+        // Bob creates its own DID
+        var secretResolverInMemoryForBob = new SecretResolverInMemory();
+        var simpleDidDocResolverForBob = new SimpleDidDocResolver();
+        _createPeerDidHandlerBob = new CreatePeerDidHandler(secretResolverInMemoryForBob);
+        var localDidOfBobToUseWithAlice = await _createPeerDidHandlerBob.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
+
+        // Bob creates a "Basic Message" from Bob to Alice (the Did of Alice must be shared with Bob before e.g. with OOB)
+        var basicMessage = BasicMessage.Create("Hello Alice");
+        var packedBasicMessage = await BasicMessage.Pack(basicMessage, from: localDidOfBobToUseWithAlice.Value.PeerDid.Value, localDidOfAliceToUseWithBob.Value.PeerDid.Value, secretResolverInMemoryForBob, simpleDidDocResolverForBob);
+
+        // Bob creates a DID just to be used with the mediator
+        var localDidOfBobToUseWithAliceMediator = await _createPeerDidHandlerBob.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
+
+        // Wrap the Basic Message into a new Message for the mediator to recieve and send it
+        _sendForwardMessageHandler = new SendForwardMessageHandler(_httpClient, simpleDidDocResolverForBob, secretResolverInMemoryForBob);
+        var result = await _sendForwardMessageHandler.Handle(new SendForwardMessageRequest(
+            message: packedBasicMessage,
+            localDid: localDidOfBobToUseWithAliceMediator.Value.PeerDid.Value,
+            mediatorDid: localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().RoutingKeys.First(), // The mediator DID was also shared beforehand (should be in the shared DID of alice)
+            // mediatorDid: requestMediationResult.Value.MediatorDid , // The mediator DID was also shared beforehand (should be in the shared DID of alice)
+            mediatorEndpoint: new Uri(localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().ServiceEndpoint),
+            recipientDid: localDidOfAliceToUseWithBob.Value.PeerDid.Value
+        ), new CancellationToken());
+
+        // Alice asks the Mediator for new Messages 
+        _deliveryRequestHandler = new DeliveryRequestHandler(_httpClient, simpleDidDocResolverForAlice, secretResolverInMemoryForAlice);
+        var limit = 100;
+        var deliveryRequestResult = await _deliveryRequestHandler.Handle(new DeliveryRequestRequest(localDidOfAliceToUseWithTheMediator.Value.PeerDid.Value, requestMediationResult.Value.MediatorDid, requestMediationResult.Value.MediatorEndpoint, limit, localDidOfAliceToUseWithBob.Value.PeerDid.Value), new CancellationToken());
 
         // Assert
         deliveryRequestResult.IsSuccess.Should().BeTrue();
