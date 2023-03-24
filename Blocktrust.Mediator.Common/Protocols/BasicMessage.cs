@@ -45,7 +45,7 @@ public static class BasicMessage
         var message = responseModel.Message;
         var messageId = responseModel.MessageId;
         var metadata = responseModel.Metadata;
-
+        
         if (message is null)
         {
             return Result.Fail("Message should not be null");
@@ -91,7 +91,8 @@ public static class BasicMessage
             message: contentJsonElement.GetString()!,
             messageId: messageId,
             from: message.From?.Split('#').FirstOrDefault() ?? metadata.EncryptedFrom!.Split('#').FirstOrDefault(),
-            tos: message.To?.Select(p => p.Split('#').FirstOrDefault()).ToList() ?? metadata.EncryptedTo?.Select(p => p.Split('#').FirstOrDefault()).ToList()!
+            tos: message.To?.Select(p => p.Split('#').FirstOrDefault()).ToList() ?? metadata.EncryptedTo?.Select(p => p.Split('#').FirstOrDefault()).ToList()!,
+            createdUtc: message.CreatedTime is not null? DateTimeOffset.FromUnixTimeMilliseconds((long)message.CreatedTime).DateTime : DateTime.UtcNow
         );
 
         return Result.Ok(basisMessageContent);
