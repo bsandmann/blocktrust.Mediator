@@ -1,61 +1,44 @@
-﻿namespace Blocktrust.Mediator.Client.Commands.TrustPing;
+﻿namespace Blocktrust.Mediator.Client.Commands.SendMessage;
 
 using System.Net;
 using System.Text;
-using System.Text.Json.Nodes;
 using Blocktrust.Common.Resolver;
 using Blocktrust.DIDComm;
 using Blocktrust.DIDComm.Common.Types;
 using Blocktrust.DIDComm.Message.Messages;
 using Blocktrust.DIDComm.Model.PackEncryptedParamsModels;
 using Blocktrust.DIDComm.Model.UnpackParamsModels;
-using Blocktrust.Mediator.Common.Protocols;
-using Common;
 using FluentResults;
 using MediatR;
-using PrismConnect;
 
-public class PrismConnectHandler : IRequestHandler<PrismConnectRequest, Result<string>>
+//TODO this is very generic implementation of message sending; we might use it in all other commands
+
+public class SendMessageHandler : IRequestHandler<SendMessageRequest, Result<Message>>
 {
     private readonly HttpClient _httpClient;
     private readonly IDidDocResolver _didDocResolver;
     private readonly ISecretResolver _secretResolver;
 
-    public PrismConnectHandler(HttpClient httpClient, IDidDocResolver didDocResolver, ISecretResolver secretResolver)
+    public SendMessageHandler(HttpClient httpClient, IDidDocResolver didDocResolver, ISecretResolver secretResolver)
     {
         _httpClient = httpClient;
         _didDocResolver = didDocResolver;
         _secretResolver = secretResolver;
     }
 
-
-    public async Task<Result<string>> Handle(PrismConnectRequest request, CancellationToken cancellationToken)
+    public async Task<Result<Message>> Handle(SendMessageRequest request, CancellationToken cancellationToken)
     {
-        // The special format of the return_route header is required by the python implementation of the roots mediator
-        var returnRoute = new JsonObject() { new KeyValuePair<string, JsonNode?>("return_route", "all") };
-        var body = new Dictionary<string, object>();
-        body.Add("goal_code", GoalCodes.PrismConnect);
-        body.Add("goal", "Connect");
-        body.Add("accept", "didcomm/v2");
-        var mediateRequestMessage = new MessageBuilder(
-                id: Guid.NewGuid().ToString(),
-                type: ProtocolConstants.PrismConnectRequest,
-                body: body
-            )
-            .customHeader("custom_headers", new List<JsonObject>() { returnRoute })
-            .build();
-
         var didComm = new DidComm(_didDocResolver, _secretResolver);
 
         // We pack the message and encrypt it for the mediator
         var packResult =await  didComm.PackEncrypted(
-            new PackEncryptedParamsBuilder(mediateRequestMessage, to: request.RemoteDid)
+            new PackEncryptedParamsBuilder(request.Message, to: request.RemoteDid)
                 .From(request.LocalDid)
                 .ProtectSenderId(false)
                 .BuildPackEncryptedParams()
         );
 
-        // We send the message to the mediator
+        // We send the message to the endpoint
         HttpResponseMessage response;
         try
         {
@@ -68,7 +51,7 @@ public class PrismConnectHandler : IRequestHandler<PrismConnectRequest, Result<s
         
         if (response.StatusCode == HttpStatusCode.NotFound)
         {
-            return Result.Fail("Connection could not be established");
+            return Result.Fail("Connection could not be established. Not found");
         }
 
         if (!response.IsSuccessStatusCode)
@@ -87,19 +70,6 @@ public class PrismConnectHandler : IRequestHandler<PrismConnectRequest, Result<s
             return unpackResult.ToResult();
         }
 
-        var a = unpackResult.Value.Message.From;
-        var b = unpackResult.Value.Message.FromPrior;
-        var c = b.Iss;
-        var d = b.Sub;
-        var debugMsg = $"a: {a}, b: {b}, c: {c}, d: {d}";
-        
-        if (unpackResult.Value.Message.Type == ProtocolConstants.PrismConnectResponse)
-        {
-            return Result.Ok(debugMsg);
-        }
-        else
-        {
-            return Result.Fail("Error: Unexpected message response type");
-        }
+        return Result.Ok(unpackResult.Value.Message);
     }
 }
