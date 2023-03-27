@@ -13,4 +13,9 @@ public static class GoalCodes
     /// Used to shorten a url
     /// </summary>
     public readonly static string ShortenOobv2 = "shorten.oobv2";
+    
+    /// <summary>
+    /// Used to shorten a url
+    /// </summary>
+    public readonly static string PrismConnect = "Connect";
 }

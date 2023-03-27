@@ -33,4 +33,7 @@ public class ProtocolConstants
     public const string ShortenedUrlRequest = "https://didcomm.org/shorten-url/1.0/request-shortened-url";
     public const string ShortenedUrlResponse = "https://didcomm.org/shorten-url/1.0/shortened-url";
     public const string InvalidateShortenedUrl = "https://didcomm.org/shorten-url/1.0/invalidate-shortened-url";
+    
+    public const string PrismConnectRequest = "https://atalaprism.io/mercury/connections/1.0/request";
+    public const string PrismConnectResponse = "https://atalaprism.io/mercury/connections/1.0/response";
 }
