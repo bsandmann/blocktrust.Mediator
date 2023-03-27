@@ -90,11 +90,16 @@ public class OobController : ControllerBase
 
         return RedirectPermanent(result.Value);
     }
+   
     
+    /// <summary>
+    /// Simple proof of concept endpoints which returns the request-string as content-string
+    /// </summary>
+    /// <returns></returns>
     [HttpGet("/identityWallet")]
-    public async Task<ActionResult<string>> IdentityWalletOutOfBandInvitation()
+    public Task<ActionResult<string>> IdentityWalletOutOfBandInvitation()
     {
         var hostUrl = string.Concat(_httpContextAccessor!.HttpContext.Request.Scheme, "://", _httpContextAccessor.HttpContext.Request.Host, _httpContextAccessor.HttpContext.Request.Path,_httpContextAccessor.HttpContext.Request.QueryString);
-        return Ok(hostUrl);
+        return Task.FromResult<ActionResult<string>>(Ok(hostUrl));
     }
 }
