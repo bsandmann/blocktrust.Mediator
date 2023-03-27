@@ -4,7 +4,7 @@ using DIDComm.Message.Messages;
 
 public static class PrismConnectAnswer
 {
-    public static Message Create(string content)
+    public static Message Create()
     {
         var body = new Dictionary<string, object>();
         // TODO are they needed?
