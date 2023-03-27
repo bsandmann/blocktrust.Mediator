@@ -5,15 +5,15 @@ using MediatR;
 
 public class TrustPingRequest: IRequest<Result>
 {
-    public Uri MediatorEndpoint { get; }
-    public string MediatorDid { get; }
+    public Uri RemoteEndpoint { get; }
+    public string RemoteDid { get; }
     public string LocalDid { get; }
     public bool ResponseRequested { get; }
 
-    public TrustPingRequest(Uri mediatorEndpoint, string mediatorDid, string localDid, bool responseRequested = true)
+    public TrustPingRequest(Uri remoteEndpoint, string remoteDid, string localDid, bool responseRequested = true)
     {
-        MediatorEndpoint = mediatorEndpoint;
-        MediatorDid = mediatorDid;
+        RemoteEndpoint = remoteEndpoint;
+        RemoteDid = remoteDid;
         LocalDid = localDid;
         ResponseRequested = responseRequested;
     }
