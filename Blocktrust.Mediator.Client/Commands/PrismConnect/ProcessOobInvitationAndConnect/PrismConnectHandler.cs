@@ -134,7 +134,7 @@ public class PrismConnectHandler : IRequestHandler<PrismConnectRequest, Result<P
                     var deleteResult = await DeleteConnectResponseFromMediator(request, checkResult.Value.MessageIdOfResponse!, cancellationToken);
                     if (deleteResult.IsSuccess)
                     {
-                        return Result.Ok();
+                        return Result.Ok(new PrismConnectResponse(checkResult.Value.MessageIdOfResponse!,checkResult.Value.PrismDid!));
                     }
                 }
             } while (retry++ < maxRetries);
