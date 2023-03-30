@@ -4,7 +4,6 @@ using System.Text;
 using System.Text.Json;
 using Blocktrust.Common.Converter;
 using Blocktrust.DIDComm.Secrets;
-using Blocktrust.Mediator.Client.Commands.TrustPing;
 using Blocktrust.Mediator.Common;
 using Blocktrust.Mediator.Common.Commands.CreatePeerDid;
 using Blocktrust.Mediator.Common.Models.OutOfBand;
@@ -15,7 +14,6 @@ using Commands.MediatorCoordinator.RequestMediation;
 using Commands.MediatorCoordinator.UpdateKeys;
 using Commands.Pickup.DeliveryRequest;
 using Commands.Pickup.MessageReceived;
-using Commands.PrismConnect;
 using Commands.PrismConnect.ProcessOobInvitationAndConnect;
 using FluentAssertions;
 using MediatR;
@@ -36,7 +34,7 @@ public class ConnectTests
     private RequestMediationHandler _requestMediationHandler;
 
     private readonly string _blocktrustMediatorUri = "http://localhost:5023/";
-    private readonly string _prismAgentUrlRunningInDocker = "http://localhost:9000/";
+    private readonly string _prismAgentUrlRunningInDocker = "http://localhost:8090/";
     private readonly string _prismAgentApiKey = "kxr9i@6XgKBUxe%O";
 
 
@@ -57,7 +55,7 @@ public class ConnectTests
     }
 
     /// <summary>
-    /// This tests assumes that a PRISM node is running on http://localhost:8080 inside a Docker container and the blocktrust mediator is running on http://localhost:5023
+    /// This tests assumes that a PRISM node is running on http://localhost:8080 / 8090 / 9000 inside a Docker container and the blocktrust mediator is running on http://localhost:5023
     /// This test does not work with HTTPS!
     /// Also, there is a general issue with the routing of http-request:
     /// The PRISM agent is running inside a Docker container and the blocktrust mediator is running on the host machine.

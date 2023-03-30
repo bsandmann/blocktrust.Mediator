@@ -1,24 +1,14 @@
 ﻿namespace Blocktrust.Mediator.Client.PrismIntegrationTests;
 
-using System.Text;
-using System.Text.Json;
-using Blocktrust.Common.Converter;
 using Blocktrust.DIDComm.Secrets;
-using Blocktrust.Mediator.Client.Commands.TrustPing;
 using Blocktrust.Mediator.Common;
 using Blocktrust.Mediator.Common.Commands.CreatePeerDid;
-using Blocktrust.Mediator.Common.Models.OutOfBand;
-using Blocktrust.PeerDID.DIDDoc;
-using Blocktrust.PeerDID.PeerDIDCreateResolve;
-using Blocktrust.PeerDID.Types;
 using Commands.MediatorCoordinator.RequestMediation;
 using Commands.MediatorCoordinator.UpdateKeys;
 using Commands.Pickup.DeliveryRequest;
 using Commands.Pickup.MessageReceived;
-using Commands.PrismConnect;
 using Commands.PrismConnect.AnwserConnectRequest;
 using Commands.PrismConnect.CreateOobInvitation;
-using Commands.PrismConnect.ProcessOobInvitationAndConnect;
 using FluentAssertions;
 using MediatR;
 using Moq;
@@ -27,7 +17,6 @@ using Xunit;
 public class ConnectAnswerTests
 {
     private readonly HttpClient _httpClient;
-    private PrismConnectHandler _prismConnectHandler;
     private CreatePeerDidHandler _createPeerDidHandler;
     private readonly DeliveryRequestHandler _deliveryRequestHandler;
     private readonly MessageReceivedHandler _messageReceivedHandler;
@@ -35,11 +24,10 @@ public class ConnectAnswerTests
     private readonly Mock<IMediator> _mediatorMock;
     private readonly SimpleDidDocResolver _simpleDidDocResolver;
     private readonly SecretResolverInMemory _secretResolverInMemory;
-
     private RequestMediationHandler _requestMediationHandler;
 
     private readonly string _blocktrustMediatorUri = "http://localhost:5023/";
-    private readonly string _prismAgentUrlRunningInDocker = "http://localhost:9000/";
+    private readonly string _prismAgentUrlRunningInDocker = "http://localhost:8090/";
     private readonly string _prismAgentApiKey = "kxr9i@6XgKBUxe%O";
 
 
