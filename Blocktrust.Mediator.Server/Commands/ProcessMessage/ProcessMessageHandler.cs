@@ -37,8 +37,8 @@ public class ProcessMessageHandler : IRequestHandler<ProcessMessageRequest, Proc
     public async Task<ProcessMessageResponse> Handle(ProcessMessageRequest request, CancellationToken cancellationToken)
     {
         FromPrior? fromPrior = null;
-        string mediatorDid;
-        var fallBackMediatorDidForErrorMessages = request.UnpackResult.Metadata.EncryptedTo.FirstOrDefault();
+        string? mediatorDid;
+        var fallBackMediatorDidForErrorMessages = request.UnpackResult.Metadata?.EncryptedTo?.FirstOrDefault();
         if (fallBackMediatorDidForErrorMessages is null)
         {
             //TODO no clue
@@ -67,32 +67,38 @@ public class ProcessMessageHandler : IRequestHandler<ProcessMessageRequest, Proc
                         fromPrior: fromPrior), fallBackMediatorDidForErrorMessages);
             }
 
-            var iss = request.UnpackResult.Metadata.EncryptedTo.First().Split('#')[0]; // The current Did of the mediator the msg was send to
+            var iss = request.UnpackResult.Metadata?.EncryptedTo?.First().Split('#')[0]; // The current Did of the mediator the msg was send to
             var sub = mediatorDidResult.Value.PeerDid.Value; // The new Did of the mediator that will be used for future communication
             fromPrior = FromPrior.Builder(iss, sub).Build();
 
-            var createConnectionResult = await _mediator.Send(new CreateConnectionRequest(mediatorDidResult.Value.PeerDid.Value, request.SenderDid), cancellationToken);
-            if (createConnectionResult.IsFailed)
+            if (request.SenderDid is not null)
             {
-                return new ProcessMessageResponse(
-                    ProblemReportMessage.BuildDefaultInternalError(
-                        errorMessage: "Unable grant mediation",
-                        threadIdWhichCausedTheProblem: request.UnpackResult.Message.Thid ?? request.UnpackResult.Message.Id,
-                        fromPrior: fromPrior), fallBackMediatorDidForErrorMessages);
+                var createConnectionResult = await _mediator.Send(new CreateConnectionRequest(mediatorDidResult.Value.PeerDid.Value, request.SenderDid), cancellationToken);
+                if (createConnectionResult.IsFailed)
+                {
+                    return new ProcessMessageResponse(
+                        ProblemReportMessage.BuildDefaultInternalError(
+                            errorMessage: "Unable grant mediation",
+                            threadIdWhichCausedTheProblem: request.UnpackResult.Message.Thid ?? request.UnpackResult.Message.Id,
+                            fromPrior: fromPrior), fallBackMediatorDidForErrorMessages);
+                }
             }
 
             mediatorDid = mediatorDidResult.Value.PeerDid.Value;
         }
         else
         {
-            mediatorDid = existingConnection.Value.MediatorDid;
+            mediatorDid = existingConnection?.Value?.MediatorDid;
         }
 
         Message? result;
         switch (request.UnpackResult.Message.Type)
         {
             case ProtocolConstants.TrustPingRequest:
-                result = await _mediator.Send(new ProcessTrustPingRequest(request.UnpackResult.Message, request.SenderDid, mediatorDid, request.HostUrl, fromPrior), cancellationToken);
+                result = await _mediator.Send(new ProcessTrustPingRequest(request.UnpackResult.Message), cancellationToken);
+                break;
+            case ProtocolConstants.ForwardMessage:
+                result = await _mediator.Send(new ProcessForwardMessageRequest(request.UnpackResult.Message, mediatorDid), cancellationToken);
                 break;
             case ProtocolConstants.ShortenedUrlRequest:
                 result = await _mediator.Send(new ProcessRequestShortenedUrlRequest(request.UnpackResult.Message, request.SenderDid, mediatorDid, request.HostUrl, fromPrior), cancellationToken);
@@ -123,9 +129,6 @@ public class ProcessMessageHandler : IRequestHandler<ProcessMessageRequest, Proc
                 break;
             case ProtocolConstants.DiscoverFeatures2Query:
                 result = await _mediator.Send(new ProcessDiscoverFeaturesRequest(request.UnpackResult.Message, request.SenderDid, mediatorDid, request.HostUrl, fromPrior), cancellationToken);
-                break;
-            case ProtocolConstants.ForwardMessage:
-                result = await _mediator.Send(new ProcessForwardMessageRequest(request.UnpackResult.Message, request.SenderDid, mediatorDid, request.HostUrl, fromPrior), cancellationToken);
                 break;
             default:
                 return new ProcessMessageResponse(ProblemReportMessage.Build(

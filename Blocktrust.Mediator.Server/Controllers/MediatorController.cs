@@ -3,15 +3,10 @@
 using System.Text;
 using System.Text.Json;
 using Blocktrust.Common.Resolver;
-using Commands.DatabaseCommands.CreateOobInvitation;
-using Commands.DatabaseCommands.GetOobInvitation;
 using Commands.ProcessMessage;
-using Common.Commands.CreatePeerDid;
 using DIDComm;
 using DIDComm.Common.Types;
-using DIDComm.Message.Messages;
 using DIDComm.Model.PackEncryptedParamsModels;
-using DIDComm.Model.PackEncryptedResultModels;
 using DIDComm.Model.UnpackParamsModels;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -45,6 +40,12 @@ public class MediatorController : ControllerBase
     public async Task<ActionResult<string>> Mediate()
     {
         var hostUrl = string.Concat(_httpContextAccessor!.HttpContext.Request.Scheme, "://", _httpContextAccessor.HttpContext.Request.Host);
+        if (System.Diagnostics.Debugger.IsAttached && hostUrl.Equals("http://localhost:5023"))
+        {
+            // This is only for local development and testing the mediator with a PRISM agent running in a docker container
+            hostUrl = "http://host.docker.internal:5023";
+        }
+
         var request = _httpContextAccessor.HttpContext.Request;
         var body = await new StreamReader(request.Body).ReadToEndAsync();
 
@@ -57,8 +58,10 @@ public class MediatorController : ControllerBase
             return BadRequest($"Unable to unpack message: {unpacked.Errors.First().Message}");
         }
 
-        string senderOldDid;
-        string senderDid;
+
+        string? senderOldDid = null;
+        string? senderDid = null;
+
         if (unpacked.Value.Message.FromPrior is not null)
         {
             //TODO assertions? 
@@ -70,12 +73,16 @@ public class MediatorController : ControllerBase
             var encryptedFrom = unpacked.Value.Metadata.EncryptedFrom;
             if (encryptedFrom is null)
             {
-                return BadRequest("Unable to unpack message: Unable to read encryptedFrom in Metadata");
+                // Should only be really the case for forward messages ?!
+                senderDid = null;
+                senderOldDid = null;
             }
-
-            var split = encryptedFrom.Split("#");
-            senderDid = split.First();
-            senderOldDid = senderDid;
+            else
+            {
+                var split = encryptedFrom.Split("#");
+                senderDid = split.First();
+                senderOldDid = senderDid;
+            }
         }
 
         var processMessageResponse = await _mediator.Send(new ProcessMessageRequest(senderOldDid, senderDid, hostUrl, unpacked.Value));
@@ -97,7 +104,7 @@ public class MediatorController : ControllerBase
         // TODO simplification: the correct use of 'thid' here should be tested 
         if (returnRoute == EnumReturnRoute.All || (returnRoute == EnumReturnRoute.Thread && processMessageResponse.Message.Thid is not null && processMessageResponse.Message!.Thid!.Equals(unpacked.Value.Message.Thid)))
         {
-            if (processMessageResponse.RespondWithAccepted)
+            if (processMessageResponse.RespondWithAccepted || senderDid is null || processMessageResponse.MediatorDid is null)
             {
                 return Accepted();
             }
@@ -113,7 +120,7 @@ public class MediatorController : ControllerBase
         }
         else
         {
-            if (processMessageResponse.RespondWithAccepted)
+            if (processMessageResponse.RespondWithAccepted || senderDid is null || processMessageResponse.MediatorDid is null)
             {
                 //TODO I should fall back to an empty message here
 
@@ -132,7 +139,7 @@ public class MediatorController : ControllerBase
             {
                 return Ok(packResult.PackedMessage);
             }
-            
+
             var service = didDocSenderDid.Services.FirstOrDefault();
             if (service is null)
             {

@@ -1,6 +1,7 @@
 ﻿namespace Blocktrust.Mediator.Client.Commands.Pickup.StatusRequest;
 
 using System.Net;
+using System.Net.Http.Headers;
 using System.Text;
 using Blocktrust.Common.Resolver;
 using Common.Models.Pickup;
@@ -57,7 +58,7 @@ public class StatusRequestHandler : IRequestHandler<StatusRequestRequest, Result
         HttpResponseMessage response;
         try
         {
-            response = await _httpClient.PostAsync(request.MediatorEndpoint, new StringContent(packResult.PackedMessage, Encoding.UTF8, MessageTyp.Encrypted), cancellationToken);
+            response = await _httpClient.PostAsync(request.MediatorEndpoint, new StringContent(packResult.PackedMessage, new MediaTypeHeaderValue(MessageTyp.Encrypted) ), cancellationToken);
         }
         catch (HttpRequestException ex)
         {

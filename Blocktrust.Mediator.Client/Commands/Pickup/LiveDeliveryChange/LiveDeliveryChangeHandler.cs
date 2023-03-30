@@ -1,6 +1,7 @@
 ﻿namespace Blocktrust.Mediator.Client.Commands.Pickup.LiveDeliveryChange;
 
 using System.Net;
+using System.Net.Http.Headers;
 using System.Text;
 using Blocktrust.Common.Resolver;
 using Blocktrust.DIDComm;
@@ -53,7 +54,7 @@ public class LiveDeliveryChangeHandler : IRequestHandler<LiveDeliveryChangeReque
         HttpResponseMessage response;
         try
         {
-            response = await _httpClient.PostAsync(request.MediatorEndpoint, new StringContent(packResult.PackedMessage, Encoding.UTF8, MessageTyp.Encrypted), cancellationToken);
+            response = await _httpClient.PostAsync(request.MediatorEndpoint, new StringContent(packResult.PackedMessage, new MediaTypeHeaderValue(MessageTyp.Encrypted) ), cancellationToken);
         }
         catch (HttpRequestException ex)
         {

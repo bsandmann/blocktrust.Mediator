@@ -8,7 +8,7 @@ using Blocktrust.Mediator.Server.Commands.ProcessMessage;
 public class ProcessRequestShortenedUrlRequest  : ProcessBaseRequest
 {
     /// <inheritdoc />
-    public ProcessRequestShortenedUrlRequest(Message unpackedMessage, string senderDid, string mediatorDid, string hostUrl, FromPrior? fromPrior) : base(unpackedMessage, senderDid, mediatorDid, hostUrl, fromPrior)
+    public ProcessRequestShortenedUrlRequest(Message unpackedMessage, string? senderDid, string? mediatorDid, string hostUrl, FromPrior? fromPrior) : base(unpackedMessage, senderDid, mediatorDid, hostUrl, fromPrior)
     {
     }
 }

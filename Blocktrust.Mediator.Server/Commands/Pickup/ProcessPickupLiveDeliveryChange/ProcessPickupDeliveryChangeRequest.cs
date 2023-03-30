@@ -8,7 +8,7 @@ using ProcessMessage;
 public class ProcessPickupDeliveryChangeRequest : ProcessBaseRequest
 {
     /// <inheritdoc />
-    public ProcessPickupDeliveryChangeRequest(Message unpackedMessage, string senderDid, string mediatorDid, string hostUrl, FromPrior? fromPrior) : base(unpackedMessage, senderDid, mediatorDid, hostUrl, fromPrior)
+    public ProcessPickupDeliveryChangeRequest(Message unpackedMessage, string? senderDid, string? mediatorDid, string hostUrl, FromPrior? fromPrior) : base(unpackedMessage, senderDid, mediatorDid, hostUrl, fromPrior)
     {
     }
 }

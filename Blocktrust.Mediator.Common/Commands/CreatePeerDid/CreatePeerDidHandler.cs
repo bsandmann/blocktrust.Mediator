@@ -79,6 +79,17 @@ public class CreatePeerDidHandler : IRequestHandler<CreatePeerDidRequest, Result
 
             service = JsonSerializer.Serialize(serviceDictionary);
         }
+        else if (createdidRequest.ServiceEndpointDid is not null)
+        {
+            serviceDictionary = new Service(
+                id: "new-id",
+                serviceEndpoint: createdidRequest.ServiceEndpointDid,
+                routingKeys:new List<string>(), 
+                accept: new List<string>() { "didcomm/v2" },
+                type: ServiceConstants.ServiceDidcommMessaging).ToDict();
+            
+            service = JsonSerializer.Serialize(serviceDictionary);
+        }
 
         // Generate Peer Did
         string peerDidString;

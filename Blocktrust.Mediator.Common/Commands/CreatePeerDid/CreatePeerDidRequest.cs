@@ -17,6 +17,19 @@ public class CreatePeerDidRequest : IRequest<Result<CreatePeerDidResponse>>
         ServiceRoutingKeys = serviceRoutingKeys;
         NumberOfAgreementKeys = numberOfAgreementKeys;
         NumberOfAuthenticationKeys = numberOfAuthenticationKeys;
+        ServiceEndpointDid = null;
+    }
+    
+    /// <summary>
+    /// Request
+    /// </summary>
+    public CreatePeerDidRequest(string serviceEndpointDid, int numberOfAgreementKeys = 1, int numberOfAuthenticationKeys = 1)
+    {
+        ServiceEndpoint = null;
+        ServiceRoutingKeys = null;
+        NumberOfAgreementKeys = numberOfAgreementKeys;
+        NumberOfAuthenticationKeys = numberOfAuthenticationKeys;
+        ServiceEndpointDid = serviceEndpointDid;
     }
 
     /// <summary>
@@ -34,5 +47,13 @@ public class CreatePeerDidRequest : IRequest<Result<CreatePeerDidResponse>>
     /// </summary>
     public Uri? ServiceEndpoint { get; } 
 
+    /// <summary>
+    /// RoutingKeys of the mediator
+    /// </summary>
     public List<string>? ServiceRoutingKeys { get; } = new();
+    
+    /// <summary>
+    /// Instead of defining a ServiceEndpoing and optionally RoutingKeys, you can also use an existing DID directly to force another format
+    /// </summary>
+    public string? ServiceEndpointDid { get; }
 }

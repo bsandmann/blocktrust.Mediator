@@ -223,7 +223,7 @@ public class PickupTests
         deliveryRequestResult.Value.Messages!.Count.Should().Be(1);
         var basicMessageResult = BasicMessage.Parse(deliveryRequestResult.Value.Messages[0]);
         basicMessageResult.IsSuccess.Should().BeTrue();
-        basicMessageResult.Value.Should().Be("Hello Alice");
+        basicMessageResult.Value.Message.Should().Be("Hello Alice");
     }
 
     /// <summary>

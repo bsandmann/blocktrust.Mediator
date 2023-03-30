@@ -8,7 +8,7 @@ using ProcessMessage;
 public class ProcessMediationRequestRequest  : ProcessBaseRequest
 {
     /// <inheritdoc />
-    public ProcessMediationRequestRequest(Message unpackedMessage, string senderDid, string mediatorDid, string hostUrl, FromPrior? fromPrior) : base(unpackedMessage, senderDid, mediatorDid, hostUrl, fromPrior)
+    public ProcessMediationRequestRequest(Message unpackedMessage, string? senderDid, string? mediatorDid, string hostUrl, FromPrior? fromPrior) : base(unpackedMessage, senderDid, mediatorDid, hostUrl, fromPrior)
     {
     }
 }

@@ -6,10 +6,18 @@ using MediatR;
 
 public class GetConnectionRequest : IRequest<Result<MediatorConnectionModel>>
 {
-    public string RemoteDid { get; }
+    /// <summary>
+    /// DID of the party connected to the mediator
+    /// </summary>
+    /// 
+    public string? RemoteDid { get; }
+    /// <summary>
+    /// The mediator did
+    /// </summary>
+    /// 
     public string? MediatorDid { get; }
 
-    public GetConnectionRequest(string remoteDid, string? mediatorDid)
+    public GetConnectionRequest(string? remoteDid, string? mediatorDid)
     {
         RemoteDid = remoteDid;
         MediatorDid = mediatorDid;

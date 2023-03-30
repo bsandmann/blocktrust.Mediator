@@ -23,6 +23,10 @@ public class GetConnectionHandler : IRequestHandler<GetConnectionRequest, Result
     /// <inheritdoc />
     public async Task<Result<MediatorConnectionModel>> Handle(GetConnectionRequest request, CancellationToken cancellationToken)
     {
+        if (request.RemoteDid is null)
+        {
+            return Result.Ok();
+        }
         try
         {
             MediatorConnection? existingConnection;

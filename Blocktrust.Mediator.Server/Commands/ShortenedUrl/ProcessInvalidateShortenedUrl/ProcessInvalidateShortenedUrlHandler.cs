@@ -3,9 +3,6 @@
 using System.Text.Json;
 using Blocktrust.DIDComm.Message.Messages;
 using Blocktrust.Mediator.Common.Models.ProblemReport;
-using Blocktrust.Mediator.Common.Models.ShortenUrl;
-using Blocktrust.Mediator.Common.Protocols;
-using Blocktrust.Mediator.Server.Commands.DatabaseCommands.CreateShortenedUrl;
 using DatabaseCommands.InvalidateShortenedUrl;
 using MediatR;
 

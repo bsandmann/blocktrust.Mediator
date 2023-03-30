@@ -8,7 +8,7 @@ using ProcessMessage;
 public class ProcessPickupStatusRequestRequest : ProcessBaseRequest
 {
     /// <inheritdoc />
-    public ProcessPickupStatusRequestRequest(Message unpackedMessage, string senderDid, string mediatorDid, string hostUrl, FromPrior? fromPrior) : base(unpackedMessage, senderDid, mediatorDid, hostUrl, fromPrior)
+    public ProcessPickupStatusRequestRequest(Message unpackedMessage, string? senderDid, string? mediatorDid, string hostUrl, FromPrior? fromPrior) : base(unpackedMessage, senderDid, mediatorDid, hostUrl, fromPrior)
     {
     }
 }

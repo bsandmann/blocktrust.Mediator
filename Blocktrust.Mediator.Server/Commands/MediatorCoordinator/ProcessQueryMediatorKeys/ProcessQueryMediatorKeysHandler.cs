@@ -50,6 +50,14 @@ public class ProcessQueryMediatorKeysHandler : IRequestHandler<ProcessQueryMedia
         }
         else
         {
+            if (request.SenderDid is null)
+            {
+                return ProblemReportMessage.BuildDefaultMessageMissingArguments(
+                    errorMessage: "Invalid body format: missing sender_did",
+                    threadIdWhichCausedTheProblem: request.UnpackedMessage.Thid ?? request.UnpackedMessage.Id,
+                    fromPrior: request.FromPrior);
+            }
+            
             var queryResult = await _mediator.Send(new GetRegisteredRecipientsRequest(request.SenderDid), cancellationToken);
             if (queryResult.IsFailed)
             {

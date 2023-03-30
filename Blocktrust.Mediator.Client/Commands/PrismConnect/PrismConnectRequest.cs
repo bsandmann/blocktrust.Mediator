@@ -3,16 +3,26 @@
 using FluentResults;
 using MediatR;
 
-public class PrismConnectRequest: IRequest<Result<string>>
+public class PrismConnectRequest : IRequest<Result<PrismConnectResponse>>
 {
-    public Uri RemoteEndpoint { get; }
-    public string RemoteDid { get; }
-    public string LocalDid { get; }
+    public Uri PrismEndpoint { get; }
+    public string PrismDid { get; }
+    public string LocalDidToUseWithPrism { get; }
+    public string ThreadId { get; }
 
-    public PrismConnectRequest(Uri remoteEndpoint, string remoteDid, string localDid)
+    public Uri? MediatorEndpoint { get; }
+    public string? MediatorDid { get; }
+    public string? LocalDidToUseWithMediator { get; }
+
+    public PrismConnectRequest(Uri prismEndpoint, string prismDid, string localDidToUseWithPrism, string threadId, Uri? mediatorEndpoint, string? localDidToUseWithMediator, string? mediatorDid)
     {
-        RemoteEndpoint = remoteEndpoint;
-        RemoteDid = remoteDid;
-        LocalDid = localDid;
+        PrismEndpoint = prismEndpoint;
+        PrismDid = prismDid;
+        LocalDidToUseWithPrism = localDidToUseWithPrism;
+        ThreadId = threadId;
+
+        MediatorEndpoint = mediatorEndpoint;
+        LocalDidToUseWithMediator = localDidToUseWithMediator;
+        MediatorDid = mediatorDid;
     }
 }

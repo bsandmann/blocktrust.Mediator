@@ -1,18 +1,12 @@
 ﻿namespace Blocktrust.Mediator.Server.Controllers;
 
-using System.Text.Json;
 using Blocktrust.Common.Resolver;
 using Commands.DatabaseCommands.CreateOobInvitation;
 using Commands.DatabaseCommands.GetOobInvitation;
 using Commands.DatabaseCommands.GetShortenedUrl;
-using Commands.ProcessMessage;
 using Common.Commands.CreatePeerDid;
-using DIDComm;
-using DIDComm.Model.PackEncryptedParamsModels;
-using DIDComm.Model.UnpackParamsModels;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Models;
 
 [ApiController]
 public class OobController : ControllerBase

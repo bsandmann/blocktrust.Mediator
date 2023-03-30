@@ -56,6 +56,14 @@ public class ProcessMediationRequestHandler : IRequestHandler<ProcessMediationRe
                     threadIdWhichCausedTheProblem: request.UnpackedMessage.Thid ?? request.UnpackedMessage.Id,
                     fromPrior: request.FromPrior);
             }
+            
+            if (request.SenderDid is null || request.MediatorDid is null)
+            {
+                return ProblemReportMessage.BuildDefaultMessageMissingArguments(
+                    errorMessage: "Invalid body format: missing sender_did or mediator_did",
+                    threadIdWhichCausedTheProblem: request.UnpackedMessage.Thid ?? request.UnpackedMessage.Id,
+                    fromPrior: request.FromPrior);
+            }
 
             var connectionResult = await _mediator.Send(new UpdateConnectionMediationRequest(mediatorDid: request.MediatorDid,
                 remoteDid: request.SenderDid,

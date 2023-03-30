@@ -56,6 +56,14 @@ public class ProcessPickupMessageReceivedHandler : IRequestHandler<ProcessPickup
                 threadIdWhichCausedTheProblem: request.UnpackedMessage.Thid ?? request.UnpackedMessage.Id,
                 fromPrior: request.FromPrior);
         }
+        
+        if (request.SenderDid is null || request.MediatorDid is null)
+        {
+            return ProblemReportMessage.BuildDefaultMessageMissingArguments(
+                errorMessage: "Invalid body format: missing sender_did or mediator_did",
+                threadIdWhichCausedTheProblem: request.UnpackedMessage.Thid ?? request.UnpackedMessage.Id,
+                fromPrior: request.FromPrior);
+        }
 
         var deleteMessagesResult = await _mediator.Send(new DeleteMessagesRequest(request.SenderDid, request.MediatorDid, messageIdList), cancellationToken);
         if (deleteMessagesResult.IsFailed)

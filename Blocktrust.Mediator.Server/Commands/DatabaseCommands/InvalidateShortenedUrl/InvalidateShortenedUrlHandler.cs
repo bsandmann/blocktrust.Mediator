@@ -1,9 +1,6 @@
 ﻿namespace Blocktrust.Mediator.Server.Commands.DatabaseCommands.InvalidateShortenedUrl;
 
-using Blocktrust.Mediator.Common.Models.ShortenUrl;
 using Blocktrust.Mediator.Server;
-using Blocktrust.Mediator.Server.Entities;
-using Blocktrust.Mediator.Server.Models;
 using FluentResults;
 using MediatR;
 

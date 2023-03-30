@@ -42,6 +42,14 @@ public class ProcessPickupStatusRequestHandler : IRequestHandler<ProcessPickupSt
             }
         }
 
+        if (request.SenderDid is null || request.MediatorDid is null)
+        {
+            return ProblemReportMessage.BuildDefaultMessageMissingArguments(
+                errorMessage: "Invalid body format: missing sender_did or mediator_did",
+                threadIdWhichCausedTheProblem: request.UnpackedMessage.Thid ?? request.UnpackedMessage.Id,
+                fromPrior: request.FromPrior);
+        }
+
         var getStatusResult = await _mediator.Send(new GetMessagesStatusRequest(request.SenderDid, request.MediatorDid, recipientDid), cancellationToken);
         if (getStatusResult.IsFailed)
         {

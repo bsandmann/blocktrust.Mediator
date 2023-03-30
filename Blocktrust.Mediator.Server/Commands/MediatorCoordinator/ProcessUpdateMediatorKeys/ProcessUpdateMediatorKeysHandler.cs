@@ -74,6 +74,14 @@ public class ProcessUpdateMediatorKeysHandler : IRequestHandler<ProcessUpdateMed
                         fromPrior: request.FromPrior);
                 }
 
+                if (request.SenderDid is null)
+                {
+                    return ProblemReportMessage.BuildDefaultMessageMissingArguments(
+                        errorMessage: "Invalid body format: missing sender_did",
+                        threadIdWhichCausedTheProblem: request.UnpackedMessage.Thid ?? request.UnpackedMessage.Id,
+                        fromPrior: request.FromPrior);
+                }
+                
                 var addUpdates = updates.Where(p => p.UpdateType == "add").Select(p => p.KeyToUpdate).ToList();
                 var removeUpdates = updates.Where(p => p.UpdateType == "remove").Select(p => p.KeyToUpdate).ToList();
                 var updateResult = await _mediator.Send(new UpdateRegisteredRecipientsRequest(request.SenderDid, addUpdates, removeUpdates), cancellationToken);

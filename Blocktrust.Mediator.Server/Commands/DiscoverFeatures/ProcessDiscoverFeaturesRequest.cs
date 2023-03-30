@@ -8,7 +8,7 @@ using ProcessMessage;
 public class ProcessDiscoverFeaturesRequest  : ProcessBaseRequest
 {
     /// <inheritdoc />
-    public ProcessDiscoverFeaturesRequest(Message unpackedMessage, string senderDid, string mediatorDid, string hostUrl, FromPrior? fromPrior) : base(unpackedMessage, senderDid, mediatorDid, hostUrl, fromPrior)
+    public ProcessDiscoverFeaturesRequest(Message unpackedMessage, string? senderDid, string? mediatorDid, string hostUrl, FromPrior? fromPrior) : base(unpackedMessage, senderDid, mediatorDid, hostUrl, fromPrior)
     {
     }
 }

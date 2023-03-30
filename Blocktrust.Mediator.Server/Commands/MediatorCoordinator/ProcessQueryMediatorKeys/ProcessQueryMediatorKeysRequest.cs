@@ -8,7 +8,7 @@ using ProcessMessage;
 public class ProcessQueryMediatorKeysRequest  : ProcessBaseRequest
 {
     /// <inheritdoc />
-    public ProcessQueryMediatorKeysRequest(Message unpackedMessage, string senderDid, string mediatorDid, string hostUrl, FromPrior? fromPrior) : base(unpackedMessage, senderDid, mediatorDid, hostUrl, fromPrior)
+    public ProcessQueryMediatorKeysRequest(Message unpackedMessage, string? senderDid, string? mediatorDid, string hostUrl, FromPrior? fromPrior) : base(unpackedMessage, senderDid, mediatorDid, hostUrl, fromPrior)
     {
     }
 }

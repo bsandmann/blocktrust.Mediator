@@ -1,7 +1,6 @@
 ﻿namespace Blocktrust.Mediator.Server.Models;
 
 using System.Text.RegularExpressions;
-using Commands.DatabaseCommands.GetConnection;
 
 public static class ShortenedUrlGenerator
 {

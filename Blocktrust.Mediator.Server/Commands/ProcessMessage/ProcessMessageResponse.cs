@@ -12,14 +12,14 @@ public class ProcessMessageResponse
     /// <summary>
     /// The Did of the current Mediator
     /// </summary>
-    public string MediatorDid { get; }
+    public string? MediatorDid { get; }
 
     /// <summary>
     /// The http request should be accepted (202)
     /// </summary>
     public bool RespondWithAccepted { get; }
 
-    public ProcessMessageResponse(Message message, string mediatorDid)
+    public ProcessMessageResponse(Message message, string? mediatorDid)
     {
         this.Message = message;
         this.MediatorDid = mediatorDid;
