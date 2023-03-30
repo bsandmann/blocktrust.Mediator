@@ -15,7 +15,12 @@ public static class GoalCodes
     public readonly static string ShortenOobv2 = "shorten.oobv2";
     
     /// <summary>
-    /// Used to shorten a url
+    /// Used to send a connect-message to a prism agent
     /// </summary>
     public readonly static string PrismConnect = "Connect";
+    
+    /// <summary>
+    /// Used inside a oob-message send to Prism agent
+    /// </summary>
+    public readonly static string PrismConnectOob = "io.atalaprism.connect";
 }

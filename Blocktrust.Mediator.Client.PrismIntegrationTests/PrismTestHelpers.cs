@@ -1,5 +1,6 @@
 ﻿namespace Blocktrust.Mediator.Client.PrismIntegrationTests;
 
+using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 
@@ -48,5 +49,25 @@ public static class PrismTestHelpers
         }
 
         return connectionIds;
+    }
+
+    /// <summary>
+    /// Sends a request to get all the existing connections of the PRISM agent.
+    /// </summary>
+    /// <param name="prismAgentApiKey"></param>
+    /// <param name="prismAgentUrlRunningInDocker"></param>
+    /// <param name="invitation"></param>
+    /// <returns></returns>
+    public static async Task SendInvitation(string prismAgentApiKey, string prismAgentUrlRunningInDocker, string invitation)
+    {
+        using var httpClient = new HttpClient();
+        httpClient.DefaultRequestHeaders.Add("apiKey", prismAgentApiKey);
+        var innerContent = string.Concat("{\"invitation\":\"", invitation, "\"}"); 
+        var invitationJson = new StringContent(innerContent, Encoding.UTF8, "application/json");
+        var invitationResponse = await httpClient.PostAsync(prismAgentUrlRunningInDocker + "prism-agent/connection-invitations", invitationJson ,new CancellationToken());
+        if (!invitationResponse.IsSuccessStatusCode)
+        {
+            throw new Exception("Prism node not reachable");
+        }
     }
 }

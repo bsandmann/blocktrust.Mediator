@@ -1,8 +1,12 @@
-﻿namespace Blocktrust.Mediator.Client.Commands.PrismConnect;
+﻿namespace Blocktrust.Mediator.Client.Commands.PrismConnect.ProcessOobInvitationAndConnect;
 
 using FluentResults;
 using MediatR;
 
+/// <summary>
+/// Assumes that we got a oob-invitation from a prism agent.
+/// This requests starts the process of sending connect-request to prism-agent and processes the answer from the agent
+/// </summary>
 public class PrismConnectRequest : IRequest<Result<PrismConnectResponse>>
 {
     public Uri PrismEndpoint { get; }

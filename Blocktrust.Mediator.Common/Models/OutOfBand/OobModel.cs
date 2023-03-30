@@ -81,12 +81,13 @@ public class OobModel
         return base64Url;
     }
 
-    public static string BuildGenericOobMessage(PeerDid from, string? goalCode = null, string? goal = null)
+    public static (string invitation, string messageId) BuildGenericOobMessage(PeerDid from, string? goalCode = null, string? goal = null)
     {
+        var messageId = Guid.NewGuid().ToString();
         var msg = new OobModel()
         {
             Type = ProtocolConstants.OutOfBand2Invitation,
-            Id = Guid.NewGuid().ToString(),
+            Id = messageId,
             From = from.Value,
             Body = new OobBodyModel()
             {
@@ -103,6 +104,6 @@ public class OobModel
         };
         var json = JsonSerializer.Serialize(msg, jsonSerializerOptions);
         var base64Url = Base64Url.Encode(Encoding.UTF8.GetBytes(json));
-        return base64Url;
+        return (base64Url, messageId);
     }
 }

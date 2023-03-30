@@ -1,9 +1,7 @@
-﻿namespace Blocktrust.Mediator.Client.Commands.TrustPing;
+﻿namespace Blocktrust.Mediator.Client.Commands.PrismConnect.ProcessOobInvitationAndConnect;
 
 using System.Net;
 using System.Net.Http.Headers;
-using System.Net.Mime;
-using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using Blocktrust.Common.Resolver;
@@ -12,15 +10,18 @@ using Blocktrust.DIDComm.Common.Types;
 using Blocktrust.DIDComm.Message.Messages;
 using Blocktrust.DIDComm.Model.PackEncryptedParamsModels;
 using Blocktrust.DIDComm.Model.UnpackParamsModels;
+using Blocktrust.Mediator.Client.Commands.Pickup.DeliveryRequest;
+using Blocktrust.Mediator.Client.Commands.Pickup.MessageReceived;
+using Blocktrust.Mediator.Common;
+using Blocktrust.Mediator.Common.Models.ProblemReport;
 using Blocktrust.Mediator.Common.Protocols;
-using Common;
-using Common.Models.ProblemReport;
 using FluentResults;
 using MediatR;
-using Pickup.DeliveryRequest;
-using Pickup.MessageReceived;
-using PrismConnect;
 
+/// <summary>
+/// Assumes that we got a oob-invitation from a prism agent.
+/// This requests starts the process of sending connect-request to prism-agent and processes the answer from the agent
+/// </summary>
 public class PrismConnectHandler : IRequestHandler<PrismConnectRequest, Result<PrismConnectResponse>>
 {
     private readonly HttpClient _httpClient;
@@ -35,7 +36,6 @@ public class PrismConnectHandler : IRequestHandler<PrismConnectRequest, Result<P
         _secretResolver = secretResolver;
         _mediator = mediator;
     }
-
 
     public async Task<Result<PrismConnectResponse>> Handle(PrismConnectRequest request, CancellationToken cancellationToken)
     {
@@ -176,7 +176,7 @@ public class PrismConnectHandler : IRequestHandler<PrismConnectRequest, Result<P
                     var goalCodeJson = (JsonElement)message.Message.Body!["goal_code"];
                     if (goalCodeJson.ValueKind == JsonValueKind.String && goalCodeJson.GetString()!.Equals(GoalCodes.PrismConnect, StringComparison.InvariantCultureIgnoreCase))
                     {
-                        return Result.Ok(new PrismConnectResponse(message.Message.Id, message.Message.From ?? message.Metadata!.EncryptedFrom));
+                        return Result.Ok(new PrismConnectResponse(message.MessageId!, message.Message.From ?? message.Metadata!.EncryptedFrom));
                     }
                 }
             }

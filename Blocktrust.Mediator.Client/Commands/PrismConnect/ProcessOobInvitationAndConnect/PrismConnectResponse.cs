@@ -1,6 +1,6 @@
-﻿namespace Blocktrust.Mediator.Client.Commands.PrismConnect;
+﻿namespace Blocktrust.Mediator.Client.Commands.PrismConnect.ProcessOobInvitationAndConnect;
 
-using Common.Models.ProblemReport;
+using Blocktrust.Mediator.Common.Models.ProblemReport;
 
 public class PrismConnectResponse
 {
