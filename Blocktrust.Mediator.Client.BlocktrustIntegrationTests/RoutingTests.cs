@@ -76,7 +76,7 @@ public class RoutingTests
         // Wrap the Basic Message into a new Message for the mediator to receive and send it
         _sendForwardMessageHandler = new SendForwardMessageHandler(_httpClient, simpleDidDocResolverForBob, secretResolverInMemoryForBob);
         var result = await _sendForwardMessageHandler.Handle(new SendForwardMessageRequest(
-            message: packedBasicMessage,
+            message: packedBasicMessage.Value,
             localDid: localDidOfBobToUseWithAliceMediator.Value.PeerDid.Value,
             mediatorDid: requestMediationResult.Value.MediatorDid, // The mediator DID was also shared beforehand (should be in the shared DID of alice)
             mediatorEndpoint: requestMediationResult.Value.MediatorEndpoint,

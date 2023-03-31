@@ -26,7 +26,7 @@ public static class BasicMessage
         return basicMessage;
     }
 
-    public static async Task<string> Pack(Message basicMessage, string from, string finalRecipientDid, ISecretResolver secretResolver, IDidDocResolver didDocResolver)
+    public static async Task<Result<string>> Pack(Message basicMessage, string from, string finalRecipientDid, ISecretResolver secretResolver, IDidDocResolver didDocResolver)
     {
         var didComm = new DidComm(didDocResolver, secretResolver);
         var packResult = await didComm.PackEncrypted(
@@ -36,8 +36,13 @@ public static class BasicMessage
                 .ProtectSenderId(false)
                 .BuildPackEncryptedParams()
         );
+        
+        if(packResult.IsFailed)
+        {
+            return packResult.ToResult();
+        }
 
-        return packResult.PackedMessage;
+        return packResult.Value.PackedMessage;
     }
 
     public static Result<BasicMessageContent> Parse(DeliveryResponseModel responseModel)

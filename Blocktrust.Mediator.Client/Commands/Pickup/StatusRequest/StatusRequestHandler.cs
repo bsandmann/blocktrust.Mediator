@@ -53,12 +53,17 @@ public class StatusRequestHandler : IRequestHandler<StatusRequestRequest, Result
                 .ProtectSenderId(false)
                 .BuildPackEncryptedParams()
         );
+        
+        if(packResult.IsFailed)
+        {
+            return packResult.ToResult();
+        }
 
         // We send the message to the mediator
         HttpResponseMessage response;
         try
         {
-            response = await _httpClient.PostAsync(request.MediatorEndpoint, new StringContent(packResult.PackedMessage, new MediaTypeHeaderValue(MessageTyp.Encrypted) ), cancellationToken);
+            response = await _httpClient.PostAsync(request.MediatorEndpoint, new StringContent(packResult.Value.PackedMessage, new MediaTypeHeaderValue(MessageTyp.Encrypted) ), cancellationToken);
         }
         catch (HttpRequestException ex)
         {

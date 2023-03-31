@@ -58,18 +58,23 @@ public class RequestShortenedUrlHandler : IRequestHandler<RequestShortenedUrlReq
         var didComm = new DidComm(_didDocResolver, _secretResolver);
 
         // We pack the message and encrypt it for the mediator
-        var packResult =await  didComm.PackEncrypted(
+        var packResult = await didComm.PackEncrypted(
             new PackEncryptedParamsBuilder(mediateRequestMessage, to: request.MediatorDid)
                 .From(request.LocalDid)
                 .ProtectSenderId(false)
                 .BuildPackEncryptedParams()
         );
 
+        if (packResult.IsFailed)
+        {
+            return packResult.ToResult();
+        }
+
         // We send the message to the mediator
         HttpResponseMessage response;
         try
         {
-            response = await _httpClient.PostAsync(request.MediatorEndpoint, new StringContent(packResult.PackedMessage, new MediaTypeHeaderValue(MessageTyp.Encrypted) ), cancellationToken);
+            response = await _httpClient.PostAsync(request.MediatorEndpoint, new StringContent(packResult.Value.PackedMessage, new MediaTypeHeaderValue(MessageTyp.Encrypted)), cancellationToken);
         }
         catch (HttpRequestException ex)
         {
@@ -88,7 +93,7 @@ public class RequestShortenedUrlHandler : IRequestHandler<RequestShortenedUrlReq
 
         var content = await response.Content.ReadAsStringAsync(cancellationToken);
 
-        var unpackResult =await  didComm.Unpack(
+        var unpackResult = await didComm.Unpack(
             new UnpackParamsBuilder(content)
                 .SecretResolver(_secretResolver)
                 .BuildUnpackParams());
@@ -96,7 +101,7 @@ public class RequestShortenedUrlHandler : IRequestHandler<RequestShortenedUrlReq
         {
             return unpackResult.ToResult();
         }
-        
+
         if (unpackResult.Value.Message.Type == ProtocolConstants.ProblemReport)
         {
             if (unpackResult.Value.Message.Pthid != null)
@@ -109,6 +114,7 @@ public class RequestShortenedUrlHandler : IRequestHandler<RequestShortenedUrlReq
 
                 return Result.Ok(new RequestShortenedUrlResponse(problemReport.Value));
             }
+
             return Result.Fail("Error parsing the problem report of the mediator. Missing parent-thread-id");
         }
 

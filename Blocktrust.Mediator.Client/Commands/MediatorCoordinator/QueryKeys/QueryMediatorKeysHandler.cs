@@ -57,7 +57,7 @@ public class QueryMediatorKeysHandler : IRequestHandler<QueryMediatorKeysRequest
         HttpResponseMessage response;
         try
         {
-            response = await _httpClient.PostAsync(request.MediatorEndpoint,new StringContent(packResult.PackedMessage, new MediaTypeHeaderValue(MessageTyp.Encrypted) ), cancellationToken);
+            response = await _httpClient.PostAsync(request.MediatorEndpoint,new StringContent(packResult.Value.PackedMessage, new MediaTypeHeaderValue(MessageTyp.Encrypted) ), cancellationToken);
         }
         catch (HttpRequestException ex)
         {

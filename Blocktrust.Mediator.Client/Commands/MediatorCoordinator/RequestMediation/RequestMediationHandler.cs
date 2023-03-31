@@ -86,7 +86,12 @@ public class RequestMediationHandler : IRequestHandler<RequestMediationRequest, 
                 .ProtectSenderId(false)
                 .BuildPackEncryptedParams()
         );
-
+        
+        if(packResult.IsFailed)
+        {
+            return packResult.ToResult();
+        }
+        
         // We send the message to the mediator
         var endpoint = invitationPeerDidDocResult.Value.Services?.FirstOrDefault()?.ServiceEndpoint;
         if (endpoint is null)
@@ -98,7 +103,7 @@ public class RequestMediationHandler : IRequestHandler<RequestMediationRequest, 
         HttpResponseMessage response;
         try
         {
-            response = await _httpClient.PostAsync(endpointUri, new StringContent(packResult.PackedMessage, new MediaTypeHeaderValue(MessageTyp.Encrypted) ), cancellationToken);
+            response = await _httpClient.PostAsync(endpointUri, new StringContent(packResult.Value.PackedMessage, new MediaTypeHeaderValue(MessageTyp.Encrypted) ), cancellationToken);
         }
         catch (HttpRequestException ex)
         {

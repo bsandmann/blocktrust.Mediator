@@ -115,8 +115,13 @@ public class MediatorController : ControllerBase
                     .ProtectSenderId(false)
                     .BuildPackEncryptedParams()
             );
+            
+            if(packResult.IsFailed)
+            {
+                return BadRequest($"Unable to pack message: {packResult.Errors.First().Message}");
+            }
 
-            return Ok(packResult.PackedMessage);
+            return Ok(packResult.Value.PackedMessage);
         }
         else
         {
@@ -133,39 +138,44 @@ public class MediatorController : ControllerBase
                     .ProtectSenderId(false)
                     .BuildPackEncryptedParams()
             );
+            
+            if(packResult.IsFailed)
+            {
+                return BadRequest($"Unable to pack message: {packResult.Errors.First().Message}");
+            }
 
             var didDocSenderDid = await _didDocResolver.Resolve(senderDid);
             if (didDocSenderDid is null)
             {
-                return Ok(packResult.PackedMessage);
+                return Ok(packResult.Value.PackedMessage);
             }
 
             var service = didDocSenderDid.Services.FirstOrDefault();
             if (service is null)
             {
                 // Fallback to just sending a http-response
-                return Ok(packResult.PackedMessage);
+                return Ok(packResult.Value.PackedMessage);
             }
 
             var endpoint = service!.ServiceEndpoint;
             if (string.IsNullOrEmpty(endpoint))
             {
                 // Fallback to just sending a http-response
-                return Ok(packResult.PackedMessage);
+                return Ok(packResult.Value.PackedMessage);
             }
 
             var isUri = Uri.TryCreate(endpoint, UriKind.Absolute, out var endpointUri);
             if (!isUri)
             {
                 // Fallback to just sending a http-response
-                return Ok(packResult.PackedMessage);
+                return Ok(packResult.Value.PackedMessage);
             }
 
-            var response = await _httpClient.PostAsync(endpointUri, new StringContent(packResult.PackedMessage, Encoding.UTF8, MessageTyp.Encrypted));
+            var response = await _httpClient.PostAsync(endpointUri, new StringContent(packResult.Value.PackedMessage, Encoding.UTF8, MessageTyp.Encrypted));
             if (!response.IsSuccessStatusCode)
             {
                 // Fallback to just sending a http-response
-                return Ok(packResult.PackedMessage);
+                return Ok(packResult.Value.PackedMessage);
             }
 
             return BadRequest($"Error sending message back to: '{senderDid}");

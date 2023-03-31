@@ -82,7 +82,7 @@ public class PickupTests
         // Wrap the Basic Message into a new Message for the mediator to recieve and send it
         _sendForwardMessageHandler = new SendForwardMessageHandler(_httpClient, simpleDidDocResolverForBob, secretResolverInMemoryForBob);
         var result = await _sendForwardMessageHandler.Handle(new SendForwardMessageRequest(
-            message: packedBasicMessage,
+            message: packedBasicMessage.Value,
             localDid: localDidOfBobToUseWithAliceMediator.Value.PeerDid.Value,
             mediatorDid: localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().RoutingKeys.First(), // The mediator DID was also shared beforehand (should be in the shared DID of alice)
             mediatorEndpoint: new Uri(localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().ServiceEndpoint),
@@ -146,7 +146,7 @@ public class PickupTests
         // Wrap the Basic Message into a new Message for the mediator to recieve and send it
         _sendForwardMessageHandler = new SendForwardMessageHandler(_httpClient, simpleDidDocResolverForBob, secretResolverInMemoryForBob);
         var result = await _sendForwardMessageHandler.Handle(new SendForwardMessageRequest(
-            message: packedBasicMessage,
+            message: packedBasicMessage.Value,
             localDid: localDidOfBobToUseWithAliceMediator.Value.PeerDid.Value,
             mediatorDid: localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().RoutingKeys.First(), // The mediator DID was also shared beforehand (should be in the shared DID of alice)
             mediatorEndpoint: new Uri(localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().ServiceEndpoint),
@@ -216,7 +216,7 @@ public class PickupTests
         // Wrap the Basic Message into a new Message for the mediator to recieve and send it
         _sendForwardMessageHandler = new SendForwardMessageHandler(_httpClient, simpleDidDocResolverForBob, secretResolverInMemoryForBob);
         var result1 = await _sendForwardMessageHandler.Handle(new SendForwardMessageRequest(
-            message: packedBasicMessage1,
+            message: packedBasicMessage1.Value,
             localDid: localDidOfBobToUseWithAliceMediator.Value.PeerDid.Value,
             mediatorDid: localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().RoutingKeys.First(), // The mediator DID was also shared beforehand (should be in the shared DID of alice)
             mediatorEndpoint: new Uri(localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().ServiceEndpoint),
@@ -224,7 +224,7 @@ public class PickupTests
         ), new CancellationToken());
         result1.IsSuccess.Should().BeTrue();
         var result2 = await _sendForwardMessageHandler.Handle(new SendForwardMessageRequest(
-            message: packedBasicMessage2,
+            message: packedBasicMessage2.Value,
             localDid: localDidOfBobToUseWithAliceMediator.Value.PeerDid.Value,
             mediatorDid: localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().RoutingKeys.First(), // The mediator DID was also shared beforehand (should be in the shared DID of alice)
             mediatorEndpoint: new Uri(localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().ServiceEndpoint),
@@ -291,7 +291,7 @@ public class PickupTests
         // Wrap the Basic Message into a new Message for the mediator to recieve and send it
         _sendForwardMessageHandler = new SendForwardMessageHandler(_httpClient, simpleDidDocResolverForBob, secretResolverInMemoryForBob);
         var result = await _sendForwardMessageHandler.Handle(new SendForwardMessageRequest(
-            message: packedBasicMessage,
+            message: packedBasicMessage.Value,
             localDid: localDidOfBobToUseWithAliceMediator.Value.PeerDid.Value,
             mediatorDid: localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().RoutingKeys.First(), // The mediator DID was also shared beforehand (should be in the shared DID of alice)
             // mediatorDid: requestMediationResult.Value.MediatorDid , // The mediator DID was also shared beforehand (should be in the shared DID of alice)
@@ -361,7 +361,7 @@ public class PickupTests
         // Wrap the Basic Message into a new Message for the mediator to recieve and send it
         _sendForwardMessageHandler = new SendForwardMessageHandler(_httpClient, simpleDidDocResolverForBob, secretResolverInMemoryForBob);
         var result = await _sendForwardMessageHandler.Handle(new SendForwardMessageRequest(
-            message: packedBasicMessage,
+            message: packedBasicMessage.Value,
             localDid: localDidOfBobToUseWithAliceMediator.Value.PeerDid.Value,
             mediatorDid: localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().RoutingKeys.First(), // The mediator DID was also shared beforehand (should be in the shared DID of alice)
             // mediatorDid: requestMediationResult.Value.MediatorDid , // The mediator DID was also shared beforehand (should be in the shared DID of alice)
@@ -431,7 +431,7 @@ public class PickupTests
         // Wrap the Basic Message into a new Message for the mediator to recieve and send it
         _sendForwardMessageHandler = new SendForwardMessageHandler(_httpClient, simpleDidDocResolverForBob, secretResolverInMemoryForBob);
         var result = await _sendForwardMessageHandler.Handle(new SendForwardMessageRequest(
-            message: packedBasicMessage,
+            message: packedBasicMessage.Value,
             localDid: localDidOfBobToUseWithAliceMediator.Value.PeerDid.Value,
             mediatorDid: localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().RoutingKeys.First(), // The mediator DID was also shared beforehand (should be in the shared DID of alice)
             mediatorEndpoint: new Uri(localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().ServiceEndpoint),
@@ -501,7 +501,7 @@ public class PickupTests
         // Wrap the Basic Message into a new Message for the mediator to recieve and send it
         _sendForwardMessageHandler = new SendForwardMessageHandler(_httpClient, simpleDidDocResolverForBob, secretResolverInMemoryForBob);
         var result = await _sendForwardMessageHandler.Handle(new SendForwardMessageRequest(
-            message: packedBasicMessage,
+            message: packedBasicMessage.Value,
             localDid: localDidOfBobToUseWithAliceMediator.Value.PeerDid.Value,
             mediatorDid: localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().RoutingKeys.First(), // The mediator DID was also shared beforehand (should be in the shared DID of alice)
             mediatorEndpoint: new Uri(localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().ServiceEndpoint),
@@ -740,7 +740,7 @@ public class PickupTests
         
         _sendForwardMessageHandler = new SendForwardMessageHandler(_httpClient, simpleDidDocResolverForBob, secretResolverInMemoryForBob);
         var result = await _sendForwardMessageHandler.Handle(new SendForwardMessageRequest(
-            message: packedBasicMessage,
+            message: packedBasicMessage.Value,
             localDid: localDidOfBobToUseWithAliceMediator.Value.PeerDid.Value,
             mediatorDid: localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().RoutingKeys.First(), // The mediator DID was also shared beforehand (should be in the shared DID of alice)
             mediatorEndpoint: new Uri(localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().ServiceEndpoint),

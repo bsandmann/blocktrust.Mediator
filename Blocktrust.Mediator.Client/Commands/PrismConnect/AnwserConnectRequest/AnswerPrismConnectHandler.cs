@@ -85,6 +85,11 @@ public class AnswerPrismConnectHandler : IRequestHandler<AnswerPrismConnectReque
                 .ProtectSenderId(false)
                 .BuildPackEncryptedParams()
         );
+        
+        if(packResult.IsFailed)
+        {
+            return packResult.ToResult();
+        }
 
         var prismDidDoc = await _didDocResolver.Resolve(checkResult.Value.PrismDid!);
         if (prismDidDoc is null)
@@ -110,7 +115,7 @@ public class AnswerPrismConnectHandler : IRequestHandler<AnswerPrismConnectReque
         HttpResponseMessage response;
         try
         {
-            response = await _httpClient.PostAsync(prismDidEndpointUri, new StringContent(packResult.PackedMessage, new MediaTypeHeaderValue(MessageTyp.Encrypted)), cancellationToken);
+            response = await _httpClient.PostAsync(prismDidEndpointUri, new StringContent(packResult.Value.PackedMessage, new MediaTypeHeaderValue(MessageTyp.Encrypted)), cancellationToken);
         }
         catch (HttpRequestException ex)
         {
