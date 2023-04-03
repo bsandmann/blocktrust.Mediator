@@ -131,15 +131,11 @@ public class DeliveryRequestHandler : IRequestHandler<DeliveryRequestRequest, Re
         var attachments = unpackResult.Value.Message.Attachments;
         if (attachments is null || !attachments.Any())
         {
-            //if we don't have any attachments, we should have a status message in the body
-            var bodyContent = unpackResult.Value.Message.Body;
-            var statusRequestResponseResult = StatusRequestResponse.Parse(bodyContent);
-            if (statusRequestResponseResult.IsFailed)
-            {
-                return statusRequestResponseResult.ToResult();
-            }
-
-            return new DeliveryRequestResponse(statusRequestResponseResult.Value);
+            // if we don't have any attachments, we should have a status message in the body
+            // so this case should ever happen, since the MessageType would then be StatusResponse
+            
+            // commented out for now, since this is currently causing compatibility issues with the roots mediator
+            // return Result.Fail("Invalid response from mediator. No attachments found.");
         }
 
 
