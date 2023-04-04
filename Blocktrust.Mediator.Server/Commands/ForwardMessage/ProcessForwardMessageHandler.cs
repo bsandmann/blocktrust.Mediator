@@ -61,7 +61,7 @@ public class ProcessForwardMessageHandler : IRequestHandler<ProcessForwardMessag
         var innerMessages = new List<StoredMessageModel>();
         foreach (var attachment in attachments!)
         {
-            var id = attachment.Id;
+            var id = attachment.Id ?? Guid.NewGuid().ToString();
             var data = attachment.Data;
             if (data is Json)
             {
