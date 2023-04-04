@@ -1,5 +1,6 @@
 ﻿namespace Blocktrust.Mediator.Server.Commands.ProcessMessage;
 
+using BasicMessageAB;
 using Blocktrust.DIDComm.Message.FromPriors;
 using Blocktrust.DIDComm.Message.Messages;
 using Blocktrust.Mediator.Common.Commands.CreatePeerDid;
@@ -129,6 +130,9 @@ public class ProcessMessageHandler : IRequestHandler<ProcessMessageRequest, Proc
                 break;
             case ProtocolConstants.DiscoverFeatures2Query:
                 result = await _mediator.Send(new ProcessDiscoverFeaturesRequest(request.UnpackResult.Message, request.SenderDid, mediatorDid, request.HostUrl, fromPrior), cancellationToken);
+                break;
+            case ProtocolConstants.BasicMessage:
+                result = await _mediator.Send(new BasicMessageAbRequest(request.UnpackResult.Message, request.SenderDid, mediatorDid, request.HostUrl, fromPrior), cancellationToken);
                 break;
             default:
                 return new ProcessMessageResponse(ProblemReportMessage.Build(
