@@ -11,25 +11,34 @@ public class CreatePeerDidRequest : IRequest<Result<CreatePeerDidResponse>>
     /// <summary>
     /// Request
     /// </summary>
-    public CreatePeerDidRequest(List<string>? serviceRoutingKeys = default, int numberOfAgreementKeys = 1, int numberOfAuthenticationKeys = 1, Uri? serviceEndpoint = null)
+    public CreatePeerDidRequest(string serviceEndpointDid, int numberOfAgreementKeys = 1, int numberOfAuthenticationKeys = 1)
     {
-        ServiceEndpoint = serviceEndpoint;
-        ServiceRoutingKeys = serviceRoutingKeys;
         NumberOfAgreementKeys = numberOfAgreementKeys;
         NumberOfAuthenticationKeys = numberOfAuthenticationKeys;
-        ServiceEndpointDid = null;
+        ServiceEndpointDid = serviceEndpointDid;
+        ServiceEndpoint = null;
     }
     
     /// <summary>
     /// Request
     /// </summary>
-    public CreatePeerDidRequest(string serviceEndpointDid, int numberOfAgreementKeys = 1, int numberOfAuthenticationKeys = 1)
+    public CreatePeerDidRequest(int numberOfAgreementKeys = 1, int numberOfAuthenticationKeys = 1)
     {
-        ServiceEndpoint = null;
-        ServiceRoutingKeys = null;
         NumberOfAgreementKeys = numberOfAgreementKeys;
         NumberOfAuthenticationKeys = numberOfAuthenticationKeys;
-        ServiceEndpointDid = serviceEndpointDid;
+        ServiceEndpointDid = null;
+        ServiceEndpoint = null;
+    }
+
+    /// <summary>
+    /// Request
+    /// </summary>
+    public CreatePeerDidRequest(Uri? serviceEndpoint, int numberOfAgreementKeys = 1, int numberOfAuthenticationKeys = 1)
+    {
+        NumberOfAgreementKeys = numberOfAgreementKeys;
+        NumberOfAuthenticationKeys = numberOfAuthenticationKeys;
+        ServiceEndpointDid = null;
+        ServiceEndpoint = serviceEndpoint;
     }
 
     /// <summary>
@@ -43,17 +52,9 @@ public class CreatePeerDidRequest : IRequest<Result<CreatePeerDidResponse>>
     public int NumberOfAuthenticationKeys { get; }
 
     /// <summary>
-    /// THe url to connect to the service
-    /// </summary>
-    public Uri? ServiceEndpoint { get; } 
-
-    /// <summary>
-    /// RoutingKeys of the mediator
-    /// </summary>
-    public List<string>? ServiceRoutingKeys { get; } = new();
-    
-    /// <summary>
     /// Instead of defining a ServiceEndpoing and optionally RoutingKeys, you can also use an existing DID directly to force another format
     /// </summary>
     public string? ServiceEndpointDid { get; }
+
+    public Uri? ServiceEndpoint { get; }
 }

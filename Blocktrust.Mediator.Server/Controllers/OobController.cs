@@ -39,7 +39,7 @@ public class OobController : ControllerBase
         var invitation = string.Empty;
         if (existingInvitationResult.IsFailed)
         {
-            var peerDidResponse = await _mediator.Send(new CreatePeerDidRequest(numberOfAgreementKeys: 1, numberOfAuthenticationKeys: 1, serviceEndpoint: new Uri(hostUrl), serviceRoutingKeys: new List<string>()));
+            var peerDidResponse = await _mediator.Send(new CreatePeerDidRequest(numberOfAgreementKeys: 1, numberOfAuthenticationKeys: 1, serviceEndpoint: new Uri(hostUrl)));
             if (peerDidResponse.IsFailed)
             {
                 return Problem(statusCode: 500, detail: peerDidResponse.Errors.First().Message);

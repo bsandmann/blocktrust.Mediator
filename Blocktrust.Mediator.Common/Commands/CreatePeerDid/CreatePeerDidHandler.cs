@@ -73,7 +73,7 @@ public class CreatePeerDidHandler : IRequestHandler<CreatePeerDidRequest, Result
             serviceDictionary = new Service(
                 id: "new-id",
                 serviceEndpoint: createdidRequest.ServiceEndpoint.AbsoluteUri,
-                routingKeys: createdidRequest.ServiceRoutingKeys,
+                routingKeys: new List<string>(), 
                 accept: new List<string>() { "didcomm/v2" },
                 type: ServiceConstants.ServiceDidcommMessaging).ToDict();
 
