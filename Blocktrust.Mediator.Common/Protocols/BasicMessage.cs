@@ -79,7 +79,7 @@ public static class BasicMessage
 
         if (string.IsNullOrEmpty(messageId))
         {
-            return Result.Fail("MessageId should not be emtpy");
+            return Result.Fail("MessageId should not be empty");
         }
 
         if (message.From is null && metadata.EncryptedFrom is null)
@@ -87,7 +87,7 @@ public static class BasicMessage
             return Result.Fail("From should not be null");
         }
 
-        if ((message.To is null || message.To.Any()) && (metadata.EncryptedTo is null || !metadata.EncryptedTo.Any()))
+        if ((message.To is null || !message.To.Any()) && (metadata.EncryptedTo is null || !metadata.EncryptedTo.Any()))
         {
             return Result.Fail("To should not be null or empty");
         }
