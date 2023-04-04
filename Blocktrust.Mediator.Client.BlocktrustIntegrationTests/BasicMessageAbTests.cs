@@ -36,6 +36,17 @@ public class BasicMessageAbTests
     [Fact]
     public async Task BasicMessageAbTestSucceeds()
     {
+        var ff = "eyJ0eXBlIjoiaHR0cHM6Ly9kaWRjb21tLm9yZy9vdXQtb2YtYmFuZC8yLjAvaW52aXRhdGlvbiIsImlkIjoiNWFjZjUwNmUtMjEzZi00ZWY2LWExM2EtMjI2M2IxODUwMGY2IiwiZnJvbSI6ImRpZDpwZWVyOjIuRXo2TFNjclFiSENXd3JWQmtBV3pGNlJuRDlwSlRSZjhKdmJoRXhGQ3NhMnZmMXBkdS5WejZNa3ZkR0RiTFJ2WHZQWlFCRlBGYnhnTDk3aEt5TXVqVEFSSlV4NXRlM2hrUkZ4LlNleUpwWkNJNkltNWxkeTFwWkNJc0luUWlPaUprYlNJc0luTWlPaUprYVdRNmNHVmxjam95TGtWNk5reFRabGxFTVZOemVuUjBTRU4yY0Zwb1JsVllaWFo1T0RGRU9WZ3pUVzlZYzBSVmExQnFWbFI1YzBKU1p6Z3VWbm8yVFd0MGRrWjFWVnBHT0V4Q09HRkNNazAwUkVWdWVtVTFPSGhpVW5kbFRuUnZObVExVFROblprTlRVazEzY2k1VFpYbEtjRnBEU1RaSmJUVnNaSGt4Y0ZwRFNYTkpibEZwVDJsS2EySlRTWE5KYmsxcFQybEtiMlJJVW5kamVtOTJUREl4YkZwSGJHaGtSemw1VEcxS2MySXlUbkprU0VveFl6TlJkVnBIVmpKTWVVbHpTVzVKYVU5c2RHUk1RMHBvU1dwd1lrbHRVbkJhUjA1MllsY3dkbVJxU1dsWVdEQWlMQ0p5SWpwYlhTd2lZU0k2V3lKa2FXUmpiMjF0TDNZeUlsMTkiLCJib2R5Ijp7ImFjY2VwdCI6WyJkaWRjb21tL3YyIl19fQ";
+        var ecodedInvitation = Encoding.UTF8.GetString(Base64Url.Decode(ff));
+        var ffoobModel = JsonSerializer.Deserialize<OobModel>(ecodedInvitation);
+        var gsinvitationPeerDidResult = PeerDidResolver.ResolvePeerDid(new PeerDid(ffoobModel.From), VerificationMaterialFormatPeerDid.Jwk);
+        var gsdinvitationPeerDidDocResult = DidDocPeerDid.FromJson(gsinvitationPeerDidResult.Value);
+
+        var endpoint = gsdinvitationPeerDidDocResult.Value.Services.FirstOrDefault().ServiceEndpoint;
+        var endpointr = PeerDidResolver.ResolvePeerDid(new PeerDid(endpoint), VerificationMaterialFormatPeerDid.Jwk);
+        var f = DidDocPeerDid.FromJson(endpointr.Value);
+        
+        
         // Arrange
         // First get the OOB from the running mediator
         var response = await _httpClient.GetAsync(_blocktrustMediatorUri + "oob_url");

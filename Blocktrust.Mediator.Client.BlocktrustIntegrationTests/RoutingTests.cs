@@ -86,6 +86,4 @@ public class RoutingTests
         // Assert, that the message was accepted and we get a 202
         result.IsSuccess.Should().BeTrue();
     }
-
-  
 }
