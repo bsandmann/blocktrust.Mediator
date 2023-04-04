@@ -13,14 +13,21 @@
     <title></title>
 </head>
 <body>
-<div>
+@if (Model.QrCodeModel.OnlyDisplayUrl)
+{
     @Model.QrCodeModel.OobUrl
-    @Html.Raw(@Model.QrCodeModel.OobSvg)
-</div>
-<div>
-    @Html.Raw(@Model.QrCodeModel.OobSvgSmall)
-    @Model.QrCodeModel.OobUrlShort
-</div>
+}
+else
+{
+    <div>
+        @Model.QrCodeModel.OobUrl
+        @Html.Raw(@Model.QrCodeModel.OobSvg)
+    </div>
+    <div>
+        @Html.Raw(@Model.QrCodeModel.OobSvgSmall)
+        @Model.QrCodeModel.OobUrlShort
+    </div>
+}
 <div>
 </div>
 </body >

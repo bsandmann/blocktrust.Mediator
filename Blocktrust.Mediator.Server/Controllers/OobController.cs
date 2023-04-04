@@ -7,6 +7,7 @@ using Commands.DatabaseCommands.GetShortenedUrl;
 using Common.Commands.CreatePeerDid;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 [ApiController]
 public class OobController : ControllerBase
@@ -70,7 +71,7 @@ public class OobController : ControllerBase
     public async Task<ActionResult<string>> QrCodeRedirection(string _oobid, string? path)
     {
         // while we do ingest a possible path, we don't process it any further, since only the guid is relevant for the resolution
-        var isParseable = Guid.TryParse(_oobid,out var shortenedUrlEntityId);
+        var isParseable = Guid.TryParse(_oobid, out var shortenedUrlEntityId);
         if (!isParseable)
         {
             return BadRequest("The provided shortened-url is incorrect");
@@ -84,8 +85,7 @@ public class OobController : ControllerBase
 
         return RedirectPermanent(result.Value);
     }
-   
-    
+
     /// <summary>
     /// Simple proof of concept endpoints which returns the request-string as content-string
     /// </summary>
@@ -93,7 +93,7 @@ public class OobController : ControllerBase
     [HttpGet("/identityWallet")]
     public Task<ActionResult<string>> IdentityWalletOutOfBandInvitation()
     {
-        var hostUrl = string.Concat(_httpContextAccessor!.HttpContext.Request.Scheme, "://", _httpContextAccessor.HttpContext.Request.Host, _httpContextAccessor.HttpContext.Request.Path,_httpContextAccessor.HttpContext.Request.QueryString);
+        var hostUrl = string.Concat(_httpContextAccessor!.HttpContext.Request.Scheme, "://", _httpContextAccessor.HttpContext.Request.Host, _httpContextAccessor.HttpContext.Request.Path, _httpContextAccessor.HttpContext.Request.QueryString);
         return Task.FromResult<ActionResult<string>>(Ok(hostUrl));
     }
 }
