@@ -36,8 +36,8 @@ public static class BasicMessage
                 .ProtectSenderId(false)
                 .BuildPackEncryptedParams()
         );
-        
-        if(packResult.IsFailed)
+
+        if (packResult.IsFailed)
         {
             return packResult.ToResult();
         }
@@ -50,7 +50,7 @@ public static class BasicMessage
         var message = responseModel.Message;
         var messageId = responseModel.MessageId;
         var metadata = responseModel.Metadata;
-        
+
         if (message is null)
         {
             return Result.Fail("Message should not be null");
@@ -61,9 +61,9 @@ public static class BasicMessage
             return Result.Fail("Metadata should not be null");
         }
 
-        if (message.Type != ProtocolConstants.BasicMessage)
+        if (message.Type.Equals(ProtocolConstants.BasicMessage, StringComparison.InvariantCultureIgnoreCase))
         {
-            return Result.Fail("Message is not a basic message");
+            return Result.Fail(string.Concat("Message is not a basic message. Type is '", message.Type, "'"));
         }
 
         if (!message.Body.ContainsKey("content"))
@@ -97,7 +97,7 @@ public static class BasicMessage
             messageId: messageId,
             from: message.From?.Split('#').FirstOrDefault() ?? metadata.EncryptedFrom!.Split('#').FirstOrDefault(),
             tos: message.To?.Select(p => p.Split('#').FirstOrDefault()).ToList() ?? metadata.EncryptedTo?.Select(p => p.Split('#').FirstOrDefault()).ToList()!,
-            createdUtc: message.CreatedTime is not null? DateTimeOffset.FromUnixTimeMilliseconds((long)message.CreatedTime).DateTime : DateTime.UtcNow
+            createdUtc: message.CreatedTime is not null ? DateTimeOffset.FromUnixTimeMilliseconds((long)message.CreatedTime).DateTime : DateTime.UtcNow
         );
 
         return Result.Ok(basisMessageContent);

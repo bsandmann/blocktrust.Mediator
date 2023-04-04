@@ -83,9 +83,9 @@ public class ProblemReport
             return Result.Fail("Message should not be null");
         }
 
-        if (message.Type != ProtocolConstants.ProblemReport)
+        if (message.Type.Equals(ProtocolConstants.ProblemReport, StringComparison.InvariantCultureIgnoreCase))
         {
-            return Result.Fail("Message is not a problem report");
+            return Result.Fail(string.Concat("Message is not a problem report. Tpye is '", message.Type, "'"));
         }
 
         if (string.IsNullOrEmpty(messageId))
