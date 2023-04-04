@@ -61,7 +61,7 @@ public static class BasicMessage
             return Result.Fail("Metadata should not be null");
         }
 
-        if (message.Type.Equals(ProtocolConstants.BasicMessage, StringComparison.InvariantCultureIgnoreCase))
+        if (!message.Type.Equals(ProtocolConstants.BasicMessage, StringComparison.InvariantCultureIgnoreCase))
         {
             return Result.Fail(string.Concat("Message is not a basic message. Type is '", message.Type, "'"));
         }
