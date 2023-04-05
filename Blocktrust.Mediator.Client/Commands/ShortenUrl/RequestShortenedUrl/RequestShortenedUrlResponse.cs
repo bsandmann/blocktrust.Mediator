@@ -56,6 +56,10 @@ public class RequestShortenedUrlResponse
                 var longValue = long.Parse(expiresTimesJsonElement.GetString()!);
                 expiresTime = DateTimeOffset.FromUnixTimeSeconds(longValue).DateTime;
             }
+            else if (expiresTimesJsonElement.ValueKind == JsonValueKind.Null)
+            {
+                expiresTime = null;
+            }
             else
             {
                 return Result.Fail($"Error: Malformed 'expires_time' in body: '{expiresTimesJsonElement.ToString()}'");
