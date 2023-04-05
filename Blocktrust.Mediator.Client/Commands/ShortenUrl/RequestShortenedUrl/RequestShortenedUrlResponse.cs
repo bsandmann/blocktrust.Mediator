@@ -7,8 +7,8 @@ using FluentResults;
 public class RequestShortenedUrlResponse
 {
     public Uri? ShortenedUrl { get; }
-    public DateTime? ExpiresTimeUtc { get;  }
-    
+    public DateTime? ExpiresTimeUtc { get; }
+
     public ProblemReport? ProblemReport { get; }
 
     public RequestShortenedUrlResponse(Uri shortenedUrl, DateTime? expiresTimeUtc = null)
@@ -16,11 +16,12 @@ public class RequestShortenedUrlResponse
         ShortenedUrl = shortenedUrl;
         ExpiresTimeUtc = expiresTimeUtc;
     }
+
     public RequestShortenedUrlResponse(ProblemReport problemReport)
     {
         ProblemReport = problemReport;
     }
-    
+
 
     public static Result<RequestShortenedUrlResponse> Parse(Dictionary<string, object> body)
     {
@@ -46,12 +47,19 @@ public class RequestShortenedUrlResponse
         {
             body.TryGetValue("expires_time", out var expiresTimesJson);
             var expiresTimesJsonElement = (JsonElement)expiresTimesJson;
-            if (expiresTimesJsonElement.ValueKind != JsonValueKind.Number)
+            if (expiresTimesJsonElement.ValueKind == JsonValueKind.Number)
             {
-                return Result.Fail("Error: Malformed 'expires_time' in body");
+                expiresTime = DateTimeOffset.FromUnixTimeSeconds(expiresTimesJsonElement.GetInt64()).DateTime;
             }
-
-            expiresTime = DateTimeOffset.FromUnixTimeSeconds(expiresTimesJsonElement.GetInt64()).DateTime;
+            else if (expiresTimesJsonElement.ValueKind == JsonValueKind.String)
+            {
+                var longValue = long.Parse(expiresTimesJsonElement.GetString()!);
+                expiresTime = DateTimeOffset.FromUnixTimeSeconds(longValue).DateTime;
+            }
+            else
+            {
+                return Result.Fail($"Error: Malformed 'expires_time' in body: '{expiresTimesJsonElement.ToString()}'");
+            }
         }
 
         return Result.Ok(new RequestShortenedUrlResponse(new Uri(shortenedUrl)!, expiresTime));
