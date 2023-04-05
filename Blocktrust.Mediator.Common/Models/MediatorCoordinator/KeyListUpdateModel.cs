@@ -10,6 +10,7 @@ public class KeyListUpdateModel
     /// <summary>
     /// For serialization / deserialization
     /// </summary>
+    [JsonConstructor]
     public KeyListUpdateModel()
     {
     }

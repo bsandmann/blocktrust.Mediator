@@ -10,6 +10,7 @@ public class FeatureQuery
     [JsonPropertyName("match")] public string Match { get; set; }
 
 
+    [JsonConstructor]
     public FeatureQuery()
     {
     }

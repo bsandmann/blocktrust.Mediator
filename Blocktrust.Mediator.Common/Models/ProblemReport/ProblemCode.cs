@@ -1,17 +1,18 @@
 ﻿namespace Blocktrust.Mediator.Common.Models.ProblemReport;
 
 using System.Text;
+using System.Text.Json.Serialization;
 using FluentResults;
 
 public class ProblemCode
 {
-    public EnumProblemCodeSorter Sorter { get; }
-    public EnumProblemCodeScope Scope { get; }
-    public string? StateNameForScope { get; }
-    public EnumProblemCodeDescriptor Descriptor { get; }
-    public string? OtherDescriptor { get; }
-    public string? AdditionalDescriptor1 { get; }
-    public string? AdditionalDescriptor2 { get; }
+    [JsonPropertyName("sorter")] public EnumProblemCodeSorter Sorter { get; set; }
+    [JsonPropertyName("scope")] public EnumProblemCodeScope Scope { get; set; }
+    [JsonPropertyName("stateScope")] public string? StateNameForScope { get; set; }
+    [JsonPropertyName("des0")] public EnumProblemCodeDescriptor Descriptor { get; set; }
+    [JsonPropertyName("des1")] public string? OtherDescriptor { get; set; }
+    [JsonPropertyName("des2")] public string? AdditionalDescriptor1 { get; set; }
+    [JsonPropertyName("des3")] public string? AdditionalDescriptor2 { get; set; }
     
     // Equality comparison for Sorter, Scope, StateNameForScope, Descriptor, OtherDescriptor, AdditionalDescriptor1 and AdditionalDescriptor2
     public override bool Equals(object obj)
@@ -24,6 +25,11 @@ public class ProblemCode
         return false;
     }
 
+    [JsonConstructor]
+    public ProblemCode()
+    {
+        
+    }
 
     public ProblemCode(EnumProblemCodeSorter sorter, EnumProblemCodeScope scope, string? stateNameForScope = null)
     {

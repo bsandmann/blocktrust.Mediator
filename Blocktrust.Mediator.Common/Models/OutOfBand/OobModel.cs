@@ -47,6 +47,7 @@ public class OobModel
     /// <summary>
     /// Constructor for serialization
     /// </summary>
+    [JsonConstructor]
     public OobModel()
     {
     }

@@ -2,16 +2,23 @@
 
 using System.Runtime.CompilerServices;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using FluentResults;
 using Pickup;
 using Protocols;
 
 public class ProblemReport
 {
-    public ProblemCode ProblemCode { get; }
-    public string ThreadIdWhichCausedTheProblem { get; }
-    public string? Comment { get; }
-    public Uri? EscalateTo { get; }
+    [JsonPropertyName("pc")] public ProblemCode ProblemCode { get;  set; }
+    [JsonPropertyName("thid")] public string ThreadIdWhichCausedTheProblem { get;  set; }
+    [JsonPropertyName("c")] public string? Comment { get;  set; }
+    [JsonPropertyName("e")] public Uri? EscalateTo { get; set; }
+
+    [JsonConstructor]
+    public ProblemReport()
+    {
+        
+    }
 
 
     public ProblemReport(ProblemCode problemCode, string threadIdWhichCausedTheProblem, string? comment = null, Uri? escalateTo = null)
