@@ -68,7 +68,7 @@ public class BasicMessageAbTests
         _createPeerDidHandler = new CreatePeerDidHandler(secretResolverInMemory);
 
         var localDidOfAliceToUseWithTheMediator = await _createPeerDidHandler.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
-        var basicMessage = BasicMessage.Create("Hello Mediator");
+        var basicMessage = BasicMessage.Create("Hello Mediator", localDidOfAliceToUseWithTheMediator.Value.PeerDid.Value);
         _sendMessageHandler = new SendMessageHandler(_httpClient, new SimpleDidDocResolver(), secretResolverInMemory);
         var abResult = await _sendMessageHandler.Handle(new SendMessageRequest(new Uri(mediatorEndpoint), mediatorDid, localDidOfAliceToUseWithTheMediator.Value.PeerDid.Value, basicMessage), CancellationToken.None);
         abResult.IsSuccess.Should().BeTrue();

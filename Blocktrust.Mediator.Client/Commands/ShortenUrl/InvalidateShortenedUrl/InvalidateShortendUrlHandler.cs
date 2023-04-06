@@ -44,6 +44,7 @@ public class InvalidateShortenedUrlHandler : IRequestHandler<InvalidateShortened
                 body: body
             )
             .customHeader("custom_headers", new List<JsonObject>() { returnRoute })
+            .from(request.LocalDid)
             .build();
 
         var didComm = new DidComm(_didDocResolver, _secretResolver);

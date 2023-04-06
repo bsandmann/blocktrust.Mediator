@@ -42,6 +42,7 @@ public class StatusRequestHandler : IRequestHandler<StatusRequestRequest, Result
                 body: body
             )
             .to(new List<string>() { request.MediatorDid })
+            .from(request.LocalDid)
             .build();
 
         var didComm = new DidComm(_didDocResolver, _secretResolver);

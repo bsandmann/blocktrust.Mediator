@@ -74,7 +74,7 @@ public class PickupTests
         var localDidOfBobToUseWithAlice = await _createPeerDidHandlerBob.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
 
         // Bob creates a "Basic Message" from Bob to Alice (the Did of Alice must be shared with Bob before e.g. with OOB)
-        var basicMessage = BasicMessage.Create("Hello Alice");
+        var basicMessage = BasicMessage.Create("Hello Alice", localDidOfBobToUseWithAlice.Value.PeerDid.Value);
         var packedBasicMessage = await BasicMessage.Pack(basicMessage, from: localDidOfBobToUseWithAlice.Value.PeerDid.Value, localDidOfAliceToUseWithBob.Value.PeerDid.Value, secretResolverInMemoryForBob, simpleDidDocResolverForBob);
 
         // Bob creates a DID just to be used with the mediator
@@ -142,7 +142,7 @@ public class PickupTests
         var localDidOfBobToUseWithAlice = await _createPeerDidHandlerBob.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
 
         // Bob creates a "Basic Message" from Bob to Alice (the Did of Alice must be shared with Bob before e.g. with OOB)
-        var basicMessage = BasicMessage.Create("Hello Alice");
+        var basicMessage = BasicMessage.Create("Hello Alice",localDidOfBobToUseWithAlice.Value.PeerDid.Value);
         var packedBasicMessage = await BasicMessage.Pack(basicMessage, from: localDidOfBobToUseWithAlice.Value.PeerDid.Value, localDidOfAliceToUseWithBob.Value.PeerDid.Value, secretResolverInMemoryForBob, simpleDidDocResolverForBob);
 
         // Bob creates a DID just to be used with the mediator
@@ -213,10 +213,10 @@ public class PickupTests
         var localDidOfBobToUseWithAlice = await _createPeerDidHandlerBob.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
 
         // Bob creates a "Basic Message" from Bob to Alice (the Did of Alice must be shared with Bob before e.g. with OOB)
-        var basicMessage1 = BasicMessage.Create("Hello Alice");
+        var basicMessage1 = BasicMessage.Create("Hello Alice", localDidOfBobToUseWithAlice.Value.PeerDid.Value);
         var packedBasicMessage1 = await BasicMessage.Pack(basicMessage1, from: localDidOfBobToUseWithAlice.Value.PeerDid.Value, localDidOfAliceToUseWithBob.Value.PeerDid.Value, secretResolverInMemoryForBob, simpleDidDocResolverForBob);
         // Bob also creates a second "Basic Message"
-        var basicMessage2 = BasicMessage.Create("How are you Alice?");
+        var basicMessage2 = BasicMessage.Create("How are you Alice?", localDidOfBobToUseWithAlice.Value.PeerDid.Value);
         var packedBasicMessage2 = await BasicMessage.Pack(basicMessage2, from: localDidOfBobToUseWithAlice.Value.PeerDid.Value, localDidOfAliceToUseWithBob.Value.PeerDid.Value, secretResolverInMemoryForBob, simpleDidDocResolverForBob);
 
         // Bob creates a DID just to be used with the mediator
@@ -294,7 +294,7 @@ public class PickupTests
         var localDidOfBobToUseWithAlice = await _createPeerDidHandlerBob.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
 
         // Bob creates a "Basic Message" from Bob to Alice (the Did of Alice must be shared with Bob before e.g. with OOB)
-        var basicMessage = BasicMessage.Create("Hello Alice");
+        var basicMessage = BasicMessage.Create("Hello Alice", localDidOfBobToUseWithAlice.Value.PeerDid.Value);
         var packedBasicMessage = await BasicMessage.Pack(basicMessage, from: localDidOfBobToUseWithAlice.Value.PeerDid.Value, localDidOfAliceToUseWithBob.Value.PeerDid.Value, secretResolverInMemoryForBob, simpleDidDocResolverForBob);
 
         // Bob creates a DID just to be used with the mediator
@@ -367,7 +367,7 @@ public class PickupTests
         var localDidOfBobToUseWithAlice = await _createPeerDidHandlerBob.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
 
         // Bob creates a "Basic Message" from Bob to Alice (the Did of Alice must be shared with Bob before e.g. with OOB)
-        var basicMessage = BasicMessage.Create("Hello Alice");
+        var basicMessage = BasicMessage.Create("Hello Alice", localDidOfBobToUseWithAlice.Value.PeerDid.Value);
         var packedBasicMessage = await BasicMessage.Pack(basicMessage, from: localDidOfBobToUseWithAlice.Value.PeerDid.Value, localDidOfAliceToUseWithBob.Value.PeerDid.Value, secretResolverInMemoryForBob, simpleDidDocResolverForBob);
 
         // Bob creates a DID just to be used with the mediator
@@ -441,7 +441,7 @@ public class PickupTests
         var localDidOfBobToUseWithAlice = await _createPeerDidHandlerBob.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
 
         // Bob creates a "Basic Message" from Bob to Alice (the Did of Alice must be shared with Bob before e.g. with OOB)
-        var basicMessage = BasicMessage.Create("Hello Alice");
+        var basicMessage = BasicMessage.Create("Hello Alice", localDidOfBobToUseWithAlice.Value.PeerDid.Value);
         var packedBasicMessage = await BasicMessage.Pack(basicMessage, from: localDidOfBobToUseWithAlice.Value.PeerDid.Value, localDidOfAliceToUseWithBob.Value.PeerDid.Value, secretResolverInMemoryForBob, simpleDidDocResolverForBob);
 
         // Bob creates a DID just to be used with the mediator
@@ -514,7 +514,7 @@ public class PickupTests
         var localDidOfBobToUseWithAlice = await _createPeerDidHandlerBob.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
 
         // Bob creates a "Basic Message" from Bob to Alice (the Did of Alice must be shared with Bob before e.g. with OOB)
-        var basicMessage = BasicMessage.Create("Hello Alice");
+        var basicMessage = BasicMessage.Create("Hello Alice", localDidOfBobToUseWithAlice.Value.PeerDid.Value);
         var packedBasicMessage = await BasicMessage.Pack(basicMessage, from: localDidOfBobToUseWithAlice.Value.PeerDid.Value, localDidOfAliceToUseWithBob.Value.PeerDid.Value, secretResolverInMemoryForBob, simpleDidDocResolverForBob);
 
         // Bob creates a DID just to be used with the mediator
@@ -753,7 +753,7 @@ public class PickupTests
         var localDidOfBobToUseWithAlice = await _createPeerDidHandlerBob.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
 
         // Bob creates a "Basic Message" from Bob to Alice (the Did of Alice must be shared with Bob before e.g. with OOB)
-        var basicMessage = BasicMessage.Create("Hello Alice");
+        var basicMessage = BasicMessage.Create("Hello Alice", localDidOfBobToUseWithAlice.Value.PeerDid.Value);
         var packedBasicMessage = await BasicMessage.Pack(basicMessage, from: localDidOfBobToUseWithAlice.Value.PeerDid.Value, localDidOfAliceToUseWithBob.Value.PeerDid.Value, secretResolverInMemoryForBob, simpleDidDocResolverForBob);
 
         // Bob creates a DID just to be used with the mediator

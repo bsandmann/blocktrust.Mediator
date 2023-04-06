@@ -44,6 +44,7 @@ public class TrustPingHandler : IRequestHandler<TrustPingRequest, Result>
                 body: new Dictionary<string, object> { { "response_requested", request.ResponseRequested } }
             )
             .customHeader("custom_headers", new List<JsonObject>() { returnRoute })
+            .from(request.LocalDid)
             .build();
 
         var didComm = new DidComm(_didDocResolver, _secretResolver);

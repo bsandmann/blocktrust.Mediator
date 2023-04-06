@@ -53,6 +53,7 @@ public class RequestShortenedUrlHandler : IRequestHandler<RequestShortenedUrlReq
                 body: body
             )
             .customHeader("custom_headers", new List<JsonObject>() { returnRoute })
+            .from(request.LocalDid)
             .build();
 
         var didComm = new DidComm(_didDocResolver, _secretResolver);

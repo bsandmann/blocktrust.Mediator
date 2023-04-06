@@ -41,6 +41,7 @@ public class QueryMediatorKeysHandler : IRequestHandler<QueryMediatorKeysRequest
                 body: new Dictionary<string, object>()
             )
             .customHeader("custom_headers", new List<JsonObject>() { returnRoute })
+            .from(request.LocalDid)
             .build();
 
         var didComm = new DidComm(_didDocResolver, _secretResolver);

@@ -79,7 +79,7 @@ public class BasicMessageTests
         await addMediatorKeysHandler.Handle(addKeyRequest, CancellationToken.None);
         
         // Create a simple BasicMessage
-        var basicMessage = BasicMessage.Create("Hello agent");
+        var basicMessage = BasicMessage.Create("Hello agent", localDidToUseWithPrism.Value.PeerDid.Value);
 
         var sendMessageHandler = new SendMessageHandler(_httpClient,_simpleDidDocResolver, _secretResolverInMemory);
         var sendMessageRequest = new SendMessageRequest(new Uri(prismAgentEndpoint), prismAgentDid, localDidToUseWithPrism.Value.PeerDid.Value, basicMessage);

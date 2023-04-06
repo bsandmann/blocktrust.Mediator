@@ -47,6 +47,7 @@ public class DeliveryRequestHandler : IRequestHandler<DeliveryRequestRequest, Re
                 body: body
             )
             .to(new List<string>() { request.MediatorDid })
+            .from(request.LocalDid)
             .build();
 
         var didComm = new DidComm(_didDocResolver, _secretResolver);

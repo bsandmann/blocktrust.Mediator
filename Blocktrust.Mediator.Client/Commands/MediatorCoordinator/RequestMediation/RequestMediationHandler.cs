@@ -61,6 +61,7 @@ public class RequestMediationHandler : IRequestHandler<RequestMediationRequest, 
                 type: ProtocolConstants.CoordinateMediation2Request,
                 body: new Dictionary<string, object>()
             )
+            .from(request.LocalDid)
             .customHeader("custom_headers", new List<JsonObject>() { returnRoute })
             .build();
 
