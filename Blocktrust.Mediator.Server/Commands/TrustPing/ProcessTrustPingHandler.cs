@@ -33,6 +33,9 @@ public class ProcessTrustPingHandler : IRequestHandler<ProcessTrustPingRequest, 
                 id: Guid.NewGuid().ToString(),
                 type: ProtocolConstants.TrustPingResponse,
                 body: new Dictionary<string, object>()
+                {
+                    { "suggested_label", "Blocktrust Mediator" }
+                }
             )
             .thid(request.UnpackedMessage.Thid ?? request.UnpackedMessage.Id)
             .fromPrior(request.FromPrior)

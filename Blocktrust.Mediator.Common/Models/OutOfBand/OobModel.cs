@@ -68,7 +68,8 @@ public class OobModel
             {
                 GoalCode = GoalCodes.RequestMediation,
                 Goal = "Request mediate through the blocktrust mediator",
-                Accept = new List<string>() { "didcomm/v2" }
+                Accept = new List<string>() { "didcomm/v2" },
+                Label = "Blocktrust Mediator"
             },
             Attachments = null
         };
@@ -82,7 +83,7 @@ public class OobModel
         return base64Url;
     }
 
-    public static (string invitation, string messageId) BuildGenericOobMessage(PeerDid from, string? goalCode = null, string? goal = null)
+    public static (string invitation, string messageId) BuildGenericOobMessage(PeerDid from, string? goalCode = null, string? goal = null, string? label = null)
     {
         var messageId = Guid.NewGuid().ToString();
         var msg = new OobModel()
@@ -94,10 +95,12 @@ public class OobModel
             {
                 GoalCode = goalCode,
                 Goal = goal,
-                Accept = new List<string>() { "didcomm/v2" }
+                Accept = new List<string>() { "didcomm/v2" },
+                Label = label
             },
             Attachments = null
         };
+
         var jsonSerializerOptions = new JsonSerializerOptions()
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,

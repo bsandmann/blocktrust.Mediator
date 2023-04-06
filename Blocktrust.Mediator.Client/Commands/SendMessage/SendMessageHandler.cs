@@ -32,14 +32,14 @@ public class SendMessageHandler : IRequestHandler<SendMessageRequest, Result<Mes
         var didComm = new DidComm(_didDocResolver, _secretResolver);
 
         // We pack the message and encrypt it for the mediator
-        var packResult =await  didComm.PackEncrypted(
+        var packResult = await didComm.PackEncrypted(
             new PackEncryptedParamsBuilder(request.Message, to: request.RemoteDid)
                 .From(request.LocalDid)
                 .ProtectSenderId(false)
                 .BuildPackEncryptedParams()
         );
-        
-        if(packResult.IsFailed)
+
+        if (packResult.IsFailed)
         {
             return packResult.ToResult();
         }
@@ -48,13 +48,13 @@ public class SendMessageHandler : IRequestHandler<SendMessageRequest, Result<Mes
         HttpResponseMessage response;
         try
         {
-            response = await _httpClient.PostAsync(request.RemoteEndpoint, new StringContent(packResult.Value.PackedMessage, new MediaTypeHeaderValue(MessageTyp.Encrypted) ), cancellationToken);
+            response = await _httpClient.PostAsync(request.RemoteEndpoint, new StringContent(packResult.Value.PackedMessage, new MediaTypeHeaderValue(MessageTyp.Encrypted)), cancellationToken);
         }
         catch (HttpRequestException ex)
         {
             return Result.Fail($"Connection could not be established: {ex.Message}");
         }
-        
+
         if (response.StatusCode == HttpStatusCode.NotFound)
         {
             return Result.Fail("Connection could not be established. Not found");
@@ -67,15 +67,20 @@ public class SendMessageHandler : IRequestHandler<SendMessageRequest, Result<Mes
 
         var content = await response.Content.ReadAsStringAsync(cancellationToken);
 
-        var unpackResult =await  didComm.Unpack(
-            new UnpackParamsBuilder(content)
-                .SecretResolver(_secretResolver)
-                .BuildUnpackParams());
-        if (unpackResult.IsFailed)
+        if (!string.IsNullOrEmpty(content))
         {
-            return unpackResult.ToResult();
+            var unpackResult = await didComm.Unpack(
+                new UnpackParamsBuilder(content)
+                    .SecretResolver(_secretResolver)
+                    .BuildUnpackParams());
+            if (unpackResult.IsFailed)
+            {
+                return unpackResult.ToResult();
+            }
+
+            return Result.Ok(unpackResult.Value.Message);
         }
 
-        return Result.Ok(unpackResult.Value.Message);
+        return Result.Ok();
     }
 }

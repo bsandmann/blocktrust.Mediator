@@ -1,5 +1,6 @@
 ﻿namespace Blocktrust.Mediator.Common.Protocols;
 
+using System.Reflection.Emit;
 using System.Text.Json;
 using Blocktrust.Common.Resolver;
 using DIDComm;
