@@ -1,5 +1,6 @@
 ﻿namespace Blocktrust.Mediator.Server.Controllers;
 
+using System.Text;
 using Blocktrust.Common.Resolver;
 using Commands.DatabaseCommands.CreateOobInvitation;
 using Commands.DatabaseCommands.GetOobInvitation;
@@ -14,13 +15,15 @@ public class OobController : ControllerBase
 {
     private readonly ILogger<OobController> _logger;
     private readonly IMediator _mediator;
+    private readonly HttpClient _httpClient;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public OobController(ILogger<OobController> logger, IMediator mediator, IHttpContextAccessor httpContextAccessor, ISecretResolver secretResolver, IDidDocResolver didDocResolver)
+    public OobController(ILogger<OobController> logger, IMediator mediator, IHttpContextAccessor httpContextAccessor, ISecretResolver secretResolver, IDidDocResolver didDocResolver, HttpClient httpClient)
     {
         _logger = logger;
         _mediator = mediator;
         _httpContextAccessor = httpContextAccessor;
+        _httpClient = httpClient;
     }
 
     // Note: the pure text oob-invitation and the redirects are handled here. The graphical representations 
@@ -95,5 +98,42 @@ public class OobController : ControllerBase
     {
         var hostUrl = string.Concat(_httpContextAccessor!.HttpContext.Request.Scheme, "://", _httpContextAccessor.HttpContext.Request.Host, _httpContextAccessor.HttpContext.Request.Path, _httpContextAccessor.HttpContext.Request.QueryString);
         return Task.FromResult<ActionResult<string>>(Ok(hostUrl));
+    }
+
+
+    /// <summary>
+    /// For debugging purposes
+    /// </summary>
+    /// <returns></returns>
+    [HttpPost("/redirectUrl")]
+    public async Task<ActionResult<string>> GetRedirectionUrl(string encodedUrl)
+    {
+        var url = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUrl));
+
+        // call a url and return the target of the redirection
+        // tryparse the url
+        var isParseable = Uri.TryCreate(url, UriKind.Absolute, out var uriResult) && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
+        if (!isParseable)
+        {
+            return BadRequest("The provided url is incorrect");
+        }
+
+        HttpResponseMessage response;
+        try
+        {
+            response = await _httpClient.GetAsync(uriResult);
+        }
+        catch (Exception e)
+        {
+            return BadRequest($"Error processing the url: {e.Message}");
+        }
+
+        if (response.IsSuccessStatusCode)
+        {
+            var finalUrl = response.RequestMessage.RequestUri.ToString();
+            return Ok(finalUrl);
+        }
+
+        return BadRequest("The host did not respond with a success status code");
     }
 }

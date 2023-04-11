@@ -27,6 +27,7 @@ public class OutOfBandInvitationTests
     private readonly CreatePeerDidHandler _createPeerDidHandler;
     private readonly ISecretResolver _secretResolver;
     private readonly IDidDocResolver _didDocResolver;
+    private readonly HttpClient _httpClient;
 
     public OutOfBandInvitationTests()
     {
@@ -36,11 +37,10 @@ public class OutOfBandInvitationTests
         _secretResolver = new SecretResolverInMemory();
         _didDocResolver = new SimpleDidDocResolver();
         _createPeerDidHandler = new CreatePeerDidHandler(_secretResolver);
-        
+        _httpClient = new HttpClient();
+
         _httpContextAccessorMock.Setup(p => p.HttpContext.Request.Host).Returns(new HostString("dummydomain.com"));
         _httpContextAccessorMock.Setup(p => p.HttpContext.Request.Scheme).Returns("https");
-        
-        
     }
 
     [Fact]
@@ -49,25 +49,24 @@ public class OutOfBandInvitationTests
         // Arrange
         _mediatorMock.Setup(p => p.Send(It.IsAny<GetOobInvitationRequest>(), It.IsAny<CancellationToken>()))
             .Returns(async (GetOobInvitationRequest request, CancellationToken token) => Result.Ok(new OobInvitationModel(new OobInvitationEntity()
-        {
-            OobId = Guid.NewGuid(),
-            CreatedUtc = DateTime.UtcNow,
-            Did="TheDIDofTheMediator",
-            Invitation = "TheInvitationIntheDatabase",
-            Url = "TheUrlTheMediatorIsListeningOn",
-            
-        })));
-        var controller = new OobController(_iLogger.Object, _mediatorMock.Object, _httpContextAccessorMock.Object, _secretResolver, _didDocResolver);
-        
+            {
+                OobId = Guid.NewGuid(),
+                CreatedUtc = DateTime.UtcNow,
+                Did = "TheDIDofTheMediator",
+                Invitation = "TheInvitationIntheDatabase",
+                Url = "TheUrlTheMediatorIsListeningOn",
+            })));
+        var controller = new OobController(_iLogger.Object, _mediatorMock.Object, _httpContextAccessorMock.Object, _secretResolver, _didDocResolver, _httpClient);
+
         // Act
         var result = await controller.OutOfBandInvitation();
-       
+
         // Assert
         result.Result.Should().BeOfType(typeof(OkObjectResult));
         var resultContent = (OkObjectResult)result.Result;
         resultContent.Value.Should().Be("https://dummydomain.com?_oob=TheInvitationIntheDatabase");
     }
-    
+
     [Fact]
     public async Task OutOfBandInvitationGetsCreated()
     {
@@ -75,7 +74,7 @@ public class OutOfBandInvitationTests
         _mediatorMock.Setup(p => p.Send(It.IsAny<GetOobInvitationRequest>(), It.IsAny<CancellationToken>()))
             .Returns(async (GetOobInvitationRequest request, CancellationToken token) => Result.Fail("Not in database"));
         _mediatorMock.Setup(p => p.Send(It.IsAny<CreatePeerDidRequest>(), It.IsAny<CancellationToken>()))
-            .Returns(async (CreatePeerDidRequest request, CancellationToken token) => await _createPeerDidHandler.Handle(request, token) );
+            .Returns(async (CreatePeerDidRequest request, CancellationToken token) => await _createPeerDidHandler.Handle(request, token));
         _mediatorMock.Setup(p => p.Send(It.IsAny<CreateOobInvitationRequest>(), It.IsAny<CancellationToken>()))
             .Returns(async (CreateOobInvitationRequest request, CancellationToken token) => Result.Ok(new OobInvitationModel(new OobInvitationEntity()
                 {
@@ -84,12 +83,12 @@ public class OutOfBandInvitationTests
                     Url = request.HostUrl,
                     Invitation = OobModel.BuildRequestMediateOobMessage(request.PeerDid)
                 }
-                )) );
-        var controller = new OobController(_iLogger.Object, _mediatorMock.Object, _httpContextAccessorMock.Object,  _secretResolver, _didDocResolver);
-        
+            )));
+        var controller = new OobController(_iLogger.Object, _mediatorMock.Object, _httpContextAccessorMock.Object, _secretResolver, _didDocResolver, _httpClient);
+
         // Act
         var result = await controller.OutOfBandInvitation();
-       
+
         // Assert
         result.Result.Should().BeOfType(typeof(OkObjectResult));
         var resultContent = (OkObjectResult)result.Result;
