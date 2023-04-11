@@ -2,6 +2,7 @@
 
 using System.Text;
 using Blocktrust.Common.Resolver;
+using Castle.Components.DictionaryAdapter.Xml;
 using Commands.DatabaseCommands.CreateOobInvitation;
 using Commands.DatabaseCommands.GetOobInvitation;
 using Commands.DatabaseCommands.GetShortenedUrl;
@@ -105,13 +106,11 @@ public class OobController : ControllerBase
     /// For debugging purposes
     /// </summary>
     /// <returns></returns>
-    [HttpPost("/redirectUrl")]
+    [HttpGet("/redirectUrl")]
     public async Task<ActionResult<string>> GetRedirectionUrl(string encodedUrl)
     {
         var url = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUrl));
 
-        // call a url and return the target of the redirection
-        // tryparse the url
         var isParseable = Uri.TryCreate(url, UriKind.Absolute, out var uriResult) && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
         if (!isParseable)
         {
