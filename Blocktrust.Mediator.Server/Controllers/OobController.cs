@@ -127,11 +127,13 @@ public class OobController : ControllerBase
             return BadRequest($"Error processing the url: {e.Message}");
         }
 
-        if (response.IsSuccessStatusCode)
+        if (response.RequestMessage is null || response.RequestMessage.RequestUri is null)
         {
-            var finalUrl = response.RequestMessage.RequestUri.ToString();
-            return Ok(finalUrl);
+            return BadRequest($"Error processing the redirection url");
         }
+
+        var finalUrl = response.RequestMessage.RequestUri.ToString();
+        return Ok(finalUrl);
 
         return BadRequest("The host did not respond with a success status code");
     }
