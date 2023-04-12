@@ -36,4 +36,9 @@ public class ProtocolConstants
     
     public const string PrismConnectRequest = "https://atalaprism.io/mercury/connections/1.0/request";
     public const string PrismConnectResponse = "https://atalaprism.io/mercury/connections/1.0/response";
+    
+    public const string IssueCredential2Propose = "https://didcomm.org/issue-credential/2.0/propose-credential";
+    public const string IssueCredential2Offer = "https://didcomm.org/issue-credential/2.0/offer-credential";
+    public const string IssueCredential2Request = "https://didcomm.org/issue-credential/2.0/request-credential";
+    public const string IssueCredential2Issue = "https://didcomm.org/issue-credential/2.0/issue-credential";
 }
