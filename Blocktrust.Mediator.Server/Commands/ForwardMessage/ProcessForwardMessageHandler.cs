@@ -67,7 +67,6 @@ public class ProcessForwardMessageHandler : IRequestHandler<ProcessForwardMessag
             {
                 Json? jsonAttachmentData = (Json)data;
                 var msg = jsonAttachmentData?.JsonString;
-                // var msg = innerJson?.GetTyped<Dictionary<string, object>>("json");
                 var innerMessage = JsonSerializer.Serialize(msg);
                 innerMessages.Add(new StoredMessageModel(id, innerMessage));
             }
