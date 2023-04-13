@@ -8,6 +8,7 @@ using Blocktrust.PeerDID.DIDDoc;
 using Blocktrust.PeerDID.PeerDIDCreateResolve;
 using Blocktrust.PeerDID.Types;
 using DIDComm.Secrets;
+using DIDComm.Utils;
 using FluentResults;
 using MediatR;
 
@@ -77,7 +78,7 @@ public class CreatePeerDidHandler : IRequestHandler<CreatePeerDidRequest, Result
                 accept: new List<string>() { "didcomm/v2" },
                 type: ServiceConstants.ServiceDidcommMessaging).ToDict();
 
-            service = JsonSerializer.Serialize(serviceDictionary);
+            service = JsonSerializer.Serialize(serviceDictionary, SerializationOptions.UnsafeRelaxedEscaping);
         }
         else if (createdidRequest.ServiceEndpointDid is not null)
         {
@@ -88,7 +89,7 @@ public class CreatePeerDidHandler : IRequestHandler<CreatePeerDidRequest, Result
                 accept: new List<string>() { "didcomm/v2" },
                 type: ServiceConstants.ServiceDidcommMessaging).ToDict();
             
-            service = JsonSerializer.Serialize(serviceDictionary);
+            service = JsonSerializer.Serialize(serviceDictionary, SerializationOptions.UnsafeRelaxedEscaping);
         }
 
         // Generate Peer Did

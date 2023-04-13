@@ -150,7 +150,7 @@ public class DeliveryRequestHandler : IRequestHandler<DeliveryRequestRequest, Re
             {
                 Json? jsonAttachmentData = (Json)data;
                 var innerJson = jsonAttachmentData?.JsonString;
-                innerMessage = JsonSerializer.Serialize(innerJson);
+                innerMessage = JsonSerializer.Serialize(innerJson, SerializationOptions.UnsafeRelaxedEscaping);
             }
             else
             {

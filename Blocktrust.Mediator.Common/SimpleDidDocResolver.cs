@@ -6,6 +6,7 @@ using Blocktrust.Common.Resolver;
 using Blocktrust.PeerDID.DIDDoc;
 using Blocktrust.PeerDID.PeerDIDCreateResolve;
 using Blocktrust.PeerDID.Types;
+using DIDComm.Utils;
 
 public class SimpleDidDocResolver : IDidDocResolver
 {
@@ -59,7 +60,7 @@ public class SimpleDidDocResolver : IDidDocResolver
                     type: VerificationMethodType.JsonWebKey2020,
                     verificationMaterial: new VerificationMaterial(
                         format: VerificationMaterialFormat.Jwk,
-                        value: JsonSerializer.Serialize((PeerDidJwk)p.VerMaterial.Value)),
+                        value: JsonSerializer.Serialize((PeerDidJwk)p.VerMaterial.Value, SerializationOptions.UnsafeRelaxedEscaping)),
                     controller: p.Controller
                 )).ToList(),
                 Services = didDocResult.Value?.Services?.ToList() ?? new List<Service>()
