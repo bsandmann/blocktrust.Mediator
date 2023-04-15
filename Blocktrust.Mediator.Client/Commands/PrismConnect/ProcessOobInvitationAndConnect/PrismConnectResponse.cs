@@ -19,4 +19,8 @@ public class PrismConnectResponse
     {
         ProblemReport = problemReport;
     }
+    
+    public PrismConnectResponse()
+    {
+    }
 }

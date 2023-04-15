@@ -113,7 +113,9 @@ public class PrismConnectHandler : IRequestHandler<PrismConnectRequest, Result<P
                 }
 
                 // Since it is a forward message, we don't expect a direct-http response
-                return Result.Ok();
+                
+                // Unclear...
+                return Result.Ok(new PrismConnectResponse(request.ThreadId, request.PrismDid));
             }
             catch (Exception e)
             {
