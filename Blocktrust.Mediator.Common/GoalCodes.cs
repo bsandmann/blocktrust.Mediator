@@ -23,4 +23,9 @@ public static class GoalCodes
     /// Used inside a oob-message send to Prism agent
     /// </summary>
     public readonly static string PrismConnectOob = "io.atalaprism.connect";
+    
+    /// <summary>
+    /// Goal code of the offer-credential message from the atala-prism agent
+    /// </summary>
+    public readonly static string PrismCredentialOffer = "Offer Credential";
 }
