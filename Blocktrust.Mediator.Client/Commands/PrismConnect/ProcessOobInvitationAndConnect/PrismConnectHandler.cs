@@ -102,7 +102,7 @@ public class PrismConnectHandler : IRequestHandler<PrismConnectRequest, Result<P
             {
                 var forwardMessageResult = await _mediator.Send(new SendForwardMessageRequest(
                     message: packResult.Value.PackedMessage,
-                    localDid: request.LocalDidToUseWithMediator, // shouldn't that be a did just for the mediator or the other party?
+                    localDid: request.LocalDidToUseWithPrism, // shouldn't that be a did just for the mediator or the other party?
                     mediatorDid: resolvedEndpointDidDoc.Value.Did,
                     mediatorEndpoint: mediatorEndpointUri!,
                     recipientDid: request.PrismDid
@@ -113,9 +113,6 @@ public class PrismConnectHandler : IRequestHandler<PrismConnectRequest, Result<P
                 }
 
                 // Since it is a forward message, we don't expect a direct-http response
-                
-                // Unclear...
-                return Result.Ok(new PrismConnectResponse(request.ThreadId, request.PrismDid));
             }
             catch (Exception e)
             {
@@ -132,73 +129,70 @@ public class PrismConnectHandler : IRequestHandler<PrismConnectRequest, Result<P
             {
                 return Result.Fail($"Connection could not be established: {ex.Message}");
             }
-        }
 
-
-        if (response.StatusCode == HttpStatusCode.NotFound)
-        {
-            return Result.Fail("Connection could not be established. Not found.");
-        }
-
-        if (!response.IsSuccessStatusCode)
-        {
-            return Result.Fail("Unable to initiate connection: " + response.StatusCode);
-        }
-
-        var content = await response.Content.ReadAsStringAsync(cancellationToken);
-
-        if (!string.IsNullOrEmpty(content))
-        {
-            // If a return message would have been supported:
-
-            var unpackResult = await didComm.Unpack(
-                new UnpackParamsBuilder(content)
-                    .SecretResolver(_secretResolver)
-                    .BuildUnpackParams());
-            if (unpackResult.IsFailed)
+            if (response.StatusCode == HttpStatusCode.NotFound)
             {
-                return unpackResult.ToResult();
+                return Result.Fail("Connection could not be established. Not found.");
             }
 
-            if (unpackResult.Value.Message.Type == ProtocolConstants.PrismConnectResponse)
+            if (!response.IsSuccessStatusCode)
             {
-                if (unpackResult.Value.Message.Body.ContainsKey("goal_code"))
+                return Result.Fail("Unable to initiate connection: " + response.StatusCode);
+            }
+
+            var content = await response.Content.ReadAsStringAsync(cancellationToken);
+
+            if (!string.IsNullOrEmpty(content))
+            {
+                // If a return message would have been supported:
+
+                var unpackResult = await didComm.Unpack(
+                    new UnpackParamsBuilder(content)
+                        .SecretResolver(_secretResolver)
+                        .BuildUnpackParams());
+                if (unpackResult.IsFailed)
                 {
-                    var goalCodeJson = (JsonElement)unpackResult.Value.Message.Body!["goal_code"];
-                    if (goalCodeJson.ValueKind == JsonValueKind.String && goalCodeJson.GetString()!.Equals(GoalCodes.PrismConnect, StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        return Result.Ok(new PrismConnectResponse(unpackResult.Value.Message.Id, unpackResult.Value.Message.From ?? unpackResult.Value.Metadata!.EncryptedFrom));
-                    }
+                    return unpackResult.ToResult();
                 }
 
-                return Result.Fail("The response does not have correct threadId, type or goalCode");
-            }
-            else
-            {
-                return Result.Fail("Error: Unexpected message response type");
-            }
-        }
-        else
-        {
-            // The return message is hopefully at our mediator
-            var retry = 0;
-            var maxRetries = 3;
-            do
-            {
-                await Task.Delay(1500, cancellationToken);
-                var checkResult = await CheckMediatorForConnectResponse(request, cancellationToken);
-                if (checkResult.IsSuccess)
+                if (unpackResult.Value.Message.Type == ProtocolConstants.PrismConnectResponse)
                 {
-                    var deleteResult = await DeleteConnectResponseFromMediator(request, checkResult.Value.MessageIdOfResponse!, cancellationToken);
-                    if (deleteResult.IsSuccess)
+                    if (unpackResult.Value.Message.Body.ContainsKey("goal_code"))
                     {
-                        return Result.Ok(new PrismConnectResponse(checkResult.Value.MessageIdOfResponse!, checkResult.Value.PrismDid!));
+                        var goalCodeJson = (JsonElement)unpackResult.Value.Message.Body!["goal_code"];
+                        if (goalCodeJson.ValueKind == JsonValueKind.String && goalCodeJson.GetString()!.Equals(GoalCodes.PrismConnect, StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            return Result.Ok(new PrismConnectResponse(unpackResult.Value.Message.Id, unpackResult.Value.Message.From ?? unpackResult.Value.Metadata!.EncryptedFrom));
+                        }
                     }
-                }
-            } while (retry++ < maxRetries);
 
-            return Result.Fail("Could not find a response from the PRISM agent in the mediator after multiple retries. Aborting");
+                    return Result.Fail("The response does not have correct threadId, type or goalCode");
+                }
+                else
+                {
+                    return Result.Fail("Error: Unexpected message response type");
+                }
+            }
         }
+
+        // The return message is hopefully at our mediator
+        var retry = 0;
+        var maxRetries = 15;
+        do
+        {
+            await Task.Delay(1500, cancellationToken);
+            var checkResult = await CheckMediatorForConnectResponse(request, cancellationToken);
+            if (checkResult.IsSuccess)
+            {
+                var deleteResult = await DeleteConnectResponseFromMediator(request, checkResult.Value.MessageIdOfResponse!, cancellationToken);
+                if (deleteResult.IsSuccess)
+                {
+                    return Result.Ok(new PrismConnectResponse(checkResult.Value.MessageIdOfResponse!, checkResult.Value.PrismDid!));
+                }
+            }
+        } while (retry++ < maxRetries);
+
+        return Result.Fail("Could not find a response from the PRISM agent in the mediator after multiple retries. Aborting");
     }
 
     private async Task<Result<PrismConnectResponse>> CheckMediatorForConnectResponse(PrismConnectRequest request, CancellationToken cancellationToken)
