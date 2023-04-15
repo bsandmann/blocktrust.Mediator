@@ -16,7 +16,10 @@ using Blocktrust.Mediator.Common;
 using Blocktrust.Mediator.Common.Models.ProblemReport;
 using Blocktrust.Mediator.Common.Protocols;
 using FluentResults;
+using ForwardMessage;
 using MediatR;
+using PeerDID.DIDDoc;
+using PeerDID.Types;
 
 /// <summary>
 /// Assumes that we got a oob-invitation from a prism agent.
@@ -65,22 +68,70 @@ public class PrismConnectHandler : IRequestHandler<PrismConnectRequest, Result<P
                 .ProtectSenderId(false)
                 .BuildPackEncryptedParams()
         );
-        
-        if(packResult.IsFailed)
+
+
+        if (packResult.IsFailed)
         {
             return packResult.ToResult();
         }
 
-        // We send the message to the mediator
-        HttpResponseMessage response;
-        try
+        HttpResponseMessage response = null;
+        if (request.PrismEndpoint.Contains("did:peer:2"))
         {
-            response = await _httpClient.PostAsync(request.PrismEndpoint, new StringContent(packResult.Value.PackedMessage, new MediaTypeHeaderValue(MessageTyp.Encrypted)), cancellationToken);
+            var resolvedEndpoint = PeerDID.PeerDIDCreateResolve.PeerDidResolver.ResolvePeerDid(new PeerDid(request.PrismEndpoint), VerificationMaterialFormatPeerDid.Jwk);
+            if (resolvedEndpoint.IsFailed)
+            {
+                return Result.Fail($"Unable to resolve peer DID of the endpoint : {request.PrismEndpoint}");
+            }
+
+            var resolvedEndpointDidDoc = DidDocPeerDid.FromJson(resolvedEndpoint.Value);
+            if (resolvedEndpointDidDoc.IsFailed)
+            {
+                return Result.Fail($"Unable to resolve peer DID of the endpoint : {request.PrismEndpoint}");
+            }
+
+            var isParsed = Uri.TryCreate(resolvedEndpointDidDoc.Value?.Services?.First().ServiceEndpoint, UriKind.Absolute, out var mediatorEndpointUri);
+            if (!isParsed)
+            {
+                return Result.Fail($"Unable to resolve peer DID of the endpoint into URI: {resolvedEndpointDidDoc.Value?.Services?.First().ServiceEndpoint}");
+            }
+
+            // The other party sits behind a mediator
+
+            try
+            {
+                var forwardMessageResult = await _mediator.Send(new SendForwardMessageRequest(
+                    message: packResult.Value.PackedMessage,
+                    localDid: request.LocalDidToUseWithMediator,
+                    mediatorDid: request.MediatorDid,
+                    mediatorEndpoint: mediatorEndpointUri!,
+                    recipientDid: request.PrismDid
+                ), new CancellationToken());
+                if (forwardMessageResult.IsFailed)
+                {
+                    return Result.Fail($"Error sending a message to the contact: {forwardMessageResult.Errors.First().Message}");
+                }
+
+                // Since it is a forward message, we don't expect a direct-http response
+                return Result.Ok();
+            }
+            catch (Exception e)
+            {
+                return Result.Fail(e.Message);
+            }
         }
-        catch (HttpRequestException ex)
+        else
         {
-            return Result.Fail($"Connection could not be established: {ex.Message}");
+            try
+            {
+                response = await _httpClient.PostAsync(request.PrismEndpoint, new StringContent(packResult.Value.PackedMessage, new MediaTypeHeaderValue(MessageTyp.Encrypted)), cancellationToken);
+            }
+            catch (HttpRequestException ex)
+            {
+                return Result.Fail($"Connection could not be established: {ex.Message}");
+            }
         }
+
 
         if (response.StatusCode == HttpStatusCode.NotFound)
         {
@@ -139,7 +190,7 @@ public class PrismConnectHandler : IRequestHandler<PrismConnectRequest, Result<P
                     var deleteResult = await DeleteConnectResponseFromMediator(request, checkResult.Value.MessageIdOfResponse!, cancellationToken);
                     if (deleteResult.IsSuccess)
                     {
-                        return Result.Ok(new PrismConnectResponse(checkResult.Value.MessageIdOfResponse!,checkResult.Value.PrismDid!));
+                        return Result.Ok(new PrismConnectResponse(checkResult.Value.MessageIdOfResponse!, checkResult.Value.PrismDid!));
                     }
                 }
             } while (retry++ < maxRetries);

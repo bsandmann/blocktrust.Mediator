@@ -101,7 +101,7 @@ public class OfferCredentialTests
 
         // Request a connection
         var request = new PrismConnectRequest(
-            prismEndpoint: new Uri(prismAgentEndpoint),
+            prismEndpoint: prismAgentEndpoint,
             prismDid: prismAgentDid,
             localDidToUseWithPrism: localDidToUseWithPrism.Value.PeerDid.Value,
             threadId: oobModelFromPrismAgent.Id,

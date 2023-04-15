@@ -9,7 +9,7 @@ using MediatR;
 /// </summary>
 public class PrismConnectRequest : IRequest<Result<PrismConnectResponse>>
 {
-    public Uri PrismEndpoint { get; }
+    public string PrismEndpoint { get; }
     public string PrismDid { get; }
     public string LocalDidToUseWithPrism { get; }
     public string ThreadId { get; }
@@ -18,7 +18,7 @@ public class PrismConnectRequest : IRequest<Result<PrismConnectResponse>>
     public string? MediatorDid { get; }
     public string? LocalDidToUseWithMediator { get; }
 
-    public PrismConnectRequest(Uri prismEndpoint, string prismDid, string localDidToUseWithPrism, string threadId, Uri? mediatorEndpoint, string? localDidToUseWithMediator, string? mediatorDid)
+    public PrismConnectRequest(string prismEndpoint, string prismDid, string localDidToUseWithPrism, string threadId, Uri? mediatorEndpoint, string? localDidToUseWithMediator, string? mediatorDid)
     {
         PrismEndpoint = prismEndpoint;
         PrismDid = prismDid;
