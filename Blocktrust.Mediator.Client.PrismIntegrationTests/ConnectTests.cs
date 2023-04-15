@@ -10,6 +10,7 @@ using Blocktrust.Mediator.Common.Models.OutOfBand;
 using Blocktrust.PeerDID.DIDDoc;
 using Blocktrust.PeerDID.PeerDIDCreateResolve;
 using Blocktrust.PeerDID.Types;
+using Commands.ForwardMessage;
 using Commands.MediatorCoordinator.RequestMediation;
 using Commands.MediatorCoordinator.UpdateKeys;
 using Commands.Pickup.DeliveryRequest;
@@ -27,6 +28,7 @@ public class ConnectTests
     private CreatePeerDidHandler _createPeerDidHandler;
     private readonly DeliveryRequestHandler _deliveryRequestHandler;
     private readonly MessageReceivedHandler _messageReceivedHandler;
+    private readonly SendForwardMessageHandler _sendForwardMessageHandler;
     private readonly Mock<IMediator> _mediatorMock;
     private readonly SimpleDidDocResolver _simpleDidDocResolver;
     private readonly SecretResolverInMemory _secretResolverInMemory;
@@ -47,11 +49,14 @@ public class ConnectTests
         _secretResolverInMemory = new SecretResolverInMemory();
         _deliveryRequestHandler = new DeliveryRequestHandler(_httpClient, _simpleDidDocResolver, _secretResolverInMemory);
         _messageReceivedHandler = new MessageReceivedHandler(_httpClient, _simpleDidDocResolver, _secretResolverInMemory);
+        _sendForwardMessageHandler = new SendForwardMessageHandler(_httpClient, _simpleDidDocResolver, _secretResolverInMemory);
         
         _mediatorMock.Setup(p => p.Send(It.IsAny<DeliveryRequestRequest>(), It.IsAny<CancellationToken>()))
             .Returns(async (DeliveryRequestRequest request, CancellationToken token) => await _deliveryRequestHandler.Handle(request, token) );
         _mediatorMock.Setup(p => p.Send(It.IsAny<MessageReceivedRequest>(), It.IsAny<CancellationToken>()))
             .Returns(async (MessageReceivedRequest request, CancellationToken token) => await _messageReceivedHandler.Handle(request, token) );
+        _mediatorMock.Setup(p => p.Send(It.IsAny<SendForwardMessageRequest>(), It.IsAny<CancellationToken>()))
+            .Returns(async (SendForwardMessageRequest request, CancellationToken token) => await _sendForwardMessageHandler.Handle(request, token) );
     }
 
     /// <summary>
@@ -122,5 +127,56 @@ public class ConnectTests
         var connections = await PrismTestHelpers.GetConnections(_prismAgentApiKey, _prismAgentUrlRunningInDocker);
         // The new connection-Id should now be added to the list
         connections.Should().Contain(oobModelFromPrismAgent.Id);
+    }
+    
+        [Fact]
+    public async Task ConnectionAlsoWorksForANonPrismAgentCounterparty()
+    {
+        
+        // This OOB here comes from a non-PRISM agent, which registered the local mediator running under HTTPS.
+        // The test should ensure, that the connect-request message is send to the mediator
+        var prismOob =
+            "eyJ0eXBlIjoiaHR0cHM6Ly9kaWRjb21tLm9yZy9vdXQtb2YtYmFuZC8yLjAvaW52aXRhdGlvbiIsImlkIjoiZTEyOGZlMmItNDQ3Mi00NTQxLWJkZjYtOTA3ZGM3YjZiOWIzIiwiZnJvbSI6ImRpZDpwZWVyOjIuRXo2TFNzbXBlSmNvZDJubnpNZGdDcGtxZ24xTUJrTnZjMnU2SE5HaGo1d0RWd0Z6MS5WejZNa3BuQmFOU3ZycmN3Q01lYm5KeVBHa3d0eHI1a3VvcG9Wc2V3bk5EZFQycVQ0LlNleUpwWkNJNkltNWxkeTFwWkNJc0luUWlPaUprYlNJc0luTWlPaUprYVdRNmNHVmxjam95TGtWNk5reFRZMmxIZGtORVdIVkNXR3RJVWxrM1JEUTFVbTFxWlVaUlEzbHpWVmhrVkdSU1NERmtibGhyZVdNNU0wVXVWbm8yVFd0M1owZHlhMDR5ZUV4NE0wSkZURzlsZFVaWE1rb3hXRU56WVdsSVJWaDVSblZXTVc5TFRYUjBaa1EyWXk1VFpYbEtjRnBEU1RaSmJUVnNaSGt4Y0ZwRFNYTkpibEZwVDJsS2EySlRTWE5KYmsxcFQybEtiMlJJVW5kamVtOTJUREo0ZGxreVJuTmhSemw2WkVSdk0wMUVUVE5NZVVselNXNUphVTlzZEdSTVEwcG9TV3B3WWtsdFVuQmFSMDUyWWxjd2RtUnFTV2xZV0RBaUxDSnlJanBiWFN3aVlTSTZXeUprYVdSamIyMXRMM1l5SWwxOSIsImJvZHkiOnsiZ29hbF9jb2RlIjoiaW8uYXRhbGFwcmlzbS5jb25uZWN0IiwiZ29hbCI6IkVzdGFibGlzaCBhIHRydXN0IGNvbm5lY3Rpb24gYmV0d2VlbiB0d28gcGVlcnMgdXNpbmcgdGhlIHByb3RvY29sIFx1MDAyN2h0dHBzOi8vYXRhbGFwcmlzbS5pby9tZXJjdXJ5L2Nvbm5lY3Rpb25zLzEuMC9yZXF1ZXN0XHUwMDI3IiwiYWNjZXB0IjpbImRpZGNvbW0vdjIiXX19";
+        var decodedInvitationFromPrismAgent = Encoding.UTF8.GetString(Base64Url.Decode(prismOob));
+        var oobModelFromPrismAgent = JsonSerializer.Deserialize<OobModel>(decodedInvitationFromPrismAgent);
+        var invitationPeerDidResultFromPrismAgent = PeerDidResolver.ResolvePeerDid(new PeerDid(oobModelFromPrismAgent.From), VerificationMaterialFormatPeerDid.Jwk);
+        var invitationPeerDidDocResultFromPrismAgent = DidDocPeerDid.FromJson(invitationPeerDidResultFromPrismAgent.Value);
+
+        var prismAgentDid = invitationPeerDidDocResultFromPrismAgent.Value.Did;
+        var prismAgentEndpoint = invitationPeerDidDocResultFromPrismAgent.Value.Services.FirstOrDefault().ServiceEndpoint;
+        prismAgentEndpoint = prismAgentEndpoint.Replace("host.docker.internal", "localhost");
+
+        // Setup Mediator
+        var response = await _httpClient.GetAsync(_blocktrustMediatorUri + "oob_url");
+        var resultContent = await response.Content.ReadAsStringAsync();
+        var oob = resultContent.Split("=");
+        var oobInvitation = oob[1];
+
+        _createPeerDidHandler = new CreatePeerDidHandler(_secretResolverInMemory);
+        var localDidToUseWithMediator = await _createPeerDidHandler.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
+        var requestMediation = new RequestMediationRequest(oobInvitation, localDidToUseWithMediator.Value.PeerDid.Value);
+        _requestMediationHandler = new RequestMediationHandler(_httpClient, _simpleDidDocResolver, _secretResolverInMemory);
+        var requestMediationResult = await _requestMediationHandler.Handle(requestMediation, CancellationToken.None);
+
+        // Create a DID to use with PRISM Agent
+        var localDidToUseWithPrism = await _createPeerDidHandler.Handle(new CreatePeerDidRequest(requestMediationResult.Value.MediatorDid), cancellationToken: new CancellationToken());
+        var addKeyRequest = new UpdateMediatorKeysRequest(requestMediationResult.Value.MediatorEndpoint, requestMediationResult.Value.MediatorDid, localDidToUseWithMediator.Value.PeerDid.Value, new List<string>() { localDidToUseWithPrism.Value.PeerDid.Value }, new List<string>());
+        var addMediatorKeysHandler = new UpdateMediatorKeysHandler(_httpClient, _simpleDidDocResolver, _secretResolverInMemory);
+        await addMediatorKeysHandler.Handle(addKeyRequest, CancellationToken.None);
+
+        // Act
+        var request = new PrismConnectRequest(
+            prismEndpoint:  prismAgentEndpoint,
+            prismDid: prismAgentDid,
+            localDidToUseWithPrism: localDidToUseWithPrism.Value.PeerDid.Value,
+            threadId: oobModelFromPrismAgent.Id,
+            mediatorEndpoint: requestMediationResult.Value.MediatorEndpoint,
+            localDidToUseWithMediator: localDidToUseWithMediator.Value.PeerDid.Value,
+            mediatorDid: requestMediationResult.Value.MediatorDid);
+        _prismConnectHandler = new PrismConnectHandler(_httpClient, new SimpleDidDocResolver(), _secretResolverInMemory, _mediatorMock.Object);
+        var prismConnectResult = await _prismConnectHandler.Handle(request, CancellationToken.None);
+
+        // Assert
+        prismConnectResult.IsSuccess.Should().BeTrue();
     }
 }
