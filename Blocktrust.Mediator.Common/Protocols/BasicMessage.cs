@@ -11,7 +11,7 @@ using Models.Pickup;
 
 public static class BasicMessage
 {
-    public static Message Create(string content, string from)
+    public static Message Create(string content, string from, string? to = null)
     {
         var basicMessage = new MessageBuilder(
                 id: Guid.NewGuid().ToString(),
@@ -24,6 +24,7 @@ public static class BasicMessage
             .customHeader("lang", "en")
             .createdTime(new DateTimeOffset(DateTime.UtcNow).ToUnixTimeMilliseconds())
             .from(from)
+            .to(new List<string>() { to })
             .build();
         return basicMessage;
     }
