@@ -103,7 +103,7 @@ public class PrismConnectHandler : IRequestHandler<PrismConnectRequest, Result<P
                 var forwardMessageResult = await _mediator.Send(new SendForwardMessageRequest(
                     message: packResult.Value.PackedMessage,
                     localDid: request.LocalDidToUseWithPrism,
-                    mediatorDid: resolvedEndpointDidDoc.Value.Services.First().Id,
+                    mediatorDid: resolvedEndpointDidDoc.Value.Did,
                     mediatorEndpoint: mediatorEndpointUri!,
                     recipientDid: request.PrismDid
                 ), new CancellationToken());
