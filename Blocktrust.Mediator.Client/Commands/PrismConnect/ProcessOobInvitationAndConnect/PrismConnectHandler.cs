@@ -15,6 +15,7 @@ using Blocktrust.Mediator.Client.Commands.Pickup.MessageReceived;
 using Blocktrust.Mediator.Common;
 using Blocktrust.Mediator.Common.Models.ProblemReport;
 using Blocktrust.Mediator.Common.Protocols;
+using Common.Commands.CreatePeerDid;
 using FluentResults;
 using ForwardMessage;
 using MediatR;
@@ -97,13 +98,12 @@ public class PrismConnectHandler : IRequestHandler<PrismConnectRequest, Result<P
             }
 
             // The other party sits behind a mediator
-
             try
             {
                 var forwardMessageResult = await _mediator.Send(new SendForwardMessageRequest(
                     message: packResult.Value.PackedMessage,
-                    localDid: request.LocalDidToUseWithPrism, // shouldn't that be a did just for the mediator or the other party?
-                    mediatorDid: resolvedEndpointDidDoc.Value.Did,
+                    localDid: request.LocalDidToUseWithPrism,
+                    mediatorDid: resolvedEndpointDidDoc.Value.Services.First().ServiceEndpoint,
                     mediatorEndpoint: mediatorEndpointUri!,
                     recipientDid: request.PrismDid
                 ), new CancellationToken());
