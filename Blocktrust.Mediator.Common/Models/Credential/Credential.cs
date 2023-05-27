@@ -1,6 +1,7 @@
 ﻿namespace Blocktrust.Mediator.Common.Models.Credential;
 
 using System.Text.Json;
+using Blocktrust.Common.Converter;
 using DIDComm.Message.Attachments;
 
 public class Credential
@@ -17,7 +18,7 @@ public class Credential
         Jwt = jwt;
         var jwtParts = jwt.Split('.');
         var payloadJwt = jwtParts[1];
-        var payload = Convert.FromBase64String(payloadJwt);
+        var payload = Base64Url.Decode(payloadJwt);
         var credentialTempRaw = JsonSerializer.Deserialize<CredentialModel>(payload);
 
         Issuer = credentialTempRaw.Issuer;
