@@ -1,16 +1,17 @@
 ﻿namespace Blocktrust.Mediator.Common.Models.Credential;
 
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Blocktrust.Common.Converter;
 using DIDComm.Message.Attachments;
 
 public class Credential
 {
-    public string Issuer { get; set; }
-    public string Subject { get; set; }
-    public DateTime NotBeforeUtc { get; set; }
-    public InnerCredential InnerCredential { get; set; }
-    public string Jwt { get; set; }
+    [JsonPropertyName("issuer")] public string Issuer { get; set; }
+    [JsonPropertyName("subject")] public string Subject { get; set; }
+    [JsonPropertyName("notBefore")] public DateTime NotBeforeUtc { get; set; }
+    [JsonPropertyName("innerCredential")] public InnerCredential InnerCredential { get; set; }
+    [JsonPropertyName("jwt")] public string Jwt { get; set; }
 
 
     public Credential Parse(string jwt)
