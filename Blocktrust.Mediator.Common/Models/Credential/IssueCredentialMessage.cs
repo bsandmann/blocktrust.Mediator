@@ -8,23 +8,23 @@ using Blocktrust.Mediator.Common.Models.Pickup;
 using Blocktrust.PeerDID.Types;
 using FluentResults;
 
-public class IssueCredentialResponse
+public class IssueCredentialMessage
 {
     public PeerDid? From { get; }
     public PeerDid To { get; }
     public string MessageId { get; }
     public List<Credential> Credentials { get; }
 
-    public IssueCredentialResponse(PeerDid from, PeerDid to, string messageId, List<Credential> credentials)
+    public IssueCredentialMessage(PeerDid from, PeerDid to, string messageId, List<Credential> credentials)
     {
         From = from;
-        To = To;
+        To = to;
         MessageId = messageId;
         Credentials = credentials;
     }
 
 
-    public static Result<IssueCredentialResponse> Process(DeliveryResponseModel message)
+    public static Result<IssueCredentialMessage> Process(DeliveryResponseModel message)
     {
         if (message.Message is null)
         {
@@ -120,6 +120,6 @@ public class IssueCredentialResponse
         var fromPeerDid = new PeerDid(from!);
         var toPeerDid = new PeerDid(tos!.First());
 
-        return Result.Ok(new IssueCredentialResponse(fromPeerDid, toPeerDid, messageId, credentials));
+        return Result.Ok(new IssueCredentialMessage(fromPeerDid, toPeerDid, messageId, credentials));
     }
 }
