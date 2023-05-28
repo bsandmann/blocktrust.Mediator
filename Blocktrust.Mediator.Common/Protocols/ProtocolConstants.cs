@@ -41,4 +41,6 @@ public class ProtocolConstants
     public const string IssueCredential2Offer = "https://didcomm.org/issue-credential/2.0/offer-credential";
     public const string IssueCredential2Request = "https://didcomm.org/issue-credential/2.0/request-credential";
     public const string IssueCredential2Issue = "https://didcomm.org/issue-credential/2.0/issue-credential";
+    
+    public const string PresentProofPresentationRequest = "https://didcomm.org/present-proof/3.0/request-presentation";
 }
