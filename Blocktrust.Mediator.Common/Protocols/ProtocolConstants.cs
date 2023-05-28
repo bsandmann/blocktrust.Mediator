@@ -29,18 +29,19 @@ public class ProtocolConstants
 
     public const string TrustPingRequest = "https://didcomm.org/trust-ping/2.0/ping";
     public const string TrustPingResponse = "https://didcomm.org/trust-ping/2.0/ping-response";
-    
+
     public const string ShortenedUrlRequest = "https://didcomm.org/shorten-url/1.0/request-shortened-url";
     public const string ShortenedUrlResponse = "https://didcomm.org/shorten-url/1.0/shortened-url";
     public const string InvalidateShortenedUrl = "https://didcomm.org/shorten-url/1.0/invalidate-shortened-url";
-    
+
     public const string PrismConnectRequest = "https://atalaprism.io/mercury/connections/1.0/request";
     public const string PrismConnectResponse = "https://atalaprism.io/mercury/connections/1.0/response";
-    
+
     public const string IssueCredential2Propose = "https://didcomm.org/issue-credential/2.0/propose-credential";
     public const string IssueCredential2Offer = "https://didcomm.org/issue-credential/2.0/offer-credential";
     public const string IssueCredential2Request = "https://didcomm.org/issue-credential/2.0/request-credential";
     public const string IssueCredential2Issue = "https://didcomm.org/issue-credential/2.0/issue-credential";
-    
+
     public const string PresentProofPresentationRequest = "https://didcomm.atalaprism.io/present-proof/3.0/request-presentation";
+    public const string PresentProofPresentation = "https://didcomm.atalaprism.io/present-proof/3.0/presentation";
 }
