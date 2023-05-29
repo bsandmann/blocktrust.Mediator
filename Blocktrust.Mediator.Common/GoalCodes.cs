@@ -28,4 +28,10 @@ public static class GoalCodes
     /// Goal code of the offer-credential message from the atala-prism agent
     /// </summary>
     public readonly static string PrismCredentialOffer = "Offer Credential";
+    
+    /// <summary>
+    /// Goal code of the request-presentation message from the atala-prism agent
+    /// </summary>
+    public readonly static string PrismPresentationRequest = "request";
+    
 }
