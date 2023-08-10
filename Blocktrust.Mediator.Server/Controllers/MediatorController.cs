@@ -115,8 +115,8 @@ public class MediatorController : ControllerBase
                     .ProtectSenderId(false)
                     .BuildPackEncryptedParams()
             );
-            
-            if(packResult.IsFailed)
+
+            if (packResult.IsFailed)
             {
                 return BadRequest($"Unable to pack message: {packResult.Errors.First().Message}");
             }
@@ -138,8 +138,8 @@ public class MediatorController : ControllerBase
                     .ProtectSenderId(false)
                     .BuildPackEncryptedParams()
             );
-            
-            if(packResult.IsFailed)
+
+            if (packResult.IsFailed)
             {
                 return BadRequest($"Unable to pack message: {packResult.Errors.First().Message}");
             }
@@ -171,11 +171,19 @@ public class MediatorController : ControllerBase
                 return Ok(packResult.Value.PackedMessage);
             }
 
-            var response = await _httpClient.PostAsync(endpointUri, new StringContent(packResult.Value.PackedMessage, Encoding.UTF8, MessageTyp.Encrypted));
-            if (!response.IsSuccessStatusCode)
+            try
             {
-                // Fallback to just sending a http-response
-                return Ok(packResult.Value.PackedMessage);
+                var response = await _httpClient.PostAsync(endpointUri,
+                    new StringContent(packResult.Value.PackedMessage, Encoding.UTF8, MessageTyp.Encrypted));
+                if (!response.IsSuccessStatusCode)
+                {
+                    // Fallback to just sending a http-response
+                    return Ok(packResult.Value.PackedMessage);
+                }
+            }
+            catch (Exception e)
+            {
+                return BadRequest($"Error sending message back to endpoint: '{endpointUri.AbsoluteUri}'. Error: {e.Message}");
             }
 
             return BadRequest($"Error sending message back to: '{senderDid}");
