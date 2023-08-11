@@ -17,12 +17,12 @@
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
-      <PackageReference Include="Blocktrust.DIDComm" Version="2.3.2" />
-      <PackageReference Include="Blocktrust.PeerDID" Version="1.0.6" />
+      <PackageReference Include="Blocktrust.DIDComm" Version="2.3.3" />
+      <PackageReference Include="Blocktrust.PeerDID" Version="1.0.7" />
       <PackageReference Include="FluentResults" Version="3.15.2" />
-      <PackageReference Include="JetBrains.Annotations" Version="2022.3.1" />
-      <PackageReference Include="JetBrains.ExternalAnnotations" Version="10.2.125" />
-      <PackageReference Include="MediatR" Version="12.0.1" />
+      <PackageReference Include="JetBrains.Annotations" Version="2023.2.0" />
+      <PackageReference Include="JetBrains.ExternalAnnotations" Version="10.2.133" />
+      <PackageReference Include="MediatR" Version="12.1.1" />
       <PackageReference Include="Moq" Version="4.18.4" />
     </ItemGroup>
 

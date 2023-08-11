@@ -43,7 +43,7 @@ public class ProcessPickupDeliveryRequestHandler : IRequestHandler<ProcessPickup
                     fromPrior: request.FromPrior);
             }
         }
-        
+
         if (request.SenderDid is null || request.MediatorDid is null)
         {
             return ProblemReportMessage.BuildDefaultMessageMissingArguments(
@@ -107,7 +107,7 @@ public class ProcessPickupDeliveryRequestHandler : IRequestHandler<ProcessPickup
         if (getStatusResult.IsFailed)
         {
             return ProblemReportMessage.BuildDefaultInternalError(
-                errorMessage: getMessagesResult.Errors.FirstOrDefault().Message,
+                errorMessage: getStatusResult.Errors.FirstOrDefault() is null ? "Unknown error" : getStatusResult.Errors.First().Message,
                 threadIdWhichCausedTheProblem: request.UnpackedMessage.Thid ?? request.UnpackedMessage.Id,
                 fromPrior: request.FromPrior);
         }

@@ -24,7 +24,7 @@ public static class BasicMessage
             .customHeader("lang", "en")
             .createdTime(new DateTimeOffset(DateTime.UtcNow).ToUnixTimeMilliseconds())
             .from(from)
-            .to(new List<string>() { to })
+            .to(to == null ? null : new List<string>() { to }) 
             .build();
         return basicMessage;
     }

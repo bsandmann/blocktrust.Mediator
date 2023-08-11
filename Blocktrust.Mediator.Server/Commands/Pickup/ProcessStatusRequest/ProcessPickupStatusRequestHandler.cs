@@ -54,7 +54,7 @@ public class ProcessPickupStatusRequestHandler : IRequestHandler<ProcessPickupSt
         if (getStatusResult.IsFailed)
         {
             return ProblemReportMessage.BuildDefaultMessageMissingArguments(
-                errorMessage: getStatusResult.Errors.FirstOrDefault().Message,
+                errorMessage:getStatusResult.Errors.FirstOrDefault() is null ? "Unknown error" : getStatusResult.Errors.First().Message,
                 threadIdWhichCausedTheProblem: request.UnpackedMessage.Thid ?? request.UnpackedMessage.Id,
                 fromPrior: request.FromPrior);
         }

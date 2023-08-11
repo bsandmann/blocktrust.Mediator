@@ -309,14 +309,13 @@ public class PickupTests
             message: packedBasicMessage.Value,
             localDid: localDidOfBobToUseWithAliceMediator.Value.PeerDid.Value,
             mediatorDid: localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().ServiceEndpoint, // The mediator DID was also shared beforehand (should be in the shared DID of alice)
-            // mediatorDid: requestMediationResult.Value.MediatorDid , // The mediator DID was also shared beforehand (should be in the shared DID of alice)
             mediatorEndpoint: new Uri(resolvedMediatorDidEndpoint),
             recipientDid: localDidOfAliceToUseWithBob.Value.PeerDid.Value
         ), new CancellationToken());
 
         // Alice asks the Mediator for new Messages 
         _deliveryRequestHandler = new DeliveryRequestHandler(_httpClient, simpleDidDocResolverForAlice, secretResolverInMemoryForAlice);
-        var limit = 100;
+        var limit = 100; // We currently don't process this limit, we just ignore it on the mediator. We need a test for that
         var deliveryRequestResult = await _deliveryRequestHandler.Handle(new DeliveryRequestRequest(localDidOfAliceToUseWithTheMediator.Value.PeerDid.Value, requestMediationResult.Value.MediatorDid, requestMediationResult.Value.MediatorEndpoint, limit), new CancellationToken());
 
         // Assert
@@ -382,7 +381,6 @@ public class PickupTests
             message: packedBasicMessage.Value,
             localDid: localDidOfBobToUseWithAliceMediator.Value.PeerDid.Value,
             mediatorDid: localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().ServiceEndpoint, // The mediator DID was also shared beforehand (should be in the shared DID of alice)
-            // mediatorDid: requestMediationResult.Value.MediatorDid , // The mediator DID was also shared beforehand (should be in the shared DID of alice)
             mediatorEndpoint: new Uri(resolvedMediatorDidEndpoint),
             recipientDid: localDidOfAliceToUseWithBob.Value.PeerDid.Value
         ), new CancellationToken());
