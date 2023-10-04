@@ -55,8 +55,8 @@ public class PrismConnectHandler : IRequestHandler<PrismConnectRequest, Result<P
                 type: ProtocolConstants.PrismConnectRequest,
                 body: body
             )
+            .returnRoute("all")
             .customHeader("custom_headers", new List<JsonObject>() { returnRoute })
-            .customHeader("return_route", "all")
             .thid(request.ThreadId)
             .from(request.LocalDidToUseWithPrism)
             .to(new List<string>() { request.PrismDid })

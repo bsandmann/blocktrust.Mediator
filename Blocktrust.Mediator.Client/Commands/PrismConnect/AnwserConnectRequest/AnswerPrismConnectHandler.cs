@@ -73,7 +73,6 @@ public class AnswerPrismConnectHandler : IRequestHandler<AnswerPrismConnectReque
             )
             .returnRoute("all")
             .customHeader("custom_headers", new List<JsonObject>() { returnRoute })
-            .customHeader("return_route", "all")
             .thid(request.MessageId)
             .from(request.LocalPeerDidUsedInOobInvitation.Value)
             .to(new List<string>() { checkResult.Value.PrismDid! })
