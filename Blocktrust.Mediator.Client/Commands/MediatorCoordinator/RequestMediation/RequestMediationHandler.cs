@@ -61,6 +61,7 @@ public class RequestMediationHandler : IRequestHandler<RequestMediationRequest, 
                 type: ProtocolConstants.CoordinateMediation2Request,
                 body: new Dictionary<string, object>()
             )
+            .to(new List<string>() { remoteDid.From })
             .from(request.LocalDid)
             .customHeader("custom_headers", new List<JsonObject>() { returnRoute })
             .build();
@@ -87,12 +88,12 @@ public class RequestMediationHandler : IRequestHandler<RequestMediationRequest, 
                 .ProtectSenderId(false)
                 .BuildPackEncryptedParams()
         );
-        
-        if(packResult.IsFailed)
+
+        if (packResult.IsFailed)
         {
             return packResult.ToResult();
         }
-        
+
         // We send the message to the mediator
         var endpoint = invitationPeerDidDocResult.Value.Services?.FirstOrDefault()?.ServiceEndpoint;
         if (endpoint is null)
@@ -104,7 +105,7 @@ public class RequestMediationHandler : IRequestHandler<RequestMediationRequest, 
         HttpResponseMessage response;
         try
         {
-            response = await _httpClient.PostAsync(endpointUri, new StringContent(packResult.Value.PackedMessage, new MediaTypeHeaderValue(MessageTyp.Encrypted) ), cancellationToken);
+            response = await _httpClient.PostAsync(endpointUri, new StringContent(packResult.Value.PackedMessage, new MediaTypeHeaderValue(MessageTyp.Encrypted)), cancellationToken);
         }
         catch (HttpRequestException ex)
         {
@@ -161,7 +162,7 @@ public class RequestMediationHandler : IRequestHandler<RequestMediationRequest, 
 
                 return Result.Ok(new RequestMediationResponse(from!, endpointUri, unpackResult.Value.Message.Body["routing_did"]!.ToString()));
             }
-            
+
             if (unpackResult.Value.Message.Type == ProtocolConstants.ProblemReport)
             {
                 if (unpackResult.Value.Message.Pthid != null)
@@ -174,6 +175,7 @@ public class RequestMediationHandler : IRequestHandler<RequestMediationRequest, 
 
                     return Result.Ok(new RequestMediationResponse(problemReport.Value));
                 }
+
                 return Result.Fail("Error parsing the problem report of the mediator. Missing parent-thread-id");
             }
 

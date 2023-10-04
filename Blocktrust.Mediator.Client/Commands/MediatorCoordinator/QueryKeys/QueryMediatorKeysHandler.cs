@@ -40,6 +40,7 @@ public class QueryMediatorKeysHandler : IRequestHandler<QueryMediatorKeysRequest
                 type: ProtocolConstants.CoordinateMediation2KeylistQuery,
                 body: new Dictionary<string, object>()
             )
+            .to(new List<string>() { request.MediatorDid })
             .customHeader("custom_headers", new List<JsonObject>() { returnRoute })
             .from(request.LocalDid)
             .build();
