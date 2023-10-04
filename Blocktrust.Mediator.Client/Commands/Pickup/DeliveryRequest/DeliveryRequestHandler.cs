@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
+using Blocktrust.Common.Converter;
 using Blocktrust.Common.Resolver;
 using Blocktrust.DIDComm;
 using Blocktrust.DIDComm.Common.Types;
@@ -46,6 +47,7 @@ public class DeliveryRequestHandler : IRequestHandler<DeliveryRequestRequest, Re
                 type: ProtocolConstants.MessagePickup3DeliveryRequest,
                 body: body
             )
+            .returnRoute("all")
             .to(new List<string>() { request.MediatorDid })
             .from(request.LocalDid)
             .build();
@@ -59,8 +61,8 @@ public class DeliveryRequestHandler : IRequestHandler<DeliveryRequestRequest, Re
                 .ProtectSenderId(false)
                 .BuildPackEncryptedParams()
         );
-        
-        if(packResult.IsFailed)
+
+        if (packResult.IsFailed)
         {
             return packResult.ToResult();
         }
@@ -69,7 +71,7 @@ public class DeliveryRequestHandler : IRequestHandler<DeliveryRequestRequest, Re
         HttpResponseMessage response;
         try
         {
-            response = await _httpClient.PostAsync(request.MediatorEndpoint, new StringContent(packResult.Value.PackedMessage, new MediaTypeHeaderValue(MessageTyp.Encrypted) ), cancellationToken);
+            response = await _httpClient.PostAsync(request.MediatorEndpoint, new StringContent(packResult.Value.PackedMessage, new MediaTypeHeaderValue(MessageTyp.Encrypted)), cancellationToken);
         }
         catch (HttpRequestException ex)
         {
@@ -109,9 +111,10 @@ public class DeliveryRequestHandler : IRequestHandler<DeliveryRequestRequest, Re
 
                 return Result.Ok(new DeliveryRequestResponse(problemReport.Value));
             }
+
             return Result.Fail("Error parsing the problem report of the mediator. Missing parent-thread-id");
         }
-        
+
         if (unpackResult.Value.Message.Type == ProtocolConstants.MessagePickup3StatusResponse)
         {
             var bodyContent = unpackResult.Value.Message.Body;
@@ -120,10 +123,11 @@ public class DeliveryRequestHandler : IRequestHandler<DeliveryRequestRequest, Re
             {
                 return Result.Fail("Error parsing the status response of the mediator");
             }
+
             return Result.Ok(new DeliveryRequestResponse(statusRequestResponseResult.Value));
         }
 
-        
+
         if (unpackResult.Value.Message.Type != ProtocolConstants.MessagePickup3DeliveryResponse)
         {
             return Result.Fail($"Unexpected header-type: {unpackResult.Value.Message.Type}");
@@ -134,7 +138,7 @@ public class DeliveryRequestHandler : IRequestHandler<DeliveryRequestRequest, Re
         {
             // if we don't have any attachments, we should have a status message in the body
             // so this case should ever happen, since the MessageType would then be StatusResponse
-            
+
             // commented out for now, since this is currently causing compatibility issues with the roots mediator
             return Result.Fail("Invalid response from mediator. No attachments found.");
         }
@@ -151,6 +155,12 @@ public class DeliveryRequestHandler : IRequestHandler<DeliveryRequestRequest, Re
                 Json? jsonAttachmentData = (Json)data;
                 var innerJson = jsonAttachmentData?.JsonString;
                 innerMessage = JsonSerializer.Serialize(innerJson, SerializationOptions.UnsafeRelaxedEscaping);
+            }
+            else if (data is Base64)
+            {
+                Base64? base64AttachmentData = (Base64)data;
+                var inner = Base64Url.Decode(base64AttachmentData.Base64String);
+                innerMessage = Encoding.UTF8.GetString(inner);
             }
             else
             {

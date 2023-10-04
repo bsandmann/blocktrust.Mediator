@@ -41,6 +41,7 @@ public class StatusRequestHandler : IRequestHandler<StatusRequestRequest, Result
                 type: ProtocolConstants.MessagePickup3StatusRequest,
                 body: body
             )
+            .returnRoute("all")
             .to(new List<string>() { request.MediatorDid })
             .from(request.LocalDid)
             .build();

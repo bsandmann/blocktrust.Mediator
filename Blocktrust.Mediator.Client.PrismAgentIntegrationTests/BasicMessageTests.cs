@@ -39,8 +39,7 @@ public class BasicMessageTests
     }
 
     /// <summary>
-    /// This tests assumes that a PRISM node is running on http://localhost:8080 / 8090 / 9000 inside a Docker container and the blocktrust mediator is running on http://localhost:5023
-    /// This test does not work with HTTPS!
+    /// This tests assumes that a PRISM node is running on https://beta-mediator.atalaprism.io
     /// </summary>
     [Fact]
     public async Task BasicMessageShouldSucceed()

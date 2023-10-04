@@ -54,6 +54,7 @@ public class TrustPingHandler : IRequestHandler<TrustPingRequest, Result<string?
                 body: body
             )
             .to(new List<string>() { request.RemoteDid })
+            .returnRoute("all")
             .customHeader("custom_headers", new List<JsonObject>() { returnRoute })
             .from(request.LocalDid)
             .build();

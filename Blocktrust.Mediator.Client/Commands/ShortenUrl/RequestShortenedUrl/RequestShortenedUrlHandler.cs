@@ -52,6 +52,7 @@ public class RequestShortenedUrlHandler : IRequestHandler<RequestShortenedUrlReq
                 type: ProtocolConstants.ShortenedUrlRequest,
                 body: body
             )
+            .returnRoute("all")
             .customHeader("custom_headers", new List<JsonObject>() { returnRoute })
             .from(request.LocalDid)
             .build();

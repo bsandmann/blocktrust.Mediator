@@ -80,16 +80,16 @@ public class SendForwardMessageHandler : IRequestHandler<SendForwardMessageReque
                 .BuildPackEncryptedParams()
         );
 
-        if(packResult.IsFailed)
+        if (packResult.IsFailed)
         {
             return packResult.ToResult();
         }
-        
+
         // We send the message to the mediator
         HttpResponseMessage response;
         try
         {
-            response = await _httpClient.PostAsync(request.MediatorEndpoint, new StringContent(packResult.Value.PackedMessage, new MediaTypeHeaderValue(MessageTyp.Encrypted) ), cancellationToken);
+            response = await _httpClient.PostAsync(request.MediatorEndpoint, new StringContent(packResult.Value.PackedMessage, new MediaTypeHeaderValue(MessageTyp.Encrypted)), cancellationToken);
         }
         catch (HttpRequestException ex)
         {
@@ -108,8 +108,13 @@ public class SendForwardMessageHandler : IRequestHandler<SendForwardMessageReque
         {
             return Result.Ok();
         }
+        else if(response.StatusCode == HttpStatusCode.OK)
+        {
+            return Result.Ok();
+        }
+
         var content = await response.Content.ReadAsStringAsync(cancellationToken);
-        
+
         if (!string.IsNullOrEmpty(content))
         {
             var unpackResult = await didComm.Unpack(
@@ -136,9 +141,9 @@ public class SendForwardMessageHandler : IRequestHandler<SendForwardMessageReque
 
                 return Result.Fail("Error parsing the problem report of the mediator. Missing parent-thread-id");
             }
-        } 
-        
-        
-        return Result.Fail("The result code should be 202! This is not really a fail here, but anyway....");
+        }
+
+
+        return Result.Fail("Unexpected responce code");
     }
 }

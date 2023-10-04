@@ -41,6 +41,7 @@ public class QueryMediatorKeysHandler : IRequestHandler<QueryMediatorKeysRequest
                 body: new Dictionary<string, object>()
             )
             .to(new List<string>() { request.MediatorDid })
+            .returnRoute("all")
             .customHeader("custom_headers", new List<JsonObject>() { returnRoute })
             .from(request.LocalDid)
             .build();

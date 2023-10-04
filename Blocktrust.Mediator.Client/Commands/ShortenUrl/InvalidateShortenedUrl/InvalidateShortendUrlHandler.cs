@@ -43,6 +43,7 @@ public class InvalidateShortenedUrlHandler : IRequestHandler<InvalidateShortened
                 type: ProtocolConstants.InvalidateShortenedUrl,
                 body: body
             )
+            .returnRoute("all")
             .customHeader("custom_headers", new List<JsonObject>() { returnRoute })
             .from(request.LocalDid)
             .build();

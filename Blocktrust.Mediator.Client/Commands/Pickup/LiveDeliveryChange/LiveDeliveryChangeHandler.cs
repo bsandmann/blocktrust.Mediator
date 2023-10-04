@@ -37,6 +37,7 @@ public class LiveDeliveryChangeHandler : IRequestHandler<LiveDeliveryChangeReque
                 type: ProtocolConstants.MessagePickup3LiveDeliveryChange,
                 body: body
             )
+            .returnRoute("all")
             .to(new List<string>() { request.MediatorDid })
             .from(request.LocalDid)
             .build();

@@ -38,6 +38,7 @@ public class MessageReceivedHandler : IRequestHandler<MessageReceivedRequest, Re
                 type: ProtocolConstants.MessagePickup3MessagesReceived,
                 body: body
             )
+            .returnRoute("all")
             .to(new List<string>() { request.MediatorDid })
             .from(request.LocalDid)
             .build();
@@ -79,6 +80,14 @@ public class MessageReceivedHandler : IRequestHandler<MessageReceivedRequest, Re
 
         var content = await response.Content.ReadAsStringAsync(cancellationToken);
 
+        if (String.IsNullOrEmpty(content))
+        {
+            // Usually that code should fail if we don't have any content coming back, but for compatibility reasons with the PRISM Mediator
+            // we accept an empty response as a success
+            
+            return Result.Ok(new StatusRequestResponse());
+        }
+        
         var unpackResult =await  didComm.Unpack(
             new UnpackParamsBuilder(content)
                 .SecretResolver(_secretResolver)

@@ -44,6 +44,7 @@ public class DiscoverFeaturesHandler : IRequestHandler<DiscoverFeaturesRequest, 
                 body: body 
             )
             .to(new List<string>() { request.MediatorDid })
+            .returnRoute("all")
             .customHeader("custom_headers", new List<JsonObject>() { returnRoute })
             .from(request.LocalDid)
             .build();

@@ -54,8 +54,9 @@ public class UpdateMediatorKeysHandler : IRequestHandler<UpdateMediatorKeysReque
                     { "updates", itemsToUpdate }
                 }
             )
-            .to(new List<string>() { request.MediatorDid })
+            .returnRoute("all")
             .customHeader("custom_headers", new List<JsonObject>() { returnRoute })
+            .to(new List<string>() { request.MediatorDid })
             .from(request.LocalDid)
             .build();
 

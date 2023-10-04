@@ -71,6 +71,7 @@ public class AnswerPrismConnectHandler : IRequestHandler<AnswerPrismConnectReque
                 type: ProtocolConstants.PrismConnectResponse,
                 body: body
             )
+            .returnRoute("all")
             .customHeader("custom_headers", new List<JsonObject>() { returnRoute })
             .customHeader("return_route", "all")
             .thid(request.MessageId)
