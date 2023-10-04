@@ -140,7 +140,8 @@ public class DeliveryRequestHandler : IRequestHandler<DeliveryRequestRequest, Re
             // so this case should ever happen, since the MessageType would then be StatusResponse
 
             // commented out for now, since this is currently causing compatibility issues with the roots mediator
-            return Result.Fail("Invalid response from mediator. No attachments found.");
+            // return Result.Fail("Invalid response from mediator. No attachments found.");
+            return Result.Ok(new DeliveryRequestResponse(new List<DeliveryResponseModel>()));
         }
 
 
