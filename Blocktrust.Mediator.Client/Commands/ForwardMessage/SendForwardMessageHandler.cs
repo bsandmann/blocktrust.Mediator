@@ -108,12 +108,13 @@ public class SendForwardMessageHandler : IRequestHandler<SendForwardMessageReque
         {
             return Result.Ok();
         }
-        else if(response.StatusCode == HttpStatusCode.OK)
+
+        var content = await response.Content.ReadAsStringAsync(cancellationToken);
+        
+        if(string.IsNullOrEmpty(content) && response.StatusCode == HttpStatusCode.OK)
         {
             return Result.Ok();
         }
-
-        var content = await response.Content.ReadAsStringAsync(cancellationToken);
 
         if (!string.IsNullOrEmpty(content))
         {

@@ -89,6 +89,7 @@ public class MediatorController : ControllerBase
 
         // Check if we have a return route flag. Otherwise we should send a separate message
         var customHeaders = unpacked.Value.Message.CustomHeaders;
+        var returnRouteHeader = unpacked.Value.Message.ReturnRoute;
         EnumReturnRoute returnRoute = EnumReturnRoute.None;
         if ((customHeaders.TryGetValue("return_route", out var returnRouteString)))
         {
@@ -97,6 +98,10 @@ public class MediatorController : ControllerBase
             {
                 Enum.TryParse(returnRouteJsonElement.GetString(), true, out returnRoute);
             }
+        }
+        else if(returnRouteHeader is not null && returnRouteHeader.Equals("all", StringComparison.InvariantCultureIgnoreCase))
+        {
+            returnRoute = EnumReturnRoute.All;
         }
 
         //TODO in some cases I might want to respond with a empty-message instead or accepted or a defined response. Figure out where
