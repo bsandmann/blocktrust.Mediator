@@ -41,7 +41,7 @@ public class DebugTests
         var resolvedFromAsDidDoc = DidDocPeerDid.FromJson(resolvedFrom.Value);
 
         var endpointDid = resolvedFromAsDidDoc.Value.Services.FirstOrDefault().ServiceEndpoint;
-        var endpointDidResolved = PeerDidResolver.ResolvePeerDid(new PeerDid(endpointDid), VerificationMaterialFormatPeerDid.Jwk);
+        var endpointDidResolved = PeerDidResolver.ResolvePeerDid(new PeerDid(endpointDid.Uri), VerificationMaterialFormatPeerDid.Jwk);
         var endpointDidResolvedAsDidDoc = DidDocPeerDid.FromJson(endpointDidResolved.Value);
         
     }

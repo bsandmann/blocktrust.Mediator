@@ -51,7 +51,7 @@ public class DiscoverFeaturesTest
         var localDid = await _createPeerDidHandler.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
         var queries = new List<FeatureQuery>();
         queries.Add(new FeatureQuery("protocol"));
-        var request = new DiscoverFeaturesRequest(new Uri(mediatorEndpoint),mediatorDid, localDid.Value.PeerDid.Value, queries);
+        var request = new DiscoverFeaturesRequest(new Uri(mediatorEndpoint.Uri),mediatorDid, localDid.Value.PeerDid.Value, queries);
 
         // Act
         _discoverFeaturesHandler = new DiscoverFeaturesHandler(_httpClient, new SimpleDidDocResolver(), secretResolverInMemory);
@@ -88,7 +88,7 @@ public class DiscoverFeaturesTest
         var localDid = await _createPeerDidHandler.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
         var queries = new List<FeatureQuery>();
         queries.Add(new FeatureQuery("protocol","https://didcomm.org/coordinate-mediation/2.0"));
-        var request = new DiscoverFeaturesRequest(new Uri(mediatorEndpoint),mediatorDid, localDid.Value.PeerDid.Value, queries);
+        var request = new DiscoverFeaturesRequest(new Uri(mediatorEndpoint.Uri),mediatorDid, localDid.Value.PeerDid.Value, queries);
 
         // Act
         _discoverFeaturesHandler = new DiscoverFeaturesHandler(_httpClient, new SimpleDidDocResolver(), secretResolverInMemory);
@@ -125,7 +125,7 @@ public class DiscoverFeaturesTest
         var localDid = await _createPeerDidHandler.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
         var queries = new List<FeatureQuery>();
         queries.Add(new FeatureQuery("protocol","https://didcomm.org/coordinate-mediation.*"));
-        var request = new DiscoverFeaturesRequest(new Uri(mediatorEndpoint),mediatorDid, localDid.Value.PeerDid.Value, queries);
+        var request = new DiscoverFeaturesRequest(new Uri(mediatorEndpoint.Uri),mediatorDid, localDid.Value.PeerDid.Value, queries);
 
         // Act
         _discoverFeaturesHandler = new DiscoverFeaturesHandler(_httpClient, new SimpleDidDocResolver(), secretResolverInMemory);

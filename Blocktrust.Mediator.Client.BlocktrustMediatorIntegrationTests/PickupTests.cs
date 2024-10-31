@@ -81,7 +81,7 @@ public class PickupTests
         var localDidOfBobToUseWithAliceMediator = await _createPeerDidHandlerBob.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
 
         // Wrap the Basic Message into a new Message for the mediator to recieve and send it
-        var resolvedMediatorDid = PeerDidResolver.ResolvePeerDid(new PeerDid(localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().ServiceEndpoint), VerificationMaterialFormatPeerDid.Jwk);
+        var resolvedMediatorDid = PeerDidResolver.ResolvePeerDid(new PeerDid(localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().ServiceEndpoint.Uri), VerificationMaterialFormatPeerDid.Jwk);
         var resolvedMediatorDidDoc = DidDocPeerDid.FromJson(resolvedMediatorDid.Value);
         var resolvedMediatorDidEndpoint = resolvedMediatorDidDoc.Value.Services.First().ServiceEndpoint;
         
@@ -89,8 +89,8 @@ public class PickupTests
         var result = await _sendForwardMessageHandler.Handle(new SendForwardMessageRequest(
             message: packedBasicMessage.Value,
             localDid: localDidOfBobToUseWithAliceMediator.Value.PeerDid.Value,
-            mediatorDid: localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().ServiceEndpoint,
-            mediatorEndpoint: new Uri(resolvedMediatorDidEndpoint),
+            mediatorDid: localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().ServiceEndpoint.Uri,
+            mediatorEndpoint: new Uri(resolvedMediatorDidEndpoint.Uri),
             recipientDid: localDidOfAliceToUseWithBob.Value.PeerDid.Value
         ), new CancellationToken());
 
@@ -149,7 +149,7 @@ public class PickupTests
         var localDidOfBobToUseWithAliceMediator = await _createPeerDidHandlerBob.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
 
         // Wrap the Basic Message into a new Message for the mediator to recieve and send it
-        var resolvedMediatorDid = PeerDidResolver.ResolvePeerDid(new PeerDid(localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().ServiceEndpoint), VerificationMaterialFormatPeerDid.Jwk);
+        var resolvedMediatorDid = PeerDidResolver.ResolvePeerDid(new PeerDid(localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().ServiceEndpoint.Uri), VerificationMaterialFormatPeerDid.Jwk);
         var resolvedMediatorDidDoc = DidDocPeerDid.FromJson(resolvedMediatorDid.Value);
         var resolvedMediatorDidEndpoint = resolvedMediatorDidDoc.Value.Services.First().ServiceEndpoint;
         
@@ -157,8 +157,8 @@ public class PickupTests
         var result = await _sendForwardMessageHandler.Handle(new SendForwardMessageRequest(
             message: packedBasicMessage.Value,
             localDid: localDidOfBobToUseWithAliceMediator.Value.PeerDid.Value,
-            mediatorDid: localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().ServiceEndpoint, // The mediator DID was also shared beforehand (should be in the shared DID of alice)
-            mediatorEndpoint: new Uri(resolvedMediatorDidEndpoint),
+            mediatorDid: localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().ServiceEndpoint.Uri, // The mediator DID was also shared beforehand (should be in the shared DID of alice)
+            mediatorEndpoint: new Uri(resolvedMediatorDidEndpoint.Uri),
             recipientDid: localDidOfAliceToUseWithBob.Value.PeerDid.Value
         ), new CancellationToken());
 
@@ -223,23 +223,23 @@ public class PickupTests
         var localDidOfBobToUseWithAliceMediator = await _createPeerDidHandlerBob.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
 
         // Wrap the Basic Message into a new Message for the mediator to recieve and send it
-        var resolvedMediatorDid = PeerDidResolver.ResolvePeerDid(new PeerDid(localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().ServiceEndpoint), VerificationMaterialFormatPeerDid.Jwk);
+        var resolvedMediatorDid = PeerDidResolver.ResolvePeerDid(new PeerDid(localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().ServiceEndpoint.Uri), VerificationMaterialFormatPeerDid.Jwk);
         var resolvedMediatorDidDoc = DidDocPeerDid.FromJson(resolvedMediatorDid.Value);
         var resolvedMediatorDidEndpoint = resolvedMediatorDidDoc.Value.Services.First().ServiceEndpoint;
         _sendForwardMessageHandler = new SendForwardMessageHandler(_httpClient, simpleDidDocResolverForBob, secretResolverInMemoryForBob);
         var result1 = await _sendForwardMessageHandler.Handle(new SendForwardMessageRequest(
             message: packedBasicMessage1.Value,
             localDid: localDidOfBobToUseWithAliceMediator.Value.PeerDid.Value,
-            mediatorDid: localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().ServiceEndpoint, // The mediator DID was also shared beforehand (should be in the shared DID of alice)
-            mediatorEndpoint: new Uri(resolvedMediatorDidEndpoint),
+            mediatorDid: localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().ServiceEndpoint.Uri, // The mediator DID was also shared beforehand (should be in the shared DID of alice)
+            mediatorEndpoint: new Uri(resolvedMediatorDidEndpoint.Uri),
             recipientDid: localDidOfAliceToUseWithBob.Value.PeerDid.Value
         ), new CancellationToken());
         result1.IsSuccess.Should().BeTrue();
         var result2 = await _sendForwardMessageHandler.Handle(new SendForwardMessageRequest(
             message: packedBasicMessage2.Value,
             localDid: localDidOfBobToUseWithAliceMediator.Value.PeerDid.Value,
-            mediatorDid: localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().ServiceEndpoint, // The mediator DID was also shared beforehand (should be in the shared DID of alice)
-            mediatorEndpoint: new Uri(resolvedMediatorDidEndpoint),
+            mediatorDid: localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().ServiceEndpoint.Uri, // The mediator DID was also shared beforehand (should be in the shared DID of alice)
+            mediatorEndpoint: new Uri(resolvedMediatorDidEndpoint.Uri),
             recipientDid: localDidOfAliceToUseWithBob.Value.PeerDid.Value
         ), new CancellationToken());
         result2.IsSuccess.Should().BeTrue();
@@ -301,15 +301,15 @@ public class PickupTests
         var localDidOfBobToUseWithAliceMediator = await _createPeerDidHandlerBob.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
 
         // Wrap the Basic Message into a new Message for the mediator to recieve and send it
-        var resolvedMediatorDid = PeerDidResolver.ResolvePeerDid(new PeerDid(localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().ServiceEndpoint), VerificationMaterialFormatPeerDid.Jwk);
+        var resolvedMediatorDid = PeerDidResolver.ResolvePeerDid(new PeerDid(localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().ServiceEndpoint.Uri), VerificationMaterialFormatPeerDid.Jwk);
         var resolvedMediatorDidDoc = DidDocPeerDid.FromJson(resolvedMediatorDid.Value);
         var resolvedMediatorDidEndpoint = resolvedMediatorDidDoc.Value.Services.First().ServiceEndpoint;
         _sendForwardMessageHandler = new SendForwardMessageHandler(_httpClient, simpleDidDocResolverForBob, secretResolverInMemoryForBob);
         var result = await _sendForwardMessageHandler.Handle(new SendForwardMessageRequest(
             message: packedBasicMessage.Value,
             localDid: localDidOfBobToUseWithAliceMediator.Value.PeerDid.Value,
-            mediatorDid: localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().ServiceEndpoint, // The mediator DID was also shared beforehand (should be in the shared DID of alice)
-            mediatorEndpoint: new Uri(resolvedMediatorDidEndpoint),
+            mediatorDid: localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().ServiceEndpoint.Uri, // The mediator DID was also shared beforehand (should be in the shared DID of alice)
+            mediatorEndpoint: new Uri(resolvedMediatorDidEndpoint.Uri),
             recipientDid: localDidOfAliceToUseWithBob.Value.PeerDid.Value
         ), new CancellationToken());
 
@@ -373,15 +373,15 @@ public class PickupTests
         var localDidOfBobToUseWithAliceMediator = await _createPeerDidHandlerBob.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
 
         // Wrap the Basic Message into a new Message for the mediator to recieve and send it
-        var resolvedMediatorDid = PeerDidResolver.ResolvePeerDid(new PeerDid(localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().ServiceEndpoint), VerificationMaterialFormatPeerDid.Jwk);
+        var resolvedMediatorDid = PeerDidResolver.ResolvePeerDid(new PeerDid(localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().ServiceEndpoint.Uri), VerificationMaterialFormatPeerDid.Jwk);
         var resolvedMediatorDidDoc = DidDocPeerDid.FromJson(resolvedMediatorDid.Value);
         var resolvedMediatorDidEndpoint = resolvedMediatorDidDoc.Value.Services.First().ServiceEndpoint;
         _sendForwardMessageHandler = new SendForwardMessageHandler(_httpClient, simpleDidDocResolverForBob, secretResolverInMemoryForBob);
         var result = await _sendForwardMessageHandler.Handle(new SendForwardMessageRequest(
             message: packedBasicMessage.Value,
             localDid: localDidOfBobToUseWithAliceMediator.Value.PeerDid.Value,
-            mediatorDid: localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().ServiceEndpoint, // The mediator DID was also shared beforehand (should be in the shared DID of alice)
-            mediatorEndpoint: new Uri(resolvedMediatorDidEndpoint),
+            mediatorDid: localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().ServiceEndpoint.Uri, // The mediator DID was also shared beforehand (should be in the shared DID of alice)
+            mediatorEndpoint: new Uri(resolvedMediatorDidEndpoint.Uri),
             recipientDid: localDidOfAliceToUseWithBob.Value.PeerDid.Value
         ), new CancellationToken());
 
@@ -446,15 +446,15 @@ public class PickupTests
         var localDidOfBobToUseWithAliceMediator = await _createPeerDidHandlerBob.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
 
         // Wrap the Basic Message into a new Message for the mediator to recieve and send it
-        var resolvedMediatorDid = PeerDidResolver.ResolvePeerDid(new PeerDid(localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().ServiceEndpoint), VerificationMaterialFormatPeerDid.Jwk);
+        var resolvedMediatorDid = PeerDidResolver.ResolvePeerDid(new PeerDid(localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().ServiceEndpoint.Uri), VerificationMaterialFormatPeerDid.Jwk);
         var resolvedMediatorDidDoc = DidDocPeerDid.FromJson(resolvedMediatorDid.Value);
         var resolvedMediatorDidEndpoint = resolvedMediatorDidDoc.Value.Services.First().ServiceEndpoint;
         _sendForwardMessageHandler = new SendForwardMessageHandler(_httpClient, simpleDidDocResolverForBob, secretResolverInMemoryForBob);
         var result = await _sendForwardMessageHandler.Handle(new SendForwardMessageRequest(
             message: packedBasicMessage.Value,
             localDid: localDidOfBobToUseWithAliceMediator.Value.PeerDid.Value,
-            mediatorDid: localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().ServiceEndpoint, // The mediator DID was also shared beforehand (should be in the shared DID of alice)
-            mediatorEndpoint: new Uri(resolvedMediatorDidEndpoint),
+            mediatorDid: localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().ServiceEndpoint.Uri, // The mediator DID was also shared beforehand (should be in the shared DID of alice)
+            mediatorEndpoint: new Uri(resolvedMediatorDidEndpoint.Uri),
             recipientDid: localDidOfAliceToUseWithBob.Value.PeerDid.Value
         ), new CancellationToken());
 
@@ -519,15 +519,15 @@ public class PickupTests
         var localDidOfBobToUseWithAliceMediator = await _createPeerDidHandlerBob.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
 
         // Wrap the Basic Message into a new Message for the mediator to recieve and send it
-        var resolvedMediatorDid = PeerDidResolver.ResolvePeerDid(new PeerDid(localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().ServiceEndpoint), VerificationMaterialFormatPeerDid.Jwk);
+        var resolvedMediatorDid = PeerDidResolver.ResolvePeerDid(new PeerDid(localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().ServiceEndpoint.Uri), VerificationMaterialFormatPeerDid.Jwk);
         var resolvedMediatorDidDoc = DidDocPeerDid.FromJson(resolvedMediatorDid.Value);
         var resolvedMediatorDidEndpoint = resolvedMediatorDidDoc.Value.Services.First().ServiceEndpoint;
         _sendForwardMessageHandler = new SendForwardMessageHandler(_httpClient, simpleDidDocResolverForBob, secretResolverInMemoryForBob);
         var result = await _sendForwardMessageHandler.Handle(new SendForwardMessageRequest(
             message: packedBasicMessage.Value,
             localDid: localDidOfBobToUseWithAliceMediator.Value.PeerDid.Value,
-            mediatorDid: localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().ServiceEndpoint, // The mediator DID was also shared beforehand (should be in the shared DID of alice)
-            mediatorEndpoint: new Uri(resolvedMediatorDidEndpoint),
+            mediatorDid: localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().ServiceEndpoint.Uri, // The mediator DID was also shared beforehand (should be in the shared DID of alice)
+            mediatorEndpoint: new Uri(resolvedMediatorDidEndpoint.Uri),
             recipientDid: localDidOfAliceToUseWithBob.Value.PeerDid.Value
         ), new CancellationToken());
 
@@ -760,15 +760,15 @@ public class PickupTests
         // Wrap the Basic Message into a new Message for the mediator to recieve and send it
 
         var invalidRecipientDid = await _createPeerDidHandlerAlice.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
-        var resolvedMediatorDid = PeerDidResolver.ResolvePeerDid(new PeerDid(localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().ServiceEndpoint), VerificationMaterialFormatPeerDid.Jwk);
+        var resolvedMediatorDid = PeerDidResolver.ResolvePeerDid(new PeerDid(localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().ServiceEndpoint.Uri), VerificationMaterialFormatPeerDid.Jwk);
         var resolvedMediatorDidDoc = DidDocPeerDid.FromJson(resolvedMediatorDid.Value);
         var resolvedMediatorDidEndpoint = resolvedMediatorDidDoc.Value.Services.First().ServiceEndpoint;
         _sendForwardMessageHandler = new SendForwardMessageHandler(_httpClient, simpleDidDocResolverForBob, secretResolverInMemoryForBob);
         var result = await _sendForwardMessageHandler.Handle(new SendForwardMessageRequest(
             message: packedBasicMessage.Value,
             localDid: localDidOfBobToUseWithAliceMediator.Value.PeerDid.Value,
-            mediatorDid: localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().ServiceEndpoint, // The mediator DID was also shared beforehand (should be in the shared DID of alice)
-            mediatorEndpoint: new Uri(resolvedMediatorDidEndpoint),
+            mediatorDid: localDidOfAliceToUseWithBob.Value.DidDoc.Services.First().ServiceEndpoint.Uri, // The mediator DID was also shared beforehand (should be in the shared DID of alice)
+            mediatorEndpoint: new Uri(resolvedMediatorDidEndpoint.Uri),
             recipientDid: invalidRecipientDid.Value.PeerDid.Value
         ), new CancellationToken());
 

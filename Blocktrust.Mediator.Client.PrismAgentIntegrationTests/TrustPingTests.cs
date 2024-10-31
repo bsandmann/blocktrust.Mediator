@@ -3,6 +3,7 @@
 using System.Text;
 using System.Text.Json;
 using Blocktrust.Common.Converter;
+using Blocktrust.Common.Models.DidDoc;
 using Blocktrust.DIDComm.Secrets;
 using Blocktrust.Mediator.Client.Commands.TrustPing;
 using Blocktrust.Mediator.Common;
@@ -56,7 +57,7 @@ public class TrustPingTests
         
         var prismAgentDid = invitationPeerDidDocResultFromPrismAgent.Value.Did;
         var prismAgentEndpoint = invitationPeerDidDocResultFromPrismAgent.Value.Services.FirstOrDefault().ServiceEndpoint;
-        prismAgentEndpoint = prismAgentEndpoint.Replace("host.docker.internal", "localhost");
+        prismAgentEndpoint = new ServiceEndpoint( prismAgentEndpoint.Uri.Replace("host.docker.internal", "localhost"));
         
         _createPeerDidHandler = new CreatePeerDidHandler(_secretResolverInMemory);
         
@@ -78,7 +79,7 @@ public class TrustPingTests
         var addMediatorKeysHandler = new UpdateMediatorKeysHandler(_httpClient, _simpleDidDocResolver, _secretResolverInMemory);
         await addMediatorKeysHandler.Handle(addKeyRequest, CancellationToken.None);
         
-        var request = new TrustPingRequest(new Uri(prismAgentEndpoint), prismAgentDid, localDidToUseWithPrism.Value.PeerDid.Value, true);
+        var request = new TrustPingRequest(new Uri(prismAgentEndpoint.Uri), prismAgentDid, localDidToUseWithPrism.Value.PeerDid.Value, true);
         _trustPingHandler = new TrustPingHandler(_httpClient, new SimpleDidDocResolver(), _secretResolverInMemory);
         var trustPingResult = await _trustPingHandler.Handle(request, CancellationToken.None);
         

@@ -59,7 +59,7 @@ public class ShortenUrlTests
         var urlToShorten = new Uri(resultContent);
         long? requestValidityInSeconds = null;
         string? shortUrlSlug = null;
-        var request = new RequestShortenedUrlRequest(new Uri(mediatorEndpoint), mediatorDid, localDid.Value.PeerDid.Value, urlToShorten, requestValidityInSeconds, shortUrlSlug);
+        var request = new RequestShortenedUrlRequest(new Uri(mediatorEndpoint.Uri), mediatorDid, localDid.Value.PeerDid.Value, urlToShorten, requestValidityInSeconds, shortUrlSlug);
 
         // Act
         _requestShortenedUrlHandler = new RequestShortenedUrlHandler(_httpClient, new SimpleDidDocResolver(), secretResolverInMemory);
@@ -103,7 +103,7 @@ public class ShortenUrlTests
         long? requestValidityInSeconds = -1;
         string? shortUrlSlug = "";
         
-        var request = new RequestShortenedUrlRequest(new Uri(mediatorEndpoint), mediatorDid, localDid.Value.PeerDid.Value, urlToShorten, requestValidityInSeconds, shortUrlSlug);
+        var request = new RequestShortenedUrlRequest(new Uri(mediatorEndpoint.Uri), mediatorDid, localDid.Value.PeerDid.Value, urlToShorten, requestValidityInSeconds, shortUrlSlug);
 
         // Act
         _requestShortenedUrlHandler = new RequestShortenedUrlHandler(_httpClient, new SimpleDidDocResolver(), secretResolverInMemory);
@@ -150,7 +150,7 @@ public class ShortenUrlTests
         var urlToShorten = new Uri(resultContent);
         long? requestValidityInSeconds = null;
         string? shortUrlSlug = null;
-        var request = new RequestShortenedUrlRequest(new Uri(mediatorEndpoint), mediatorDid, localDid.Value.PeerDid.Value, urlToShorten, requestValidityInSeconds, shortUrlSlug);
+        var request = new RequestShortenedUrlRequest(new Uri(mediatorEndpoint.Uri), mediatorDid, localDid.Value.PeerDid.Value, urlToShorten, requestValidityInSeconds, shortUrlSlug);
 
         _requestShortenedUrlHandler = new RequestShortenedUrlHandler(_httpClient, new SimpleDidDocResolver(), secretResolverInMemory);
         var resultShortenUrl = await _requestShortenedUrlHandler.Handle(request, CancellationToken.None);
@@ -158,7 +158,7 @@ public class ShortenUrlTests
         resultShortenUrl.IsSuccess.Should().BeTrue();
         
         _invalidateShortenedUrlHandler = new InvalidateShortenedUrlHandler(_httpClient, new SimpleDidDocResolver(), secretResolverInMemory);
-        var result = await _invalidateShortenedUrlHandler.Handle(new InvalidateShortenedUrlRequest(new Uri(mediatorEndpoint), mediatorDid, localDid.Value.PeerDid.Value, resultShortenUrl.Value.ShortenedUrl), new CancellationToken());
+        var result = await _invalidateShortenedUrlHandler.Handle(new InvalidateShortenedUrlRequest(new Uri(mediatorEndpoint.Uri), mediatorDid, localDid.Value.PeerDid.Value, resultShortenUrl.Value.ShortenedUrl), new CancellationToken());
         
         result.IsSuccess.Should().BeTrue();
         result.Value.Should().BeNull();
@@ -194,7 +194,7 @@ public class ShortenUrlTests
         var urlToShorten = new Uri(resultContent);
         long? requestValidityInSeconds = null;
         string? shortUrlSlug = null;
-        var request = new RequestShortenedUrlRequest(new Uri(mediatorEndpoint), mediatorDid, localDid.Value.PeerDid.Value, urlToShorten, requestValidityInSeconds, shortUrlSlug);
+        var request = new RequestShortenedUrlRequest(new Uri(mediatorEndpoint.Uri), mediatorDid, localDid.Value.PeerDid.Value, urlToShorten, requestValidityInSeconds, shortUrlSlug);
 
         _requestShortenedUrlHandler = new RequestShortenedUrlHandler(_httpClient, new SimpleDidDocResolver(), secretResolverInMemory);
         var resultShortenUrl = await _requestShortenedUrlHandler.Handle(request, CancellationToken.None);
@@ -204,7 +204,7 @@ public class ShortenUrlTests
         
         var nonExistingUrl = new Uri("https://www.google.com/doesnotexist");
         _invalidateShortenedUrlHandler = new InvalidateShortenedUrlHandler(_httpClient, new SimpleDidDocResolver(), secretResolverInMemory);
-        var result = await _invalidateShortenedUrlHandler.Handle(new InvalidateShortenedUrlRequest(new Uri(mediatorEndpoint), mediatorDid, localDid.Value.PeerDid.Value, nonExistingUrl), new CancellationToken());
+        var result = await _invalidateShortenedUrlHandler.Handle(new InvalidateShortenedUrlRequest(new Uri(mediatorEndpoint.Uri), mediatorDid, localDid.Value.PeerDid.Value, nonExistingUrl), new CancellationToken());
         
         result.IsSuccess.Should().BeTrue();
         result.Value.Should().NotBeNull();

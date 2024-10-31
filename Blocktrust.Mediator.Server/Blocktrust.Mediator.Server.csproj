@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <Authors>Bjoern Sandmann / blocktrust</Authors>
@@ -9,6 +9,7 @@
         <Copyright>Bjoern Sandmann / blocktrust</Copyright>
         <PackageProjectUrl>blocktrust.dev</PackageProjectUrl>
         <RepositoryUrl>https://github.com/bsandmann/blocktrust.Mediator</RepositoryUrl>
+        <LangVersion>12</LangVersion>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">

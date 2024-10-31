@@ -3,6 +3,7 @@
 using System.Text;
 using System.Text.Json;
 using Blocktrust.Common.Converter;
+using Blocktrust.Common.Models.DidDoc;
 using Blocktrust.DIDComm.Secrets;
 using Blocktrust.Mediator.Common;
 using Blocktrust.Mediator.Common.Commands.CreatePeerDid;
@@ -55,7 +56,7 @@ public class BasicMessageTests
         
         var prismAgentDid = invitationPeerDidDocResultFromPrismAgent.Value.Did;
         var prismAgentEndpoint = invitationPeerDidDocResultFromPrismAgent.Value.Services.FirstOrDefault().ServiceEndpoint;
-        prismAgentEndpoint = prismAgentEndpoint.Replace("host.docker.internal", "localhost");
+        prismAgentEndpoint = new ServiceEndpoint(uri: prismAgentEndpoint.Uri.Replace("host.docker.internal", "localhost"));
         
         _createPeerDidHandler = new CreatePeerDidHandler(_secretResolverInMemory);
         
@@ -81,7 +82,7 @@ public class BasicMessageTests
         var basicMessage = BasicMessage.Create("Hello agent", localDidToUseWithPrism.Value.PeerDid.Value);
 
         var sendMessageHandler = new SendMessageHandler(_httpClient,_simpleDidDocResolver, _secretResolverInMemory);
-        var sendMessageRequest = new SendMessageRequest(new Uri(prismAgentEndpoint), prismAgentDid, localDidToUseWithPrism.Value.PeerDid.Value, basicMessage);
+        var sendMessageRequest = new SendMessageRequest(new Uri(prismAgentEndpoint.Uri), prismAgentDid, localDidToUseWithPrism.Value.PeerDid.Value, basicMessage);
         var sendMessageResult = await sendMessageHandler.Handle(sendMessageRequest, CancellationToken.None);
         
         sendMessageResult.IsSuccess.Should().BeTrue();

@@ -73,9 +73,9 @@ public class CreatePeerDidHandler : IRequestHandler<CreatePeerDidRequest, Result
         {
             serviceDictionary = new Service(
                 id: "new-id",
-                serviceEndpoint: createdidRequest.ServiceEndpoint.AbsoluteUri,
+                serviceEndpoint: new ServiceEndpoint(uri: createdidRequest.ServiceEndpoint.AbsoluteUri,
                 routingKeys: new List<string>(), 
-                accept: new List<string>() { "didcomm/v2" },
+                accept: new List<string>() { "didcomm/v2" }),
                 type: ServiceConstants.ServiceDidcommMessaging).ToDict();
 
             service = JsonSerializer.Serialize(serviceDictionary, SerializationOptions.UnsafeRelaxedEscaping);
@@ -84,9 +84,9 @@ public class CreatePeerDidHandler : IRequestHandler<CreatePeerDidRequest, Result
         {
             serviceDictionary = new Service(
                 id: "new-id",
-                serviceEndpoint: createdidRequest.ServiceEndpointDid,
+                serviceEndpoint: new ServiceEndpoint(uri: createdidRequest.ServiceEndpointDid,
                 routingKeys:new List<string>(), 
-                accept: new List<string>() { "didcomm/v2" },
+                accept: new List<string>() { "didcomm/v2" }),
                 type: ServiceConstants.ServiceDidcommMessaging).ToDict();
             
             service = JsonSerializer.Serialize(serviceDictionary, SerializationOptions.UnsafeRelaxedEscaping);

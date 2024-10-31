@@ -3,6 +3,7 @@
 using System.Text;
 using System.Text.Json;
 using Blocktrust.Common.Converter;
+using Blocktrust.Common.Models.DidDoc;
 using Blocktrust.DIDComm.Secrets;
 using Blocktrust.Mediator.Common;
 using Blocktrust.Mediator.Common.Commands.CreatePeerDid;
@@ -54,7 +55,7 @@ public class DiscoverFeaturesTests
         
         var prismAgentDid = invitationPeerDidDocResultFromPrismAgent.Value.Did;
         var prismAgentEndpoint = invitationPeerDidDocResultFromPrismAgent.Value.Services.FirstOrDefault().ServiceEndpoint;
-        prismAgentEndpoint = prismAgentEndpoint.Replace("host.docker.internal", "localhost");
+        prismAgentEndpoint = new ServiceEndpoint(uri: prismAgentEndpoint.Uri.Replace("host.docker.internal", "localhost"));
         
         _createPeerDidHandler = new CreatePeerDidHandler(_secretResolverInMemory);
         
@@ -78,7 +79,7 @@ public class DiscoverFeaturesTests
         
         var queries = new List<FeatureQuery>();
         queries.Add(new FeatureQuery("protocol"));        
-        var request = new DiscoverFeaturesRequest(new Uri(prismAgentEndpoint), prismAgentDid, localDidToUseWithPrism.Value.PeerDid.Value, queries);
+        var request = new DiscoverFeaturesRequest(new Uri(prismAgentEndpoint.Uri), prismAgentDid, localDidToUseWithPrism.Value.PeerDid.Value, queries);
         _discoverFeaturesHandler = new DiscoverFeaturesHandler(_httpClient, new SimpleDidDocResolver(), _secretResolverInMemory);
         var discoverFeaturesResult = await _discoverFeaturesHandler.Handle(request, CancellationToken.None);
         

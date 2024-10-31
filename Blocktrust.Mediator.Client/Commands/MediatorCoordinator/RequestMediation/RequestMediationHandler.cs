@@ -102,7 +102,7 @@ public class RequestMediationHandler : IRequestHandler<RequestMediationRequest, 
             return Result.Fail("Unable to identify endpoint of mediator");
         }
 
-        var endpointUri = new Uri(endpoint);
+        var endpointUri = new Uri(endpoint.Uri);
         HttpResponseMessage response;
         try
         {

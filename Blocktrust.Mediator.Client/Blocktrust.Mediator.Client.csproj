@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <Authors>Bjoern Sandmann / blocktrust</Authors>
@@ -10,6 +10,7 @@
         <PackageProjectUrl>blocktrust.dev</PackageProjectUrl>
         <RepositoryUrl>https://github.com/bsandmann/blocktrust.Mediator</RepositoryUrl>
         <Version>1.6.4</Version>
+        <LangVersion>12</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>

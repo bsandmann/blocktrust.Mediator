@@ -29,7 +29,7 @@ public class TrustPingTests
     }
 
     /// <summary>
-    /// This tests assumes that the Roots Mediator is running on http://127.0.0.1:8000
+    /// This tests assumes that the Blocktrust Mediator is running on http://127.0.0.1:8000
     /// </summary>
     [Fact]
     public async Task TrustPingTest()
@@ -53,7 +53,7 @@ public class TrustPingTests
         _createPeerDidHandler = new CreatePeerDidHandler(secretResolverInMemory);
        
         var localDidOfAliceToUseWithTheMediator = await _createPeerDidHandler.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
-        var request = new TrustPingRequest(new Uri(mediatorEndpoint), mediatorDid, localDidOfAliceToUseWithTheMediator.Value.PeerDid.Value, true, suggestedLabel: "myLabel");
+        var request = new TrustPingRequest(new Uri(mediatorEndpoint.Uri), mediatorDid, localDidOfAliceToUseWithTheMediator.Value.PeerDid.Value, true, suggestedLabel: "myLabel");
 
         _trustPingHandler = new TrustPingHandler(_httpClient, new SimpleDidDocResolver(), secretResolverInMemory);
         var trustPingResult = await _trustPingHandler.Handle(request, CancellationToken.None);
