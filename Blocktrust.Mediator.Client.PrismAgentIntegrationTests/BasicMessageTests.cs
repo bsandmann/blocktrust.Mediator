@@ -22,12 +22,13 @@ using Xunit;
 
 public class BasicMessageTests
 {
+    // http://212.124.51.147:35412/cloud-agent/
     private readonly HttpClient _httpClient;
     private DiscoverFeaturesHandler _discoverFeaturesHandler;
     private CreatePeerDidHandler _createPeerDidHandler;
-    private readonly string _blocktrustMediatorUri = "http://localhost:5023/";
-    private readonly string _prismAgentUrlRunningInDocker = "http://localhost:8090/";
-    private readonly string _prismAgentApiKey = "kxr9i@6XgKBUxe%O";
+    private readonly string _blocktrustMediatorUri = "https://localhost:7037/";
+    private readonly string _prismAgentUrlRunningInDocker = "http://212.124.51.147:35412/";
+    private readonly string _prismAgentApiKey = "1623db3e7de4a24c";
     private readonly SimpleDidDocResolver _simpleDidDocResolver;
     private readonly SecretResolverInMemory _secretResolverInMemory;
     private RequestMediationHandler _requestMediationHandler;
@@ -61,6 +62,7 @@ public class BasicMessageTests
         _createPeerDidHandler = new CreatePeerDidHandler(_secretResolverInMemory);
         
         // Then we need a mediator setup for us (so that we can receive the response of the trust ping)
+   
         var response = await _httpClient.GetAsync(_blocktrustMediatorUri + "oob_url");
         var resultContent = await response.Content.ReadAsStringAsync();
         var oob = resultContent.Split("=");

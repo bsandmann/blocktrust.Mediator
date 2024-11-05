@@ -10,6 +10,7 @@
         <PackageProjectUrl>blocktrust.dev</PackageProjectUrl>
         <RepositoryUrl>https://github.com/bsandmann/blocktrust.Mediator</RepositoryUrl>
         <LangVersion>12</LangVersion>
+        <UserSecretsId>b5b840c7-3936-4157-8179-39166a0cb820</UserSecretsId>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -35,6 +36,8 @@
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+        <PackageReference Include="Blocktrust.DIDComm" Version="3.2.0" />
+        <PackageReference Include="Blocktrust.PeerDID" Version="2.2.0" />
 <!--        <PackageReference Include="BouncyCastle.NetCore" Version="1.9.0" />-->
         <PackageReference Include="EntityFrameworkCore.Exceptions.SqlServer" Version="6.0.3.2" />
         <PackageReference Include="FluentResults" Version="3.15.2" />

@@ -1,20 +1,17 @@
-﻿namespace Blocktrust.Mediator.Client.BlocktrustIntegrationTests;
-
-using System.Text;
+﻿using System.Text;
 using System.Text.Json;
 using Blocktrust.Common.Converter;
 using Blocktrust.DIDComm.Secrets;
-using Blocktrust.Mediator.Client.Commands.DiscoverFeatures;
-using Blocktrust.Mediator.Client.Commands.MediatorCoordinator.QueryKeys;
+using Blocktrust.Mediator.Client.Commands.TrustPing;
 using Blocktrust.Mediator.Common;
 using Blocktrust.Mediator.Common.Commands.CreatePeerDid;
 using Blocktrust.Mediator.Common.Models.OutOfBand;
 using Blocktrust.PeerDID.DIDDoc;
 using Blocktrust.PeerDID.PeerDIDCreateResolve;
 using Blocktrust.PeerDID.Types;
-using Commands.TrustPing;
 using FluentAssertions;
-using Xunit;
+
+namespace Blocktrust.Mediator.Client.BlocktrustIntegrationTests;
 
 public class TrustPingTests
 {
@@ -53,7 +50,7 @@ public class TrustPingTests
         _createPeerDidHandler = new CreatePeerDidHandler(secretResolverInMemory);
        
         var localDidOfAliceToUseWithTheMediator = await _createPeerDidHandler.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
-        var request = new TrustPingRequest(new Uri(mediatorEndpoint.Uri), mediatorDid, localDidOfAliceToUseWithTheMediator.Value.PeerDid.Value, true, suggestedLabel: "myLabel");
+        var request = new TrustPingRequest(new Uri(mediatorEndpoint.Uri), mediatorDid, localDidOfAliceToUseWithTheMediator.Value.PeerDid.Value, suggestedLabel: "myLabel");
 
         _trustPingHandler = new TrustPingHandler(_httpClient, new SimpleDidDocResolver(), secretResolverInMemory);
         var trustPingResult = await _trustPingHandler.Handle(request, CancellationToken.None);

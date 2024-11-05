@@ -1,8 +1,5 @@
-﻿namespace Blocktrust.Mediator.Client.Commands.TrustPing;
-
-using System.Net;
+﻿using System.Net;
 using System.Net.Http.Headers;
-using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using Blocktrust.Common.Resolver;
@@ -14,6 +11,8 @@ using Blocktrust.DIDComm.Model.UnpackParamsModels;
 using Blocktrust.Mediator.Common.Protocols;
 using FluentResults;
 using MediatR;
+
+namespace Blocktrust.Mediator.Client.Commands.TrustPing;
 
 public class TrustPingHandler : IRequestHandler<TrustPingRequest, Result<string?>>
 {
@@ -31,14 +30,16 @@ public class TrustPingHandler : IRequestHandler<TrustPingRequest, Result<string?
     // Details: https://identity.foundation/didcomm-messaging/spec/#discover-features-protocol-20
     // https://didcomm.org/discover-features/2.0/
 
-    public async Task<Result<string?>> Handle(TrustPingRequest request, CancellationToken cancellationToken)
-    {
-        //TODO in general I should allow the option to use the return_route feature or not
-        //And i should also use both header-implementations!
+public async Task<Result<string?>> Handle(TrustPingRequest request, CancellationToken cancellationToken)
+{
+    //TODO in general I should allow the option to use the return_route feature or not
+    //And i should also use both header-implementations!
 
-        // We create the message to send to the mediator
-        // The special format of the return_route header is required by the python implementation of the roots mediator
-        var returnRoute = new JsonObject() { new KeyValuePair<string, JsonNode?>("return_route", "all") };
+    // We create the message to send to the mediator
+    // The special format of the return_route header is required by the python implementation of the roots mediator
+    try
+    {
+        var returnRoute = new JsonObject { new KeyValuePair<string, JsonNode?>("return_route", "all") };
         var body = new Dictionary<string, object>
         {
             { "response_requested", request.ResponseRequested },
@@ -53,37 +54,34 @@ public class TrustPingHandler : IRequestHandler<TrustPingRequest, Result<string?
                 type: ProtocolConstants.TrustPingRequest,
                 body: body
             )
-            .to(new List<string>() { request.RemoteDid })
+            .to(new List<string> { request.RemoteDid })
             .returnRoute("all")
-            .customHeader("custom_headers", new List<JsonObject>() { returnRoute })
+            .customHeader("custom_headers", new List<JsonObject> { returnRoute })
             .from(request.LocalDid)
             .build();
 
         var didComm = new DidComm(_didDocResolver, _secretResolver);
 
-        // We pack the message and encrypt it for the mediator
+        // Pack the message with forwarding disabled
         var packResult = await didComm.PackEncrypted(
             new PackEncryptedParamsBuilder(mediateRequestMessage, to: request.RemoteDid)
                 .From(request.LocalDid)
                 .ProtectSenderId(false)
+                .DidDocResolver(_didDocResolver)
+                .SecretResolver(_secretResolver)
+                .Forward(false)  // Explicitly disable forwarding
                 .BuildPackEncryptedParams()
         );
 
         if (packResult.IsFailed)
         {
-            return packResult.ToResult();
+            return Result.Fail($"Message packing failed: {string.Join(", ", packResult.Errors.Select(e => e.Message))}");
         }
 
-        // We send the message to the mediator
-        HttpResponseMessage response;
-        try
-        {
-            response = await _httpClient.PostAsync(request.RemoteEndpoint, new StringContent(packResult.Value.PackedMessage, new MediaTypeHeaderValue(MessageTyp.Encrypted)), cancellationToken);
-        }
-        catch (HttpRequestException ex)
-        {
-            return Result.Fail($"Connection could not be established: {ex.Message}");
-        }
+        var response = await _httpClient.PostAsync(
+            request.RemoteEndpoint, 
+            new StringContent(packResult.Value.PackedMessage, new MediaTypeHeaderValue(MessageTyp.Encrypted)), 
+            cancellationToken);
 
         if (response.StatusCode == HttpStatusCode.NotFound)
         {
@@ -101,9 +99,10 @@ public class TrustPingHandler : IRequestHandler<TrustPingRequest, Result<string?
             new UnpackParamsBuilder(content)
                 .SecretResolver(_secretResolver)
                 .BuildUnpackParams());
+                
         if (unpackResult.IsFailed)
         {
-            return unpackResult.ToResult();
+            return Result.Fail($"Message unpacking failed: {string.Join(", ", unpackResult.Errors.Select(e => e.Message))}");
         }
 
         if (unpackResult.Value.Message.Type == ProtocolConstants.TrustPingResponse)
@@ -128,9 +127,12 @@ public class TrustPingHandler : IRequestHandler<TrustPingRequest, Result<string?
 
             return Result.Ok(label);
         }
-        else
-        {
-            return Result.Fail("Error: Unexpected message response type");
-        }
+
+        return Result.Fail($"Unexpected message response type: {unpackResult.Value.Message.Type}");
     }
+    catch (Exception ex)
+    {
+        return Result.Fail($"Error during trust ping: {ex.Message}");
+    }
+}
 }
