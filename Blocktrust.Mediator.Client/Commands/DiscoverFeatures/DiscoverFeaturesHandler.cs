@@ -28,80 +28,91 @@ public class DiscoverFeaturesHandler : IRequestHandler<DiscoverFeaturesRequest, 
         _secretResolver = secretResolver;
     }
 
-    // Details: https://identity.foundation/didcomm-messaging/spec/#discover-features-protocol-20
-    // https://didcomm.org/discover-features/2.0/
-    
     public async Task<Result<List<DiscoverFeature>>> Handle(DiscoverFeaturesRequest request, CancellationToken cancellationToken)
     {
-        // We create the message to send to the mediator
-        // The special format of the return_route header is required by the python implementation of the roots mediator
-        var returnRoute = new JsonObject() { new KeyValuePair<string, JsonNode?>("return_route", "all") };
-        var body = new Dictionary<string, object>();
-        body.Add("queries", request.Queries);
-        var mediateRequestMessage = new MessageBuilder(
-                id: Guid.NewGuid().ToString(),
-                type: ProtocolConstants.DiscoverFeatures2Query,
-                body: body 
-            )
-            .to(new List<string>() { request.MediatorDid })
-            .returnRoute("all")
-            .customHeader("custom_headers", new List<JsonObject>() { returnRoute })
-            .from(request.LocalDid)
-            .build();
-
-        var didComm = new DidComm(_didDocResolver, _secretResolver);
-
-        // We pack the message and encrypt it for the mediator
-        var packResult =await  didComm.PackEncrypted(
-            new PackEncryptedParamsBuilder(mediateRequestMessage, to: request.MediatorDid)
-                .From(request.LocalDid)
-                .ProtectSenderId(false)
-                .BuildPackEncryptedParams()
-        );
-
-        if (packResult.IsFailed)
-        {
-            return packResult.ToResult();
-        }
-
-        // We send the message to the mediator
-        HttpResponseMessage response;
         try
         {
-            response = await _httpClient.PostAsync(request.MediatorEndpoint, new StringContent(packResult.Value.PackedMessage, new MediaTypeHeaderValue(MessageTyp.Encrypted) ), cancellationToken);
-        }
-        catch (HttpRequestException ex)
-        {
-            return Result.Fail($"Connection could not be established: {ex.Message}");
-        }
-        
-        if (response.StatusCode == HttpStatusCode.NotFound)
-        {
-            return Result.Fail("Connection could not be established");
-        }
-        else if (!response.IsSuccessStatusCode)
-        {
-            return Result.Fail("Unable to initiate connection: " + response.StatusCode);
-        }
+            // Create the message to send to the mediator
+            var returnRoute = new JsonObject() { new KeyValuePair<string, JsonNode?>("return_route", "all") };
+            var body = new Dictionary<string, object>
+            {
+                { "queries", request.Queries }
+            };
 
-        var content = await response.Content.ReadAsStringAsync(cancellationToken);
+            var mediateRequestMessage = new MessageBuilder(
+                    id: Guid.NewGuid().ToString(),
+                    type: ProtocolConstants.DiscoverFeatures2Query,
+                    body: body
+                )
+                .to(new List<string>() { request.MediatorDid })
+                .returnRoute("all")
+                .customHeader("custom_headers", new List<JsonObject>() { returnRoute })
+                .from(request.LocalDid)
+                .build();
 
-        var unpackResult =await  didComm.Unpack(
-            new UnpackParamsBuilder(content)
-                .SecretResolver(_secretResolver)
-                .BuildUnpackParams());
-        if (unpackResult.IsFailed)
-        {
-            return unpackResult.ToResult();
-        }
+            var didComm = new DidComm(_didDocResolver, _secretResolver);
 
-        if (unpackResult.Value.Message.Type == ProtocolConstants.DiscoverFeatures2Response)
-        {
-            return DiscoverFeature.Parse(unpackResult.Value.Message.Body);
+            // Pack the message with explicit resolvers and forwarding disabled
+            var packResult = await didComm.PackEncrypted(
+                new PackEncryptedParamsBuilder(mediateRequestMessage, to: request.MediatorDid)
+                    .From(request.LocalDid)
+                    .ProtectSenderId(false)
+                    .DidDocResolver(_didDocResolver)
+                    .SecretResolver(_secretResolver)
+                    .Forward(false)
+                    .BuildPackEncryptedParams()
+            );
+
+            if (packResult.IsFailed)
+            {
+                return Result.Fail($"Message packing failed: {string.Join(", ", packResult.Errors.Select(e => e.Message))}");
+            }
+
+            // Send the message to the mediator
+            HttpResponseMessage response;
+            try
+            {
+                response = await _httpClient.PostAsync(request.MediatorEndpoint, 
+                    new StringContent(packResult.Value.PackedMessage, new MediaTypeHeaderValue(MessageTyp.Encrypted)), 
+                    cancellationToken);
+            }
+            catch (HttpRequestException ex)
+            {
+                return Result.Fail($"Connection could not be established: {ex.Message}");
+            }
+
+            if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                return Result.Fail("Connection could not be established");
+            }
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return Result.Fail("Unable to initiate connection: " + response.StatusCode);
+            }
+
+            var content = await response.Content.ReadAsStringAsync(cancellationToken);
+
+            var unpackResult = await didComm.Unpack(
+                new UnpackParamsBuilder(content)
+                    .SecretResolver(_secretResolver)
+                    .BuildUnpackParams());
+
+            if (unpackResult.IsFailed)
+            {
+                return Result.Fail($"Message unpacking failed: {string.Join(", ", unpackResult.Errors.Select(e => e.Message))}");
+            }
+
+            if (unpackResult.Value.Message.Type == ProtocolConstants.DiscoverFeatures2Response)
+            {
+                return DiscoverFeature.Parse(unpackResult.Value.Message.Body);
+            }
+
+            return Result.Fail($"Unexpected message response type: {unpackResult.Value.Message.Type}");
         }
-        else
+        catch (Exception ex)
         {
-            return Result.Fail("Error: Unexpected message response type");
+            return Result.Fail($"Error during feature discovery: {ex.Message}");
         }
     }
 }
