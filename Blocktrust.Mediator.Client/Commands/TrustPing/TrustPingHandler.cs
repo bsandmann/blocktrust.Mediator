@@ -67,9 +67,6 @@ public async Task<Result<string?>> Handle(TrustPingRequest request, Cancellation
             new PackEncryptedParamsBuilder(mediateRequestMessage, to: request.RemoteDid)
                 .From(request.LocalDid)
                 .ProtectSenderId(false)
-                .DidDocResolver(_didDocResolver)
-                .SecretResolver(_secretResolver)
-                .Forward(false)  // Explicitly disable forwarding
                 .BuildPackEncryptedParams()
         );
 

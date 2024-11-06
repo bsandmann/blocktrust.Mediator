@@ -57,9 +57,6 @@ public class DiscoverFeaturesHandler : IRequestHandler<DiscoverFeaturesRequest, 
                 new PackEncryptedParamsBuilder(mediateRequestMessage, to: request.MediatorDid)
                     .From(request.LocalDid)
                     .ProtectSenderId(false)
-                    .DidDocResolver(_didDocResolver)
-                    .SecretResolver(_secretResolver)
-                    .Forward(false)
                     .BuildPackEncryptedParams()
             );
 

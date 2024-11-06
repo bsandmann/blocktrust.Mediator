@@ -49,12 +49,13 @@ public class DebugTests
     [Fact]
     public async Task ReadPeerDid()
     {
-        // var peerDid = "did:peer:2.Vz6MknFnZUtNCJHkv5KzF2udqfVFpWKnHLRhYajKCnmiq3Y6f.Ez6LSqzcRd1F43qimB45idBH7j1tNvh1483HfqFFNYZDigqX4.SeyJpZCI6IiNzZXJ2aWNlLTEiLCJ0IjoiZG0iLCJzIjpudWxsfQ";
-        // var resolvedFrom = PeerDidResolver.ResolvePeerDid(new PeerDid(peerDid), VerificationMaterialFormatPeerDid.Jwk);
-        // var resolvedFromAsDidDoc = DidDocPeerDid.FromJson(resolvedFrom.Value);
-        //
-        // var endpointDid = resolvedFromAsDidDoc.Value.Services.FirstOrDefault().ServiceEndpoint;
-        // var endpointDidResolved = PeerDidResolver.ResolvePeerDid(new PeerDid(endpointDid), VerificationMaterialFormatPeerDid.Jwk);
-        // var endpointDidResolvedAsDidDoc = DidDocPeerDid.FromJson(endpointDidResolved.Value);
+        var peerDid =
+            "did:peer:2.Ez6LSpSrLxbAhg2SHwKk7kwpsH7DM7QjFS5iK6qP87eViohud.Vz6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V.SeyJ0IjoiZG0iLCJzIjp7InVyaSI6Imh0dHBzOi8vZXhhbXBsZS5jb20vZW5kcG9pbnQxIiwiciI6WyJkaWQ6ZXhhbXBsZTpzb21lbWVkaWF0b3Ijc29tZWtleTEiXSwiYSI6WyJkaWRjb21tL3YyIiwiZGlkY29tbS9haXAyO2Vudj1yZmM1ODciXX19";
+        var resolvedFrom = PeerDidResolver.ResolvePeerDid(new PeerDid(peerDid), VerificationMaterialFormatPeerDid.Jwk);
+        var resolvedFromAsDidDoc = DidDocPeerDid.FromJson(resolvedFrom.Value);
+        
+        // var endpointDid = resolvedFromAsDidDoc.Value.Services.FirstOrDefault().ServiceEndpoint.Uri;
+        var endpointDidResolved = PeerDidResolver.ResolvePeerDid(new PeerDid(peerDid), VerificationMaterialFormatPeerDid.Jwk);
+        var endpointDidResolvedAsDidDoc = DidDocPeerDid.FromJson(endpointDidResolved.Value);
     }
 }
