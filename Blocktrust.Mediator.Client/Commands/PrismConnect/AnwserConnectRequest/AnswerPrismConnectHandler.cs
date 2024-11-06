@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using Blocktrust.Common.Models.DidDoc;
 using Blocktrust.Common.Resolver;
 using Common;
 using Common.Models.ProblemReport;
@@ -98,7 +99,7 @@ public class AnswerPrismConnectHandler : IRequestHandler<AnswerPrismConnectReque
         }
 
         var prismAgentEndpoint = prismDidDoc.Services.FirstOrDefault().ServiceEndpoint;
-        if (string.IsNullOrEmpty(prismAgentEndpoint))
+        if (string.IsNullOrEmpty(prismAgentEndpoint.Uri))
         {
             return Result.Fail("Error parsing the endpoint of the prism did");
         }
@@ -106,10 +107,10 @@ public class AnswerPrismConnectHandler : IRequestHandler<AnswerPrismConnectReque
 #if DEBUG
         // The problem is that the prism agent is running in a docker container and the mediator is running on the host machine.
         // For more details read the documentation in the test for this method
-        prismAgentEndpoint = prismAgentEndpoint.Replace("host.docker.internal", "localhost");
+        prismAgentEndpoint = new ServiceEndpoint(uri: prismAgentEndpoint.Uri.Replace("host.docker.internal", "localhost"));
 #endif
 
-        var prismDidEndpointUri = new Uri(prismAgentEndpoint);
+        var prismDidEndpointUri = new Uri(prismAgentEndpoint.Uri);
 
         // We send the message to agent
         HttpResponseMessage response;

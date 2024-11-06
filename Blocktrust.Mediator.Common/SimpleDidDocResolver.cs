@@ -1,12 +1,12 @@
-﻿namespace Blocktrust.Mediator.Common;
-
-using System.Text.Json;
+﻿using System.Text.Json;
 using Blocktrust.Common.Models.DidDoc;
 using Blocktrust.Common.Resolver;
+using Blocktrust.DIDComm.Utils;
 using Blocktrust.PeerDID.DIDDoc;
 using Blocktrust.PeerDID.PeerDIDCreateResolve;
 using Blocktrust.PeerDID.Types;
-using DIDComm.Utils;
+
+namespace Blocktrust.Mediator.Common;
 
 public class SimpleDidDocResolver : IDidDocResolver
 {
@@ -14,12 +14,12 @@ public class SimpleDidDocResolver : IDidDocResolver
 
     public SimpleDidDocResolver(Dictionary<string, DidDoc> docs)
     {
-        this._docs = docs;
+        _docs = docs;
     }
 
     public SimpleDidDocResolver()
     {
-        this._docs = new Dictionary<string, DidDoc>();
+        _docs = new Dictionary<string, DidDoc>();
     }
 
     public SimpleDidDocResolver(List<DidDoc> docs) : this(docs.ToDictionary(x => x.Did, x => x))
@@ -32,9 +32,9 @@ public class SimpleDidDocResolver : IDidDocResolver
         {
             return _docs[did];
         }
-        else if (PeerDidCreator.IsPeerDid(did))
+
+        if (PeerDidCreator.IsPeerDid(did))
         {
-            //TODO could be any kind
             var didDocJsonResult = PeerDidResolver.ResolvePeerDid(new PeerDid(did), VerificationMaterialFormatPeerDid.Jwk);
             if (didDocJsonResult.IsFailed)
             {
@@ -47,10 +47,29 @@ public class SimpleDidDocResolver : IDidDocResolver
                 return null;
             }
 
-            var combinedVerificationMethodsOfInvitation = didDocResult.Value.Authentications.Concat(didDocResult.Value.KeyAgreements);
+            var combinedVerificationMethodsOfInvitation = didDocResult.Value.Authentications
+                .Concat(didDocResult.Value.KeyAgreements);
 
-            //TODO this should not be done in here
-            this.AddDoc(new DidDoc()
+            var services = new List<Service>();
+            if (didDocResult.Value.Services != null)
+            {
+                foreach (var peerDidService in didDocResult.Value.Services)
+                {
+                    // Transform service from peer DID format to DIDComm format
+                    var serviceEndpoint = TransformServiceEndpoint(peerDidService.ServiceEndpoint);
+                    
+                    var service = new Service(
+                        id: peerDidService.Id,
+                        serviceEndpoint: serviceEndpoint,
+                        type: peerDidService.Type == "dm" ? 
+                            ServiceConstants.ServiceDidcommMessaging : 
+                            peerDidService.Type
+                    );
+                    services.Add(service);
+                }
+            }
+
+            var didDoc = new DidDoc
             {
                 Did = didDocResult.Value.Did,
                 KeyAgreements = didDocResult.Value.KeyAgreements.Select(p => p.Id).ToList(),
@@ -63,18 +82,53 @@ public class SimpleDidDocResolver : IDidDocResolver
                         value: JsonSerializer.Serialize((PeerDidJwk)p.VerMaterial.Value, SerializationOptions.UnsafeRelaxedEscaping)),
                     controller: p.Controller
                 )).ToList(),
-                Services = didDocResult.Value?.Services?.ToList() ?? new List<Service>()
-            });
-            return _docs[did];
+                Services = services
+            };
+
+            _docs.Add(did, didDoc);
+            return didDoc;
         }
-        else
+
+        return null;
+    }
+
+    private ServiceEndpoint TransformServiceEndpoint(ServiceEndpoint peerDidEndpoint)
+    {
+        var routingKeys = peerDidEndpoint.RoutingKeys ?? new List<string>();
+        var accept = peerDidEndpoint.Accept ?? new List<string>();
+
+        // Handle both abbreviated ("s") and full ("uri") formats
+        var uri = peerDidEndpoint.Uri;
+        if (string.IsNullOrEmpty(uri) && peerDidEndpoint is IDictionary<string, object> dict)
         {
-            return null;
+            if (dict.ContainsKey("s"))
+            {
+                uri = dict["s"].ToString()!;
+            }
         }
+
+        // Transform shortened property names back to full names if needed
+        if (peerDidEndpoint is IDictionary<string, object> endpointDict)
+        {
+            if (endpointDict.ContainsKey("r") && endpointDict["r"] is IEnumerable<string> r)
+            {
+                routingKeys = r.ToList();
+            }
+            if (endpointDict.ContainsKey("a") && endpointDict["a"] is IEnumerable<string> a)
+            {
+                accept = a.ToList();
+            }
+        }
+
+        return new ServiceEndpoint(
+            uri: uri,
+            routingKeys: routingKeys,
+            accept: accept
+        );
     }
 
     public void AddDoc(DidDoc doc)
     {
-        _docs.Add(doc.Did, doc);
+        _docs[doc.Did] = doc;
     }
 }

@@ -29,58 +29,69 @@ public class SendMessageHandler : IRequestHandler<SendMessageRequest, Result<Mes
 
     public async Task<Result<Message>> Handle(SendMessageRequest request, CancellationToken cancellationToken)
     {
-        var didComm = new DidComm(_didDocResolver, _secretResolver);
-
-        // We pack the message and encrypt it for the mediator
-        var packResult = await didComm.PackEncrypted(
-            new PackEncryptedParamsBuilder(request.Message, to: request.RemoteDid)
-                .From(request.LocalDid)
-                .ProtectSenderId(false)
-                .BuildPackEncryptedParams()
-        );
-
-        if (packResult.IsFailed)
-        {
-            return packResult.ToResult();
-        }
-
-        // We send the message to the endpoint
-        HttpResponseMessage response;
         try
         {
-            response = await _httpClient.PostAsync(request.RemoteEndpoint, new StringContent(packResult.Value.PackedMessage, new MediaTypeHeaderValue(MessageTyp.Encrypted)), cancellationToken);
-        }
-        catch (HttpRequestException ex)
-        {
-            return Result.Fail($"Connection could not be established: {ex.Message}");
-        }
+            var didComm = new DidComm(_didDocResolver, _secretResolver);
 
-        if (response.StatusCode == HttpStatusCode.NotFound)
-        {
-            return Result.Fail("Connection could not be established. Not found");
-        }
+            // Pack the message with explicit resolvers and forwarding disabled
+            var packResult = await didComm.PackEncrypted(
+                new PackEncryptedParamsBuilder(request.Message, to: request.RemoteDid)
+                    .From(request.LocalDid)
+                    .ProtectSenderId(false)
+                    .BuildPackEncryptedParams()
+            );
 
-        if (!response.IsSuccessStatusCode)
-        {
-            return Result.Fail("Unable to initiate connection: " + response.StatusCode);
-        }
-
-        var content = await response.Content.ReadAsStringAsync(cancellationToken);
-
-        if (!string.IsNullOrEmpty(content))
-        {
-            var unpackResult = await didComm.Unpack(
-                new UnpackParamsBuilder(content)
-                    .SecretResolver(_secretResolver)
-                    .BuildUnpackParams());
-            if (unpackResult.IsFailed)
+            if (packResult.IsFailed)
             {
-                return unpackResult.ToResult();
+                return Result.Fail($"Message packing failed: {string.Join(", ", packResult.Errors.Select(e => e.Message))}");
             }
 
-            return Result.Ok(unpackResult.Value.Message);
-        }
+            // Send the message to the endpoint
+            HttpResponseMessage response;
+            try
+            {
+                response = await _httpClient.PostAsync(
+                    request.RemoteEndpoint, 
+                    new StringContent(packResult.Value.PackedMessage, new MediaTypeHeaderValue(MessageTyp.Encrypted)), 
+                    cancellationToken);
+            }
+            catch (HttpRequestException ex)
+            {
+                return Result.Fail($"Connection could not be established: {ex.Message}");
+            }
 
-        return Result.Ok();
+            if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                return Result.Fail("Connection could not be established. Not found");
+            }
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return Result.Fail("Unable to initiate connection: " + response.StatusCode);
+            }
+
+            var content = await response.Content.ReadAsStringAsync(cancellationToken);
+
+            if (!string.IsNullOrEmpty(content))
+            {
+                var unpackResult = await didComm.Unpack(
+                    new UnpackParamsBuilder(content)
+                        .SecretResolver(_secretResolver)
+                        .BuildUnpackParams());
+                        
+                if (unpackResult.IsFailed)
+                {
+                    return Result.Fail($"Message unpacking failed: {string.Join(", ", unpackResult.Errors.Select(e => e.Message))}");
+                }
+
+                return Result.Ok(unpackResult.Value.Message);
+            }
+
+            return Result.Ok();
+        }
+        catch (Exception ex)
+        {
+            return Result.Fail($"Error during message sending: {ex.Message}");
+        }
     }
 }

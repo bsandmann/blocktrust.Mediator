@@ -43,7 +43,7 @@ public class BasicMessageAbTests
         var gsdinvitationPeerDidDocResult = DidDocPeerDid.FromJson(gsinvitationPeerDidResult.Value);
 
         var endpoint = gsdinvitationPeerDidDocResult.Value.Services.FirstOrDefault().ServiceEndpoint;
-        var endpointr = PeerDidResolver.ResolvePeerDid(new PeerDid(endpoint), VerificationMaterialFormatPeerDid.Jwk);
+        var endpointr = PeerDidResolver.ResolvePeerDid(new PeerDid(endpoint.Uri), VerificationMaterialFormatPeerDid.Jwk);
         var f = DidDocPeerDid.FromJson(endpointr.Value);
         
         
@@ -70,7 +70,7 @@ public class BasicMessageAbTests
         var localDidOfAliceToUseWithTheMediator = await _createPeerDidHandler.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
         var basicMessage = BasicMessage.Create("Hello Mediator", localDidOfAliceToUseWithTheMediator.Value.PeerDid.Value);
         _sendMessageHandler = new SendMessageHandler(_httpClient, new SimpleDidDocResolver(), secretResolverInMemory);
-        var abResult = await _sendMessageHandler.Handle(new SendMessageRequest(new Uri(mediatorEndpoint), mediatorDid, localDidOfAliceToUseWithTheMediator.Value.PeerDid.Value, basicMessage), CancellationToken.None);
+        var abResult = await _sendMessageHandler.Handle(new SendMessageRequest(new Uri(mediatorEndpoint.Uri), mediatorDid, localDidOfAliceToUseWithTheMediator.Value.PeerDid.Value, basicMessage), CancellationToken.None);
         abResult.IsSuccess.Should().BeTrue();
         var content = ((JsonElement)abResult.Value.Body["content"]).GetString();
         content.Should().Be("This is the BLOCKTRUST MEDIATOR answering machine. Thank you for calling! Your message was: 'Hello Mediator'");

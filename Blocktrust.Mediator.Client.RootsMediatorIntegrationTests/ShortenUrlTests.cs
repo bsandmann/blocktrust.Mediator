@@ -60,7 +60,7 @@ public class ShortenUrlTests
             "http://127.0.0.1:8000?_oob=eyJ0eXBlIjoiaHR0cHM6Ly9kaWRjb21tLm9yZy9vdXQtb2YtYmFuZC8yLjAvaW52aXRhdGlvbiIsImlkIjoiMzFlMWY3ODQtNmUwZC00NDI3LTk1OTYtNDQwNDkzOTI3YWJlIiwiZnJvbSI6ImRpZDpwZWVyOjIuRXo2TFNkRWNzVnZ6ZTNjWkpxaTFLRFdyU2N5MmFINW9IOFlkUVJRaTZmNVpIN1lGMi5WejZNa284aXllUDRITTFpS3ZuY2o3TkVRQ3JjeXpQN1Y1VW1ad2N1QXN6NWhZRkJlLlNleUpwWkNJNkltNWxkeTFwWkNJc0luUWlPaUprYlNJc0luTWlPaUpvZEhSd09pOHZNVEkzTGpBdU1DNHhPamd3TURBaUxDSmhJanBiSW1ScFpHTnZiVzB2ZGpJaVhYMCIsImJvZHkiOnsiZ29hbF9jb2RlIjoicmVxdWVzdC1tZWRpYXRlIiwiZ29hbCI6IlJlcXVlc3RNZWRpYXRlIiwibGFiZWwiOiJNZWRpYXRvciIsImFjY2VwdCI6WyJkaWRjb21tL3YyIl19fQ");
         long? requestValidityInSeconds = null;
         string? shortUrlSlug = null;
-        var request = new RequestShortenedUrlRequest(new Uri(mediatorEndpoint), mediatorDid, localDid.Value.PeerDid.Value, urlToShorten,  requestValidityInSeconds, shortUrlSlug);
+        var request = new RequestShortenedUrlRequest(new Uri(mediatorEndpoint.Uri), mediatorDid, localDid.Value.PeerDid.Value, urlToShorten,  requestValidityInSeconds, shortUrlSlug);
 
         // Act
         _requestShortenedUrlHandler = new RequestShortenedUrlHandler(_httpClient, new SimpleDidDocResolver(), secretResolverInMemory);
@@ -103,7 +103,7 @@ public class ShortenUrlTests
             "http://127.0.0.1:8000?_oob=eyJ0eXBlIjoiaHR0cHM6Ly9kaWRjb21tLm9yZy9vdXQtb2YtYmFuZC8yLjAvaW52aXRhdGlvbiIsImlkIjoiMzFlMWY3ODQtNmUwZC00NDI3LTk1OTYtNDQwNDkzOTI3YWJlIiwiZnJvbSI6ImRpZDpwZWVyOjIuRXo2TFNkRWNzVnZ6ZTNjWkpxaTFLRFdyU2N5MmFINW9IOFlkUVJRaTZmNVpIN1lGMi5WejZNa284aXllUDRITTFpS3ZuY2o3TkVRQ3JjeXpQN1Y1VW1ad2N1QXN6NWhZRkJlLlNleUpwWkNJNkltNWxkeTFwWkNJc0luUWlPaUprYlNJc0luTWlPaUpvZEhSd09pOHZNVEkzTGpBdU1DNHhPamd3TURBaUxDSmhJanBiSW1ScFpHTnZiVzB2ZGpJaVhYMCIsImJvZHkiOnsiZ29hbF9jb2RlIjoicmVxdWVzdC1tZWRpYXRlIiwiZ29hbCI6IlJlcXVlc3RNZWRpYXRlIiwibGFiZWwiOiJNZWRpYXRvciIsImFjY2VwdCI6WyJkaWRjb21tL3YyIl19fQ");
         long? requestValidityInSeconds = null;
         string? shortUrlSlug = null;
-        var request = new RequestShortenedUrlRequest(new Uri(mediatorEndpoint), mediatorDid, localDid.Value.PeerDid.Value, urlToShorten, requestValidityInSeconds, shortUrlSlug);
+        var request = new RequestShortenedUrlRequest(new Uri(mediatorEndpoint.Uri), mediatorDid, localDid.Value.PeerDid.Value, urlToShorten, requestValidityInSeconds, shortUrlSlug);
 
         _requestShortenedUrlHandler = new RequestShortenedUrlHandler(_httpClient, new SimpleDidDocResolver(), secretResolverInMemory);
         var resultShortenUrl = await _requestShortenedUrlHandler.Handle(request, CancellationToken.None);
@@ -111,7 +111,7 @@ public class ShortenUrlTests
         resultShortenUrl.IsSuccess.Should().BeTrue();
         
         _invalidateShortenedUrlHandler = new InvalidateShortenedUrlHandler(_httpClient, new SimpleDidDocResolver(), secretResolverInMemory);
-        var result = await _invalidateShortenedUrlHandler.Handle(new InvalidateShortenedUrlRequest(new Uri(mediatorEndpoint), mediatorDid, localDid.Value.PeerDid.Value, resultShortenUrl.Value.ShortenedUrl), new CancellationToken());
+        var result = await _invalidateShortenedUrlHandler.Handle(new InvalidateShortenedUrlRequest(new Uri(mediatorEndpoint.Uri), mediatorDid, localDid.Value.PeerDid.Value, resultShortenUrl.Value.ShortenedUrl), new CancellationToken());
         
         result.IsSuccess.Should().BeTrue();
     }

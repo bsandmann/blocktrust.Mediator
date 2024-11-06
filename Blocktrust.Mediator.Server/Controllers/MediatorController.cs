@@ -163,13 +163,13 @@ public class MediatorController : ControllerBase
             }
 
             var endpoint = service!.ServiceEndpoint;
-            if (string.IsNullOrEmpty(endpoint))
+            if (string.IsNullOrEmpty(endpoint.Uri))
             {
                 // Fallback to just sending a http-response
                 return Ok(packResult.Value.PackedMessage);
             }
 
-            var isUri = Uri.TryCreate(endpoint, UriKind.Absolute, out var endpointUri);
+            var isUri = Uri.TryCreate(endpoint.Uri, UriKind.Absolute, out var endpointUri);
             if (!isUri)
             {
                 // Fallback to just sending a http-response

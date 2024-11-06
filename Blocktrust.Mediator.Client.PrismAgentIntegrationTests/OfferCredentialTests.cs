@@ -3,6 +3,7 @@ namespace Blocktrust.Mediator.Client.PrismIntegrationTests;
 using System.Text;
 using System.Text.Json;
 using Blocktrust.Common.Converter;
+using Blocktrust.Common.Models.DidDoc;
 using Blocktrust.DIDComm.Secrets;
 using Blocktrust.Mediator.Common;
 using Blocktrust.Mediator.Common.Commands.CreatePeerDid;
@@ -79,7 +80,7 @@ public class OfferCredentialTests
 
         var prismAgentDid = invitationPeerDidDocResultFromPrismAgent.Value.Did;
         var prismAgentEndpoint = invitationPeerDidDocResultFromPrismAgent.Value.Services.FirstOrDefault().ServiceEndpoint;
-        prismAgentEndpoint = prismAgentEndpoint.Replace("host.docker.internal", "localhost");
+        prismAgentEndpoint = new ServiceEndpoint( prismAgentEndpoint.Uri.Replace("host.docker.internal", "localhost"));
 
         // Setup Mediator
         var response = await _httpClient.GetAsync(_blocktrustMediatorUri + "oob_url");
@@ -101,7 +102,7 @@ public class OfferCredentialTests
 
         // Request a connection
         var request = new PrismConnectRequest(
-            prismEndpoint: prismAgentEndpoint,
+            prismEndpoint: prismAgentEndpoint.Uri,
             prismDid: prismAgentDid,
             localDidToUseWithPrism: localDidToUseWithPrism.Value.PeerDid.Value,
             threadId: oobModelFromPrismAgent.Id,

@@ -3,6 +3,7 @@
 using System.Text;
 using System.Text.Json;
 using Blocktrust.Common.Converter;
+using Blocktrust.Common.Models.DidDoc;
 using Blocktrust.DIDComm.Secrets;
 using Blocktrust.Mediator.Common;
 using Blocktrust.Mediator.Common.Commands.CreatePeerDid;
@@ -88,7 +89,7 @@ public class ConnectTests
 
         var prismAgentDid = invitationPeerDidDocResultFromPrismAgent.Value.Did;
         var prismAgentEndpoint = invitationPeerDidDocResultFromPrismAgent.Value.Services.FirstOrDefault().ServiceEndpoint;
-        prismAgentEndpoint = prismAgentEndpoint.Replace("host.docker.internal", "localhost");
+        prismAgentEndpoint = new ServiceEndpoint( uri: prismAgentEndpoint.Uri.Replace("host.docker.internal", "localhost"));
 
         // Setup Mediator
         var response = await _httpClient.GetAsync(_blocktrustMediatorUri + "oob_url");
@@ -110,7 +111,7 @@ public class ConnectTests
 
         // Act
         var request = new PrismConnectRequest(
-            prismEndpoint:  prismAgentEndpoint,
+            prismEndpoint:  prismAgentEndpoint.Uri,
             prismDid: prismAgentDid,
             localDidToUseWithPrism: localDidToUseWithPrism.Value.PeerDid.Value,
             threadId: oobModelFromPrismAgent.Id,
@@ -144,7 +145,7 @@ public class ConnectTests
 
         var prismAgentDid = invitationPeerDidDocResultFromPrismAgent.Value.Did;
         var prismAgentEndpoint = invitationPeerDidDocResultFromPrismAgent.Value.Services.FirstOrDefault().ServiceEndpoint;
-        prismAgentEndpoint = prismAgentEndpoint.Replace("host.docker.internal", "localhost");
+        prismAgentEndpoint = new ServiceEndpoint(uri: prismAgentEndpoint.Uri.Replace("host.docker.internal", "localhost"));
 
         // Setup Mediator
         var response = await _httpClient.GetAsync(_blocktrustMediatorUri + "oob_url");
@@ -166,7 +167,7 @@ public class ConnectTests
 
         // Act
         var request = new PrismConnectRequest(
-            prismEndpoint:  prismAgentEndpoint,
+            prismEndpoint:  prismAgentEndpoint.Uri,
             prismDid: prismAgentDid,
             localDidToUseWithPrism: localDidToUseWithPrism.Value.PeerDid.Value,
             threadId: oobModelFromPrismAgent.Id,

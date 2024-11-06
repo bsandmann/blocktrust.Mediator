@@ -15,7 +15,7 @@ public static class PrismTestHelpers
     {
         using var httpClient = new HttpClient();
         httpClient.DefaultRequestHeaders.Add("apiKey", prismAgentApiKey);
-        var getOOBInvitationFromPrismAgent = await httpClient.PostAsync(prismAgentUrlRunningInDocker + "prism-agent/connections", new StringContent("""{"label":"test"}""", Encoding.UTF8, "application/json"), new CancellationToken());
+        var getOOBInvitationFromPrismAgent = await httpClient.PostAsync(prismAgentUrlRunningInDocker + "cloud-agent/connections", new StringContent("""{"label":"test"}""", Encoding.UTF8, "application/json"), new CancellationToken());
         var oobInvitationFromPrismAgent = await getOOBInvitationFromPrismAgent.Content.ReadAsStringAsync();
         var jsonDocument = JsonDocument.Parse(oobInvitationFromPrismAgent);
         jsonDocument.RootElement.TryGetProperty("invitation", out var invitation);

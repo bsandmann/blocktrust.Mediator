@@ -3,6 +3,7 @@
 using System.Text;
 using System.Text.Json;
 using Blocktrust.Common.Converter;
+using Blocktrust.Common.Models.DidDoc;
 using Blocktrust.DIDComm.Secrets;
 using Blocktrust.Mediator.Common;
 using Blocktrust.Mediator.Common.Commands.CreatePeerDid;
@@ -21,12 +22,13 @@ using Xunit;
 
 public class BasicMessageTests
 {
+    // http://212.124.51.147:35412/cloud-agent/
     private readonly HttpClient _httpClient;
     private DiscoverFeaturesHandler _discoverFeaturesHandler;
     private CreatePeerDidHandler _createPeerDidHandler;
-    private readonly string _blocktrustMediatorUri = "http://localhost:5023/";
-    private readonly string _prismAgentUrlRunningInDocker = "http://localhost:8090/";
-    private readonly string _prismAgentApiKey = "kxr9i@6XgKBUxe%O";
+    private readonly string _blocktrustMediatorUri = "https://localhost:7037/";
+    private readonly string _prismAgentUrlRunningInDocker = "http://212.124.51.147:35412/";
+    private readonly string _prismAgentApiKey = "1623db3e7de4a24c";
     private readonly SimpleDidDocResolver _simpleDidDocResolver;
     private readonly SecretResolverInMemory _secretResolverInMemory;
     private RequestMediationHandler _requestMediationHandler;
@@ -55,11 +57,12 @@ public class BasicMessageTests
         
         var prismAgentDid = invitationPeerDidDocResultFromPrismAgent.Value.Did;
         var prismAgentEndpoint = invitationPeerDidDocResultFromPrismAgent.Value.Services.FirstOrDefault().ServiceEndpoint;
-        prismAgentEndpoint = prismAgentEndpoint.Replace("host.docker.internal", "localhost");
+        prismAgentEndpoint = new ServiceEndpoint(uri: prismAgentEndpoint.Uri.Replace("host.docker.internal", "localhost"));
         
         _createPeerDidHandler = new CreatePeerDidHandler(_secretResolverInMemory);
         
         // Then we need a mediator setup for us (so that we can receive the response of the trust ping)
+   
         var response = await _httpClient.GetAsync(_blocktrustMediatorUri + "oob_url");
         var resultContent = await response.Content.ReadAsStringAsync();
         var oob = resultContent.Split("=");
@@ -81,7 +84,7 @@ public class BasicMessageTests
         var basicMessage = BasicMessage.Create("Hello agent", localDidToUseWithPrism.Value.PeerDid.Value);
 
         var sendMessageHandler = new SendMessageHandler(_httpClient,_simpleDidDocResolver, _secretResolverInMemory);
-        var sendMessageRequest = new SendMessageRequest(new Uri(prismAgentEndpoint), prismAgentDid, localDidToUseWithPrism.Value.PeerDid.Value, basicMessage);
+        var sendMessageRequest = new SendMessageRequest(new Uri(prismAgentEndpoint.Uri), prismAgentDid, localDidToUseWithPrism.Value.PeerDid.Value, basicMessage);
         var sendMessageResult = await sendMessageHandler.Handle(sendMessageRequest, CancellationToken.None);
         
         sendMessageResult.IsSuccess.Should().BeTrue();

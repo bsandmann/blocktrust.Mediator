@@ -91,7 +91,7 @@ public class PrismConnectHandler : IRequestHandler<PrismConnectRequest, Result<P
                 return Result.Fail($"Unable to resolve peer DID of the endpoint : {request.PrismEndpoint}");
             }
 
-            var isParsed = Uri.TryCreate(resolvedEndpointDidDoc.Value?.Services?.First().ServiceEndpoint, UriKind.Absolute, out var mediatorEndpointUri);
+            var isParsed = Uri.TryCreate(resolvedEndpointDidDoc.Value?.Services?.First().ServiceEndpoint.Uri, UriKind.Absolute, out var mediatorEndpointUri);
             if (!isParsed)
             {
                 return Result.Fail($"Unable to resolve peer DID of the endpoint into URI: {resolvedEndpointDidDoc.Value?.Services?.First().ServiceEndpoint}");

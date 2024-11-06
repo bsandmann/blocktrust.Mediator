@@ -71,22 +71,28 @@ public class CreatePeerDidHandler : IRequestHandler<CreatePeerDidRequest, Result
 
         if (createdidRequest.ServiceEndpoint is not null)
         {
-            serviceDictionary = new Service(
-                id: "new-id",
-                serviceEndpoint: createdidRequest.ServiceEndpoint.AbsoluteUri,
-                routingKeys: new List<string>(), 
-                accept: new List<string>() { "didcomm/v2" },
-                type: ServiceConstants.ServiceDidcommMessaging).ToDict();
+            // Follow did:peer:2 service encoding rules
+            serviceDictionary = new Dictionary<string, object>
+            {
+                { "t", "dm" }, // Use abbreviated form per spec
+                { "s", new Dictionary<string, object> 
+                    {
+                        { "uri", createdidRequest.ServiceEndpoint.AbsoluteUri },
+                        { "r", new List<string>() },  // routingKeys abbreviated
+                        { "a", new List<string> { "didcomm/v2" } }  // accept abbreviated
+                    }
+                }
+            };
 
-            service = JsonSerializer.Serialize(serviceDictionary, SerializationOptions.UnsafeRelaxedEscaping);
+            service = JsonSerializer.Serialize(serviceDictionary);
         }
         else if (createdidRequest.ServiceEndpointDid is not null)
         {
             serviceDictionary = new Service(
                 id: "new-id",
-                serviceEndpoint: createdidRequest.ServiceEndpointDid,
+                serviceEndpoint: new ServiceEndpoint(uri: createdidRequest.ServiceEndpointDid,
                 routingKeys:new List<string>(), 
-                accept: new List<string>() { "didcomm/v2" },
+                accept: new List<string>() { "didcomm/v2" }),
                 type: ServiceConstants.ServiceDidcommMessaging).ToDict();
             
             service = JsonSerializer.Serialize(serviceDictionary, SerializationOptions.UnsafeRelaxedEscaping);

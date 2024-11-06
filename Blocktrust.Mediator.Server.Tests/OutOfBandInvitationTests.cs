@@ -17,7 +17,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Models;
 using Moq;
-using Resolver;
 
 public class OutOfBandInvitationTests
 {

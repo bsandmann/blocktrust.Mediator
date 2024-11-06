@@ -49,7 +49,7 @@ public class TrustPingTests
         var mediatorEndpoint = invitationPeerDidDocResult.Value.Services.FirstOrDefault().ServiceEndpoint;
 
         var localDidOfAliceToUseWithTheMediator = await _createPeerDidHandlerAlice.Handle(new CreatePeerDidRequest(), cancellationToken: new CancellationToken());
-        var request = new TrustPingRequest(new Uri(mediatorEndpoint), mediatorDid, localDidOfAliceToUseWithTheMediator.Value.PeerDid.Value, true);
+        var request = new TrustPingRequest(new Uri(mediatorEndpoint.Uri), mediatorDid, localDidOfAliceToUseWithTheMediator.Value.PeerDid.Value, true);
 
         _trustPingHandler = new TrustPingHandler(_httpClient, simpleDidDocResolverForAlice, secretResolverInMemoryForAlice);
         var trustPingResult = await _trustPingHandler.Handle(request, CancellationToken.None);
