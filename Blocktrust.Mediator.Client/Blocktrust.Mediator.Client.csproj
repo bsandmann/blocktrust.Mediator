@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <Authors>Bjoern Sandmann / blocktrust</Authors>
@@ -9,7 +9,7 @@
         <Copyright>Bjoern Sandmann / blocktrust</Copyright>
         <PackageProjectUrl>blocktrust.dev</PackageProjectUrl>
         <RepositoryUrl>https://github.com/bsandmann/blocktrust.Mediator</RepositoryUrl>
-        <Version>1.7.0</Version>
+        <Version>1.8.0</Version>
         <LangVersion>12</LangVersion>
     </PropertyGroup>
 
@@ -22,8 +22,8 @@
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
-      <PackageReference Include="Blocktrust.DIDComm" Version="3.2.0" />
-      <PackageReference Include="Blocktrust.PeerDID" Version="2.2.0" />
+      <PackageReference Include="Blocktrust.DIDComm" Version="3.3.0" />
+      <PackageReference Include="Blocktrust.PeerDID" Version="2.3.0" />
       <PackageReference Include="FluentResults" Version="3.15.2" />
       <PackageReference Include="JetBrains.Annotations" Version="2023.2.0" />
       <PackageReference Include="JetBrains.ExternalAnnotations" Version="10.2.133" />
