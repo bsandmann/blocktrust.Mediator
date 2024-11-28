@@ -10,12 +10,9 @@ ARG NUGET_PASSWORD
 
 WORKDIR /src
 
-# Copy NuGet.Config file
-COPY NuGet.Config ./
-
-# Configure authentication for the private NuGet feed
-# The nuget config is not required for building on azure devops
-#RUN dotnet nuget update source PrivateFeed \
+# This is not required for DEVOPS builds but for local
+# COPY NuGet.Config ./
+# RUN dotnet nuget update source PrivateFeed \
 #    --username "sandmann@codedata.solutions" \
 #    --password "$NUGET_PASSWORD" \
 #    --store-password-in-clear-text
