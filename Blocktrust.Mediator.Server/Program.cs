@@ -24,6 +24,10 @@ namespace Blocktrust.Mediator.Server
                         .AddFilter<ApplicationInsightsLoggerProvider>(
                             string.Empty, LogLevel.Information);
                 })
-                .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseStartup<Startup>();
+                    webBuilder.UseUrls("http://*:8080");
+                });
     }
 }

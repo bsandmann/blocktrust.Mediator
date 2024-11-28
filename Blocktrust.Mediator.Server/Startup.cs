@@ -52,14 +52,14 @@ public class Startup
         //TODO unclear if the secreat resolver has to be scoped or singleton. Crashing when singleton currently
         services.AddScoped<ISecretResolver, MediatorSecretResolver>();
         services.AddSingleton<IDidDocResolver, SimpleDidDocResolver>();
-        services.AddSwaggerGen(c =>
-        {
-            c.SwaggerDoc("v1", new OpenApiInfo { Title = "Blocktrust.Mediator", Version = "v1" });
-            var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            var commentsFileName = Assembly.GetExecutingAssembly().GetName().Name + ".XML";
-            var commentsFile = Path.Combine(baseDirectory, commentsFileName);
-            c.IncludeXmlComments(commentsFile);
-        });
+        // services.AddSwaggerGen(c =>
+        // {
+        //     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Blocktrust.Mediator", Version = "v1" });
+        //     var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+        //     var commentsFileName = Assembly.GetExecutingAssembly().GetName().Name + ".XML";
+        //     var commentsFile = Path.Combine(baseDirectory, commentsFileName);
+        //     c.IncludeXmlComments(commentsFile);
+        // });
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -73,11 +73,10 @@ public class Startup
         if (env.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
-            app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Blocktrust.Mediator v1"));
+            // app.UseSwagger();
+            // app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Blocktrust.Mediator v1"));
         }
 
-        app.UseHttpsRedirection();
         app.UseRouting();
         app.UseStaticFiles();
         app.UseHttpsRedirection();
