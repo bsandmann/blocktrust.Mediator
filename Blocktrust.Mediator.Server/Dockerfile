@@ -14,10 +14,11 @@ WORKDIR /src
 COPY NuGet.Config ./
 
 # Configure authentication for the private NuGet feed
-RUN dotnet nuget update source PrivateFeed \
-    --username "sandmann@codedata.solutions" \
-    --password "$NUGET_PASSWORD" \
-    --store-password-in-clear-text
+# The nuget config is not required for building on azure devops
+#RUN dotnet nuget update source PrivateFeed \
+#    --username "sandmann@codedata.solutions" \
+#    --password "$NUGET_PASSWORD" \
+#    --store-password-in-clear-text
 
 # Copy project files and restore dependencies
 COPY ["Blocktrust.Mediator.Server/Blocktrust.Mediator.Server.csproj", "Blocktrust.Mediator.Server/"]
