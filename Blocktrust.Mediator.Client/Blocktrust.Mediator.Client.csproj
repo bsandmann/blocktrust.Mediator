@@ -10,7 +10,7 @@
         <PackageProjectUrl>blocktrust.dev</PackageProjectUrl>
         <RepositoryUrl>https://github.com/bsandmann/blocktrust.Mediator</RepositoryUrl>
         <Version>1.8.0</Version>
-        <LangVersion>12</LangVersion>
+        <LangVersion>11</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>

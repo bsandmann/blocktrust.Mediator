@@ -9,7 +9,7 @@
         <Copyright>Bjoern Sandmann / blocktrust</Copyright>
         <PackageProjectUrl>blocktrust.dev</PackageProjectUrl>
         <RepositoryUrl>https://github.com/bsandmann/blocktrust.Mediator</RepositoryUrl>
-        <LangVersion>12</LangVersion>
+        <LangVersion>11</LangVersion>
         <UserSecretsId>b5b840c7-3936-4157-8179-39166a0cb820</UserSecretsId>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
