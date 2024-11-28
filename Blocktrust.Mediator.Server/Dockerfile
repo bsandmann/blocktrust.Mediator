@@ -22,13 +22,14 @@ RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
 # Configure authentication for the private NuGet feed
 RUN dotnet nuget update source blocktrust-nuget \
     --username "sandmann@codedata.solutions" \
-    --password ${{NUGET_PASSWORD}} \
+    --password $NUGET_PASSWORD \
     --store-password-in-clear-text
 
 # Copy project files and restore dependencies
 COPY ["Blocktrust.Mediator.Server/Blocktrust.Mediator.Server.csproj", "Blocktrust.Mediator.Server/"]
 COPY ["Blocktrust.Mediator.Common/Blocktrust.Mediator.Common.csproj", "Blocktrust.Mediator.Common/"]
 RUN dotnet restore "Blocktrust.Mediator.Server/Blocktrust.Mediator.Server.csproj"
+
 
 COPY . .
 WORKDIR "/src/Blocktrust.Mediator.Server"
