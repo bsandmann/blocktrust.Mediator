@@ -79,7 +79,7 @@ public class Startup
 
         app.UseRouting();
         app.UseStaticFiles();
-        app.UseHttpsRedirection();
+        // app.UseHttpsRedirection();
         app.UseCors(x => x
             .AllowAnyOrigin()
             .AllowAnyMethod()

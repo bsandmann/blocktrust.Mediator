@@ -30,9 +30,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\blocktrust.Core\Blocktrust.Common\Blocktrust.Common.csproj" />
       <ProjectReference Include="..\..\blocktrust.DIDComm\Blocktrust.DIDComm\Blocktrust.DIDComm.csproj" />
-      <ProjectReference Include="..\..\blocktrust.PeerDID\Blocktrust.PeerDID\Blocktrust.PeerDID.csproj" />
     </ItemGroup>
 
   </Project>
