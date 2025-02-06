@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
+        <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <Authors>Bjoern Sandmann / blocktrust</Authors>
@@ -18,17 +18,21 @@
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
-      <PackageReference Include="Blocktrust.DIDComm" Version="3.3.0" />
-      <PackageReference Include="Blocktrust.PeerDID" Version="2.3.0" />
-      <PackageReference Include="FluentResults" Version="3.15.2" />
-      <PackageReference Include="JetBrains.Annotations" Version="2023.2.0" />
-      <PackageReference Include="JetBrains.ExternalAnnotations" Version="10.2.133" />
-      <PackageReference Include="MediatR" Version="12.1.1" />
-      <PackageReference Include="Moq" Version="4.18.4" />
+      <PackageReference Include="FluentResults" Version="3.16.0" />
+      <PackageReference Include="JetBrains.Annotations" Version="2024.3.0" />
+      <PackageReference Include="JetBrains.ExternalAnnotations" Version="10.2.155" />
+      <PackageReference Include="MediatR" Version="12.4.1" />
+      <PackageReference Include="Moq" Version="4.20.72" />
     </ItemGroup>
 
     <ItemGroup>
       <Folder Include="Models\CredentialRequest\" />
     </ItemGroup>
 
-</Project>
+    <ItemGroup>
+      <ProjectReference Include="..\..\blocktrust.Core\Blocktrust.Common\Blocktrust.Common.csproj" />
+      <ProjectReference Include="..\..\blocktrust.DIDComm\Blocktrust.DIDComm\Blocktrust.DIDComm.csproj" />
+      <ProjectReference Include="..\..\blocktrust.PeerDID\Blocktrust.PeerDID\Blocktrust.PeerDID.csproj" />
+    </ItemGroup>
+
+  </Project>

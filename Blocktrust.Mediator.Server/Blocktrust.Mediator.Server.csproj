@@ -40,25 +40,23 @@
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Blocktrust.DIDComm" Version="3.3.0" />
-        <PackageReference Include="Blocktrust.PeerDID" Version="2.3.0" />
 <!--        <PackageReference Include="BouncyCastle.NetCore" Version="1.9.0" />-->
-        <PackageReference Include="EntityFrameworkCore.Exceptions.SqlServer" Version="6.0.3.2" />
-        <PackageReference Include="FluentResults" Version="3.15.2" />
-        <PackageReference Include="JetBrains.Annotations" Version="2023.2.0" />
-        <PackageReference Include="JetBrains.ExternalAnnotations" Version="10.2.133" />
-        <PackageReference Include="MediatR" Version="12.1.1" />
-        <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.21.0" />
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.11" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.11" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.11">
+        <PackageReference Include="EntityFrameworkCore.Exceptions.SqlServer" Version="8.1.3" />
+        <PackageReference Include="FluentResults" Version="3.16.0" />
+        <PackageReference Include="JetBrains.Annotations" Version="2024.3.0" />
+        <PackageReference Include="JetBrains.ExternalAnnotations" Version="10.2.155" />
+        <PackageReference Include="MediatR" Version="12.4.1" />
+        <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.22.0" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.1" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.1" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.1">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.11" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.11" />
-        <PackageReference Include="Net.Codecrete.QrCodeGenerator" Version="2.0.3" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.1" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.1" />
+        <PackageReference Include="Net.Codecrete.QrCodeGenerator" Version="2.0.6" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
     </ItemGroup>
 
     <ItemGroup>
