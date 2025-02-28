@@ -34,7 +34,7 @@ public class BasicMessageAbHandler : IRequestHandler<BasicMessageAbRequest, Mess
         returnBody.Add("content", String.Concat("This is the BLOCKTRUST MEDIATOR answering machine. Thank you for calling! Your message was: '", content,"'"));
         var returnMessage = new MessageBuilder(
                 id: Guid.NewGuid().ToString(),
-                type: ProtocolConstants.DiscoverFeatures2Response,
+                type: ProtocolConstants.BasicMessage,
                 body: returnBody
             )
             .thid(request.UnpackedMessage.Thid ?? request.UnpackedMessage.Id)
