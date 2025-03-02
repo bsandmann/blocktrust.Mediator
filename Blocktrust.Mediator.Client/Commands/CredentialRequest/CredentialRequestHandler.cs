@@ -1,27 +1,18 @@
-namespace Blocktrust.Mediator.Client.Commands.PrismConnect.AnwserConnectRequest;
+namespace Blocktrust.Mediator.Client.Commands.CredentialRequest;
 
 using System.Net;
 using System.Net.Http.Headers;
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Nodes;
-using Blocktrust.Common.Converter;
 using Blocktrust.Common.Models.DidDoc;
 using Blocktrust.Common.Resolver;
-using Common;
-using Common.Models.ProblemReport;
-using Common.Protocols;
-using CredentialRequest;
-using DIDComm;
-using DIDComm.Common.Types;
-using DIDComm.Message.Attachments;
-using DIDComm.Message.Messages;
-using DIDComm.Model.PackEncryptedParamsModels;
+using Blocktrust.DIDComm;
+using Blocktrust.DIDComm.Common.Types;
+using Blocktrust.DIDComm.Message.Attachments;
+using Blocktrust.DIDComm.Message.Messages;
+using Blocktrust.DIDComm.Model.PackEncryptedParamsModels;
+using Blocktrust.Mediator.Common;
+using Blocktrust.Mediator.Common.Protocols;
 using FluentResults;
 using MediatR;
-using Pickup.DeliveryRequest;
-using Pickup.MessageReceived;
-using ProcessOobInvitationAndConnect;
 
 public class CredentialRequestHandler : IRequestHandler<CredentialRequestRequest, Result<CredentialRequestResponse>>
 {
